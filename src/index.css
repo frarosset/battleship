@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+
+:root,
+::backdrop {
+  /* Colors (palette)*/
+  --col-black: rgb(20, 20, 20);
+  --col-white: rgb(255, 255, 255);
+
+  /* Colors (background)*/
+  --bg-col: rgb(227, 248, 242);
+
+  /* Colors (text/icons)*/
+  --col-txt: var(--col-black);
+  --col-txt-alt: var(--col-white);
+
+  /* Font family */
+  --main-font: "Nunito", sans-serif;
+
+  /* Font sizes */
+  --txt-fontsize:     18px;
+  --txt-lineheight:   1.2;
+
+  /* Text clamping: number of lines */
+  /* --max-lines: 4; */
+
+  /* Maximum width (including dashboard margin) */
+  --max-width: min(1440px, 100%);
+
+  /* Radius */
+  /* --radius: 30px; */
+  /* --radius-inner: 25px; */
+
+  /*Margins, gaps and paddings (+widths)*/
+ 
+  /* Images / icons size */
+
+  /* Shadows */
+  /* --outset-shadow: 2px 2px 8px var(--col-accent-medium);
+    --outset-shadow-btn-active: 2px 2px 5px var(--col-accent-medium);
+    --inset-shadow: 2px 2px 2px var(--col-accent-light) inset; */
+
+  /* Animations on hover / active / ...*/
+  /* --transition-time: 0.8s; */
+}
+
+/* ::backdrop { */
+    /* background-color: var(--col-black); */
+    /* opacity: 0.75; */
+/* } */
+
+html {
+  background-color: var(--bg-col);
+  color: var(--col-txt);
+  font-family: var(--main-font), sans-serif;
+  font-weight: 400;
+  font-size: var(--txt-fontsize);
+  line-height: var(--txt-lineheight);
+}
+
+*,
+*:before,
+*:after {
+  font-family: inherit;
+  font-size: inherit; /* 100% */
+  line-height: inherit;
+  color: inherit;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  vertical-align: baseline;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0 auto;
+  height: 100vh; /*it is assumed the same for <html>*/
+  height: 100dvh; /* if supported */
+
+  /* if you want to allow scroll: */
+  /* min-height: 100vh; */
+  /* height: 100%; */
+
+  width: 100%;
+  /* or max-width -- this avoids horizontal scroll bars */
+
+  touch-action: manipulation; /* disable double tap to zoom on some browsers*/
+  /* user-select: none; */
+}
+
+/*****************************************************/
+
+/* || Generic */
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+}
+
+body > * {
+  width: 100%;
+}
+
+/* .header-container, */
+/* .main-container{ */
+    /* width: 100%; */
+    /* max-width: var(--max-width); */
+    /* margin: 0 auto; */
+/* } */
+
+/* main { */
+  /* width: 100%; */
+  /* max-width: var(--max-width); */
+  /* min-height: 100dvh; */
+  /* flex-shrink: 0; */
+  /* margin: 0 auto; */
+/* } */
+
+p {
+  text-wrap: pretty; /*or balance */
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a,
+a:hover,
+a:active,
+a:visited {
+  text-decoration: none;
+}
+
+button{
+  cursor: pointer;
+}
+
+/* when hover is supporte */
+@media not all and (hover: none) {
+  /* styles*/
+}
+
+/* tablet or larger, or landscape (vs portrait), 641px (phone), 961px (tablet) */
+@media only screen and (min-width: 768px), (orientation: landscape){
+
+}
+
+/* Customize scrollbars */
+::-webkit-scrollbar {
+  width: 4px; /* width of the entire scrollbar */
+  height: 4px; /* height of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* color of the tracking area */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* color of the scroll thumb */
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* color of the scroll thumb on hover */
+}
