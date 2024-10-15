@@ -11,4 +11,8 @@ describe("Ship class", () => {
   it("has a length", () => {
     expect(ship.length).toBe(shipLength);
   });
+
+  it("has a hits counter initialized to 0", () => {
+    expect(ship.hits).toBe(0);
+  });
 });
