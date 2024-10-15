@@ -30,4 +30,8 @@ describe("Ship class", () => {
     ship.hit();
     expect(ship.isSunk()).toBeTruthy();
   });
+
+  it("cannot increase the hit counter if it is sunk", () => {
+    expect(() => ship.hit()).toThrow("The ship is already sunk");
+  });
 });
