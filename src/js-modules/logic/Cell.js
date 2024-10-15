@@ -1,10 +1,12 @@
 export default class Cell {
   #coords;
   #ship;
+  #hasBeenAttacked;
 
   constructor(coords) {
     this.#coords = coords;
     this.#ship = null;
+    this.#hasBeenAttacked = false;
   }
 
   get coords() {
@@ -29,5 +31,13 @@ export default class Cell {
 
   getShip() {
     return this.#ship;
+  }
+
+  receiveAttack() {
+    this.#hasBeenAttacked = true;
+  }
+
+  hasBeenAttacked() {
+    return this.#hasBeenAttacked;
   }
 }
