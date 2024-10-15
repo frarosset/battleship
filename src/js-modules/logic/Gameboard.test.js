@@ -10,7 +10,7 @@ describe("Gameboard class", () => {
   });
 
   it("has a size", () => {
-    expect(gameboard.size).toBe([nCols, nRows]);
+    expect(gameboard.size).toEqual([nCols, nRows]);
     expect(gameboard.nCols).toBe(nCols);
     expect(gameboard.nRows).toBe(nRows);
   });

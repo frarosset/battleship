@@ -11,7 +11,7 @@ describe("Cell class", () => {
   });
 
   it("has some coordinates", () => {
-    expect(cell.coords).toBe(coords);
+    expect(cell.coords).toEqual(coords);
     expect(cell.x).toBe(coords[0]);
     expect(cell.y).toBe(coords[1]);
   });
