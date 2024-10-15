@@ -15,4 +15,11 @@ describe("Ship class", () => {
   it("has a hits counter initialized to 0", () => {
     expect(ship.hits).toBe(0);
   });
+
+  it("can increase the hit counter by 1", () => {
+    ship.hit();
+    expect(ship.hits).toBe(1);
+    ship.hit();
+    expect(ship.hits).toBe(2);
+  });
 });
