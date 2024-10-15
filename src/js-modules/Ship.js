@@ -14,4 +14,8 @@ export default class Ship {
   get hits() {
     return this.#hits;
   }
+
+  hit() {
+    this.#hits++;
+  }
 }
