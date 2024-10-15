@@ -22,4 +22,12 @@ describe("Ship class", () => {
     ship.hit();
     expect(ship.hits).toBe(2);
   });
+
+  it("can determine whether the ship is sunk or not", () => {
+    expect(ship.isSunk()).toBeFalsy();
+    ship.hit();
+    expect(ship.isSunk()).toBeFalsy();
+    ship.hit();
+    expect(ship.isSunk()).toBeTruthy();
+  });
 });
