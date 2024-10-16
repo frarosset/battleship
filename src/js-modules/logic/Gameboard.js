@@ -34,4 +34,8 @@ export default class Gameboard {
   getCell([c, r]) {
     return this.#cells[c][r];
   }
+
+  isValidCell([c, r]) {
+    return c >= 0 && c < this.#nCols && r >= 0 && r < this.#nRows;
+  }
 }
