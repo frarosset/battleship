@@ -23,6 +23,7 @@ describe("Gameboard class", () => {
   const shipLen1 = 4;
 
   const shipName2 = "My second ship";
+  const shipLen2 = 2;
 
   const sampleShipCoordsArrIn = [
     [[1, 3], "N"],
@@ -123,5 +124,11 @@ describe("Gameboard class", () => {
         }
       }
     }
+  });
+
+  it("can check if a Ship can be placed / is not overlapped with other ships", () => {
+    gameboard.addShip(shipName2, shipLen2);
+    const sampleCoordsIn = sampleShipCoordsArrIn[1];
+    expect(gameboard.canPlaceShip(shipName2, ...sampleCoordsIn)).toBeFalsy();
   });
 });
