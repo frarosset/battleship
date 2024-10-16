@@ -14,4 +14,15 @@ describe("Gameboard class", () => {
     expect(gameboard.nCols).toBe(nCols);
     expect(gameboard.nRows).toBe(nRows);
   });
+
+  it("is composed by cells that can be retrieved", () => {
+    const sampleCoordsArr = [
+      [0, 0],
+      [3, 6],
+      [nCols - 1, nRows - 1],
+    ];
+    sampleCoordsArr.forEach((sampleCoords) =>
+      expect(gameboard.getCell(sampleCoords).coords).toEqual(sampleCoords)
+    );
+  });
 });
