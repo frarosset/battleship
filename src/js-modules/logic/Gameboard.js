@@ -90,4 +90,15 @@ export default class Gameboard {
 
     return true;
   }
+
+  placeShip(name, [cStern, rStern], direction) {
+    const ship = this.#fleet.get(name);
+
+    const [cDispl, rDispl] = directionDisplacement[direction];
+
+    for (let i = 0; i < ship.length; i++) {
+      const [c, r] = [cStern + cDispl * i, rStern + rDispl * i];
+      this.#cells[c][r].placeShip(ship);
+    }
+  }
 }
