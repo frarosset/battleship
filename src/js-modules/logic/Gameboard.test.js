@@ -41,4 +41,12 @@ describe("Gameboard class", () => {
       expect(gameboard.isValidCell(sampleCoords)).toBeFalsy()
     );
   });
+
+  it("throws an error if you try to retrieve an out-of-bound cell", () => {
+    sampleCoordsArrOut.forEach((sampleCoords) =>
+      expect(() => gameboard.getCell(sampleCoords)).toThrow(
+        "The cell is out-of-bound"
+      )
+    );
+  });
 });
