@@ -1,6 +1,15 @@
 import Cell from "./Cell.js";
 import Ship from "./Ship.js";
 
+/* By convention, to place a ship you specify the coordinates of the stern (back of the ship) and the direction (N,E,S,W) */
+
+const directionDisplacement = {
+  N: [0, -1],
+  E: [1, 0],
+  S: [0, 1],
+  W: [-1, 0],
+};
+
 export default class Gameboard {
   #nCols;
   #nRows;
@@ -61,5 +70,24 @@ export default class Gameboard {
 
     const ship = new Ship(length);
     this.#fleet.set(name, ship);
+  }
+
+  canPlaceShip(name, [cStern, rStern], direction) {
+    const ship = this.#fleet.get(name);
+
+    // if the stern is not in the board, return false (= not placed)
+    if (!this.isValidCell([cStern, rStern])) return false;
+
+    // compute the bow
+    const [cDispl, rDispl] = directionDisplacement[direction];
+    const [cBow, rBow] = [
+      cStern + cDispl * (ship.length - 1),
+      rStern + rDispl * (ship.length - 1),
+    ];
+
+    // if the bow is not in the board, return false (= not placed)
+    if (!this.isValidCell([cBow, rBow])) return false;
+
+    return true;
   }
 }
