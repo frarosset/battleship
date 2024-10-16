@@ -85,8 +85,14 @@ export default class Gameboard {
       rStern + rDispl * (ship.length - 1),
     ];
 
-    // if the bow is not in the board, return false (= not placed)
+    // if the bow is not in the board, return false (= cannot place)
     if (!this.isValidCell([cBow, rBow])) return false;
+
+    // if the space occupied by the ship is already occupied by other ships, return false (= cannot place)
+    for (let i = 0; i < ship.length; i++) {
+      const [c, r] = [cStern + cDispl * i, rStern + rDispl * i];
+      if (this.#cells[c][r].hasShip()) return false;
+    }
 
     return true;
   }
