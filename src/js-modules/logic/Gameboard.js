@@ -32,6 +32,9 @@ export default class Gameboard {
   }
 
   getCell([c, r]) {
+    if (!this.isValidCell([c, r])) {
+      throw new Error("The cell is out-of-bound");
+    }
     return this.#cells[c][r];
   }
 
