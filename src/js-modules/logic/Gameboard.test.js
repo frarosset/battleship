@@ -96,4 +96,32 @@ describe("Gameboard class", () => {
       expect(gameboard.canPlaceShip(shipName1, ...sampleCoords)).toBeFalsy()
     );
   });
+
+  it("can place a Ship in the board", () => {
+    const sampleCoordsIn = sampleShipCoordsArrIn[0];
+    const sampleShipCells = [
+      [1, 3],
+      [1, 2],
+      [1, 1],
+      [1, 0],
+    ];
+
+    gameboard.placeShip(shipName1, ...sampleCoordsIn);
+
+    // Check the cells: only the ones occupied by the ship should be occupied by a ship
+    for (let c = 0; c < nCols; c++) {
+      for (let r = 0; r < nRows; r++) {
+        const cell = gameboard.getCell([c, r]);
+        const isShipCell = sampleShipCells.some(
+          ([cWithShip, rWithShip]) => cWithShip === c && rWithShip === r
+        );
+
+        if (isShipCell) {
+          expect(cell.hasShip()).toBeTruthy();
+        } else {
+          expect(cell.hasShip()).toBeFalsy();
+        }
+      }
+    }
+  });
 });
