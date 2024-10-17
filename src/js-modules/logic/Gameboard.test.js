@@ -131,4 +131,11 @@ describe("Gameboard class", () => {
     const sampleCoordsIn = sampleShipCoordsArrIn[1];
     expect(gameboard.canPlaceShip(shipName2, ...sampleCoordsIn)).toBeFalsy();
   });
+
+  it("Throws an error if you place a ship in a forbidden place", () => {
+    const sampleCoordsIn = sampleShipCoordsArrIn[1];
+    expect(() => gameboard.placeShip(shipName2, ...sampleCoordsIn)).toThrow(
+      "The ship cannot be placed in this position"
+    );
+  });
 });
