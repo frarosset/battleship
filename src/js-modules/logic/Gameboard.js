@@ -98,6 +98,10 @@ export default class Gameboard {
   }
 
   placeShip(name, [cStern, rStern], direction) {
+    if (!this.canPlaceShip(name, [cStern, rStern], direction)) {
+      throw new Error("The ship cannot be placed in this position");
+    }
+
     const ship = this.#fleet.get(name);
 
     const [cDispl, rDispl] = directionDisplacement[direction];
