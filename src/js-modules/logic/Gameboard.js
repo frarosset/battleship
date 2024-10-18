@@ -18,7 +18,7 @@ export default class Gameboard {
   #notDeployedFleet;
   #sunkFleet;
 
-  constructor(nCols, nRows = nCols) {
+  constructor(nCols = 10, nRows = nCols) {
     this.#nCols = nCols;
     this.#nRows = nRows;
 

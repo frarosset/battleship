@@ -7,6 +7,7 @@ describe("Player class", () => {
   });
 
   const sizeGameboard = 10;
+
   const playerName = "Captain X";
   const player = new Player(playerName, sizeGameboard);
 
