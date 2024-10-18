@@ -91,7 +91,9 @@ export default class Gameboard {
   }
 
   canPlaceShip(name, [cStern, rStern], direction) {
-    // you can place a ship only if it is not deployed
+    // you can place a ship only if it is in the not deployed fleet
+    if (!this.hasNotDeployedShip(name)) return false;
+
     const ship = this.#notDeployedFleet.get(name);
 
     // if the stern is not in the board, return false (= not placed)
