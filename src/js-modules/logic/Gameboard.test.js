@@ -17,6 +17,9 @@ describe("Gameboard class", () => {
     [-1, -1],
   ];
 
+  const shipName1 = "My first ship";
+  const shipLen1 = 4;
+
   it("is defined", () => {
     expect(Gameboard).toBeDefined();
   });
@@ -52,5 +55,10 @@ describe("Gameboard class", () => {
 
   it("has a fleet property that can be used to retrieve current ships", () => {
     expect(gameboard.fleet).toEqual([]);
+  });
+
+  it("can add a ship to the fleet", () => {
+    gameboard.addShip(shipName1, shipLen1);
+    expect(gameboard.fleet).toEqual([shipName1]);
   });
 });
