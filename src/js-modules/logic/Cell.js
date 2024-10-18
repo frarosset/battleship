@@ -34,6 +34,10 @@ export default class Cell {
   }
 
   receiveAttack() {
+    if (this.#hasBeenAttacked) {
+      throw new Error("This cell has already been attacked");
+    }
+
     this.#hasBeenAttacked = true;
     if (this.hasShip()) {
       this.getShip().hit();
