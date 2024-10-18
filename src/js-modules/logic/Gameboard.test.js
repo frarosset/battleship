@@ -218,5 +218,13 @@ describe("Gameboard class", () => {
       expect(gameboard.hasSunkShip(shipName1)).toBeTruthy();
       expect(gameboard.hasSunkShip(shipName2)).toBeFalsy();
     });
+
+    it("remove a ship from the deployed fleet when it sinks", () => {
+      expect(gameboard.hasDeployedShip(shipName1)).toBeFalsy();
+      // the following must still be truth though
+      expect(gameboard.hasShip(shipName1)).toBeTruthy();
+      // use sets: items can be roerdered here
+      expect(new Set(gameboard.fleet)).toEqual(new Set([shipName1, shipName2]));
+    });
   });
 });
