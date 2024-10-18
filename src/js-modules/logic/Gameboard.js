@@ -83,6 +83,10 @@ export default class Gameboard {
     return this.#notDeployedFleet.has(name);
   }
 
+  hasSunkShip(name) {
+    return this.#sunkFleet.has(name);
+  }
+
   hasShip(name) {
     return this.hasDeployedShip(name) || this.hasNotDeployedShip(name);
   }
