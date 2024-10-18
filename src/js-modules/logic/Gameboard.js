@@ -16,6 +16,7 @@ export default class Gameboard {
   #cells;
   #deployedFleet;
   #notDeployedFleet;
+  #sunkFleet;
 
   constructor(nCols, nRows = nCols) {
     this.#nCols = nCols;
@@ -32,6 +33,7 @@ export default class Gameboard {
 
     this.#deployedFleet = new Map();
     this.#notDeployedFleet = new Map();
+    this.#sunkFleet = new Map();
   }
 
   get size() {
@@ -52,6 +54,10 @@ export default class Gameboard {
 
   get notDeployedFleet() {
     return [...this.#notDeployedFleet.keys()];
+  }
+
+  get sunkFleet() {
+    return [...this.#sunkFleet.keys()];
   }
 
   get fleet() {
@@ -141,6 +147,22 @@ export default class Gameboard {
   /* Attack functions */
   receiveAttack([c, r]) {
     const cell = this.getCell([c, r]);
-    return cell.receiveAttack();
+    const isHit = cell.receiveAttack();
+
+    const ship = cell.getShip();
+    if (isHit && ship != null && ship.isSunk()) {
+      // get the name of the ship
+      const name = getMapKey(this.#deployedFleet, ship);
+      this.#sunkFleet.set(name, ship);
+    }
+
+    return isHit;
   }
+}
+
+function getMapKey(map, val) {
+  for (let [key, value] of map.entries()) {
+    if (value === val) return key;
+  }
+  return null;
 }
