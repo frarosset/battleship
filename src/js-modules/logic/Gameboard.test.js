@@ -213,5 +213,10 @@ describe("Gameboard class", () => {
       gameboard.receiveAttack([1, 0]);
       expect(gameboard.sunkFleet).toEqual([shipName1]);
     });
+
+    it("can check if a ship is sunk", () => {
+      expect(gameboard.hasSunkShip(shipName1)).toBeTruthy();
+      expect(gameboard.hasSunkShip(shipName2)).toBeFalsy();
+    });
   });
 });
