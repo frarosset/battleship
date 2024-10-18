@@ -199,5 +199,11 @@ describe("Gameboard class", () => {
       // the considered ship has received two attacks, one in [1,4] and [1,3]
       expect(gameboard.getCell(sampleCoordsHit2).getShip().hits).toBe(2);
     });
+
+    it("throws an error an attack is repeated in the same cell", () => {
+      expect(() => gameboard.receiveAttack(sampleCoordsHit2)).toThrow(
+        "This cell has already been attacked"
+      );
+    });
   });
 });
