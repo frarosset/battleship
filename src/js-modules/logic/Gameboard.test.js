@@ -61,4 +61,10 @@ describe("Gameboard class", () => {
     gameboard.addShip(shipName1, shipLen1);
     expect(gameboard.fleet).toEqual([shipName1]);
   });
+
+  it("throws and error if you try to add the same ship to the fleet", () => {
+    expect(() => gameboard.addShip(shipName1, shipLen1)).toThrow(
+      "The ship is already in the fleet"
+    );
+  });
 });
