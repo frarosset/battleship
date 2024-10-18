@@ -132,15 +132,20 @@ describe("Gameboard class", () => {
     expect(gameboard.canPlaceShip(shipName2, ...sampleCoordsIn)).toBeFalsy();
   });
 
-  it("Throws an error if you place a ship in a forbidden place", () => {
+  it("throws an error if you place a ship in a forbidden place", () => {
     const sampleCoordsIn = sampleShipCoordsArrIn[1];
     expect(() => gameboard.placeShip(shipName2, ...sampleCoordsIn)).toThrow(
       "The ship cannot be placed in this position"
     );
   });
 
-  it("Can retrieve the deployed and not deployed fleet ships", () => {
+  it("can retrieve the deployed and not deployed fleet ships", () => {
     expect(gameboard.deployedFleet).toEqual([shipName1]);
     expect(gameboard.notDeployedFleet).toEqual([shipName2]);
+  });
+
+  it("can check if a ship is already in the deployed fleet", () => {
+    expect(gameboard.hasDeployedShip(shipName1)).toBeTruthy();
+    expect(gameboard.hasDeployedShip(shipName2)).toBeFalsy();
   });
 });
