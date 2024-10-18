@@ -181,5 +181,13 @@ describe("Gameboard class", () => {
         gameboard.getCell(sampleCoordsMiss).hasBeenAttacked()
       ).toBeTruthy();
     });
+
+    it("throws an error if you try to attack an out-of-bound cell", () => {
+      const sampleCoordsOut = [-1, 0];
+
+      expect(() => gameboard.receiveAttack(sampleCoordsOut)).toThrow(
+        "The cell is out-of-bound"
+      );
+    });
   });
 });
