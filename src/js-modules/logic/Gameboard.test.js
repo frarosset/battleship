@@ -189,5 +189,15 @@ describe("Gameboard class", () => {
         "The cell is out-of-bound"
       );
     });
+
+    const sampleCoordsMiss2 = [0, 3];
+    const sampleCoordsHit2 = [1, 2];
+
+    it("returns true if the attack is a hit, increasing the ship hits, and false otherwise", () => {
+      expect(gameboard.receiveAttack(sampleCoordsMiss2)).toBeFalsy();
+      expect(gameboard.receiveAttack(sampleCoordsHit2)).toBeTruthy();
+      // the considered ship has received two attacks, one in [1,4] and [1,3]
+      expect(gameboard.getCell(sampleCoordsHit2).getShip().hits).toBe(2);
+    });
   });
 });
