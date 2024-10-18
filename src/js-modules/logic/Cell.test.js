@@ -24,7 +24,7 @@ describe("Cell class", () => {
     expect(cell.getShip()).toStrictEqual(ship);
   });
 
-  it("can be attaked", () => {
+  it("can be attacked", () => {
     expect(cell.hasBeenAttacked()).toBeFalsy();
     cell.receiveAttack();
     expect(cell.hasBeenAttacked()).toBeTruthy();
@@ -38,5 +38,9 @@ describe("Cell class", () => {
   it("return true if the attack is a hit", () => {
     expect(cellMiss.receiveAttack()).toBeFalsy();
     expect(cellHit.receiveAttack()).toBeTruthy();
+  });
+
+  it("increases the hits of the ship in there when it recives a hit attack", () => {
+    expect(cellHit.getShip().hits).toBe(1);
   });
 });
