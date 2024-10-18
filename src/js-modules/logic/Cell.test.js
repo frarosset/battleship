@@ -29,4 +29,14 @@ describe("Cell class", () => {
     cell.receiveAttack();
     expect(cell.hasBeenAttacked()).toBeTruthy();
   });
+
+  const cellMiss = new Cell(coords);
+  const cellHit = new Cell(coords);
+  const shipHit = new Ship(4);
+  cellHit.placeShip(shipHit);
+
+  it("return true if the attack is a hit", () => {
+    expect(cellMiss.receiveAttack()).toBeFalsy();
+    expect(cellHit.receiveAttack()).toBeTruthy();
+  });
 });
