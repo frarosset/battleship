@@ -153,4 +153,9 @@ describe("Gameboard class", () => {
     expect(gameboard.hasNotDeployedShip(shipName1)).toBeFalsy();
     expect(gameboard.hasNotDeployedShip(shipName2)).toBeTruthy();
   });
+
+  it("cannot place a ship if this is not in the not deployed fleet", () => {
+    const sampleShipCoords = [[3, 7], "N"];
+    expect(gameboard.canPlaceShip(shipName1, ...sampleShipCoords)).toBeFalsy();
+  });
 });
