@@ -58,4 +58,8 @@ export default class Gameboard {
     const ship = new Ship(length);
     this.#fleet.set(name, ship);
   }
+
+  hasShip(name) {
+    return this.#fleet.has(name);
+  }
 }
