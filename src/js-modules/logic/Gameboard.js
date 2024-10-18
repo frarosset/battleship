@@ -14,7 +14,8 @@ export default class Gameboard {
   #nCols;
   #nRows;
   #cells;
-  #fleet;
+  #deployedFleet;
+  #notDeployedFleet;
 
   constructor(nCols, nRows = nCols) {
     this.#nCols = nCols;
@@ -29,7 +30,8 @@ export default class Gameboard {
       }
     }
 
-    this.#fleet = new Map();
+    this.#deployedFleet = new Map();
+    this.#notDeployedFleet = new Map();
   }
 
   get size() {
@@ -44,8 +46,16 @@ export default class Gameboard {
     return this.#nRows;
   }
 
+  get deployedFleet() {
+    return [...this.#deployedFleet.keys()];
+  }
+
+  get notDeployedFleet() {
+    return [...this.#notDeployedFleet.keys()];
+  }
+
   get fleet() {
-    return [...this.#fleet.keys()];
+    return [...this.deployedFleet, ...this.notDeployedFleet];
   }
 
   getCell([c, r]) {
@@ -60,7 +70,7 @@ export default class Gameboard {
   }
 
   hasShip(name) {
-    return this.#fleet.has(name);
+    return this.#deployedFleet.has(name) || this.#notDeployedFleet.has(name);
   }
 
   addShip(name, length) {
@@ -69,11 +79,12 @@ export default class Gameboard {
     }
 
     const ship = new Ship(length);
-    this.#fleet.set(name, ship);
+    this.#notDeployedFleet.set(name, ship);
   }
 
   canPlaceShip(name, [cStern, rStern], direction) {
-    const ship = this.#fleet.get(name);
+    // you can place a ship only if it is not deployed
+    const ship = this.#notDeployedFleet.get(name);
 
     // if the stern is not in the board, return false (= not placed)
     if (!this.isValidCell([cStern, rStern])) return false;
@@ -102,7 +113,8 @@ export default class Gameboard {
       throw new Error("The ship cannot be placed in this position");
     }
 
-    const ship = this.#fleet.get(name);
+    // you can place a ship only if it is not deployed
+    const ship = this.#notDeployedFleet.get(name);
 
     const [cDispl, rDispl] = directionDisplacement[direction];
 
@@ -110,5 +122,9 @@ export default class Gameboard {
       const [c, r] = [cStern + cDispl * i, rStern + rDispl * i];
       this.#cells[c][r].placeShip(ship);
     }
+
+    // move the ship from the not deployed fleet to the deployed fleet
+    this.#notDeployedFleet.delete(name);
+    this.#deployedFleet.set(name, ship);
   }
 }
