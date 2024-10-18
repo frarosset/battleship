@@ -226,5 +226,10 @@ describe("Gameboard class", () => {
       // use sets: items can be roerdered here
       expect(new Set(gameboard.fleet)).toEqual(new Set([shipName1, shipName2]));
     });
+
+    it("check if there are deployed ships", () => {
+      // ship 2 is not deployed, ship 1 is sunk
+      expect(gameboard.hasDeployedShips()).toBeFalsy();
+    });
   });
 });
