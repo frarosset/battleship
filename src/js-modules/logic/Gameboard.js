@@ -73,6 +73,10 @@ export default class Gameboard {
     return this.#deployedFleet.has(name);
   }
 
+  hasNotDeployedShip(name) {
+    return this.#notDeployedFleet.has(name);
+  }
+
   hasShip(name) {
     return this.#deployedFleet.has(name) || this.#notDeployedFleet.has(name);
   }
