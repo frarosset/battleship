@@ -50,16 +50,16 @@ export default class Gameboard {
     return c >= 0 && c < this.#nCols && r >= 0 && r < this.#nRows;
   }
 
+  hasShip(name) {
+    return this.#fleet.has(name);
+  }
+
   addShip(name, length) {
-    if (this.#fleet.has(name)) {
+    if (this.hasShip(name)) {
       throw new Error("The ship is already in the fleet");
     }
 
     const ship = new Ship(length);
     this.#fleet.set(name, ship);
-  }
-
-  hasShip(name) {
-    return this.#fleet.has(name);
   }
 }
