@@ -35,7 +35,12 @@ export default class Cell {
 
   receiveAttack() {
     this.#hasBeenAttacked = true;
-    return this.hasShip();
+    if (this.hasShip()) {
+      this.getShip().hit();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   hasBeenAttacked() {
