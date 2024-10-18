@@ -1,9 +1,11 @@
 import Cell from "./Cell.js";
+import Ship from "./Ship.js";
 
 export default class Gameboard {
   #nCols;
   #nRows;
   #cells;
+  #fleet;
 
   constructor(nCols, nRows = nCols) {
     this.#nCols = nCols;
@@ -17,6 +19,8 @@ export default class Gameboard {
         this.#cells[c].push(cell);
       }
     }
+
+    this.#fleet = new Map();
   }
 
   get size() {
@@ -32,7 +36,7 @@ export default class Gameboard {
   }
 
   get fleet() {
-    return [];
+    return [...this.#fleet.keys()];
   }
 
   getCell([c, r]) {
@@ -44,5 +48,10 @@ export default class Gameboard {
 
   isValidCell([c, r]) {
     return c >= 0 && c < this.#nCols && r >= 0 && r < this.#nRows;
+  }
+
+  addShip(name, length) {
+    const ship = new Ship(length);
+    this.#fleet.set(name, ship);
   }
 }
