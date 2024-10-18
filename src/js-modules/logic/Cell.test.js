@@ -43,4 +43,10 @@ describe("Cell class", () => {
   it("increases the hits of the ship in there when it recives a hit attack", () => {
     expect(cellHit.getShip().hits).toBe(1);
   });
+
+  it("throws an error an attack is repeated in the same cell", () => {
+    expect(() => cellHit.receiveAttack()).toThrow(
+      "This cell has already been attacked"
+    );
+  });
 });
