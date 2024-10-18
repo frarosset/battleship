@@ -69,6 +69,10 @@ export default class Gameboard {
     return c >= 0 && c < this.#nCols && r >= 0 && r < this.#nRows;
   }
 
+  hasDeployedShip(name) {
+    return this.#deployedFleet.has(name);
+  }
+
   hasShip(name) {
     return this.#deployedFleet.has(name) || this.#notDeployedFleet.has(name);
   }
