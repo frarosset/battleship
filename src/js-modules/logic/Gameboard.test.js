@@ -40,136 +40,146 @@ describe("Gameboard class", () => {
     expect(Gameboard).toBeDefined();
   });
 
-  it("has a size", () => {
-    expect(gameboard.size).toEqual([nCols, nRows]);
-    expect(gameboard.nCols).toBe(nCols);
-    expect(gameboard.nRows).toBe(nRows);
+  describe("board handling", () => {
+    it("has a size", () => {
+      expect(gameboard.size).toEqual([nCols, nRows]);
+      expect(gameboard.nCols).toBe(nCols);
+      expect(gameboard.nRows).toBe(nRows);
+    });
+
+    it("is composed by cells that can be retrieved", () => {
+      sampleCellCoordsArrIn.forEach((sampleCoords) =>
+        expect(gameboard.getCell(sampleCoords).coords).toEqual(sampleCoords)
+      );
+    });
+
+    it("can say if a cell is valid or out-of-bound", () => {
+      sampleCellCoordsArrIn.forEach((sampleCoords) =>
+        expect(gameboard.isValidCell(sampleCoords)).toBeTruthy()
+      );
+      sampleCellCoordsArrOut.forEach((sampleCoords) =>
+        expect(gameboard.isValidCell(sampleCoords)).toBeFalsy()
+      );
+    });
+
+    it("throws an error if you try to retrieve an out-of-bound cell", () => {
+      sampleCellCoordsArrOut.forEach((sampleCoords) =>
+        expect(() => gameboard.getCell(sampleCoords)).toThrow(
+          "The cell is out-of-bound"
+        )
+      );
+    });
   });
 
-  it("is composed by cells that can be retrieved", () => {
-    sampleCellCoordsArrIn.forEach((sampleCoords) =>
-      expect(gameboard.getCell(sampleCoords).coords).toEqual(sampleCoords)
-    );
-  });
+  describe("fleet handling", () => {
+    it("has a fleet property that can be used to retrieve current ships", () => {
+      expect(gameboard.fleet).toEqual([]);
+    });
 
-  it("can say if a cell is valid or out-of-bound", () => {
-    sampleCellCoordsArrIn.forEach((sampleCoords) =>
-      expect(gameboard.isValidCell(sampleCoords)).toBeTruthy()
-    );
-    sampleCellCoordsArrOut.forEach((sampleCoords) =>
-      expect(gameboard.isValidCell(sampleCoords)).toBeFalsy()
-    );
-  });
+    it("can add a ship to the fleet", () => {
+      gameboard.addShip(shipName1, shipLen1);
+      expect(gameboard.fleet).toEqual([shipName1]);
+    });
 
-  it("throws an error if you try to retrieve an out-of-bound cell", () => {
-    sampleCellCoordsArrOut.forEach((sampleCoords) =>
-      expect(() => gameboard.getCell(sampleCoords)).toThrow(
-        "The cell is out-of-bound"
-      )
-    );
-  });
+    it("throws and error if you try to add the same ship to the fleet", () => {
+      expect(() => gameboard.addShip(shipName1, shipLen1)).toThrow(
+        "The ship is already in the fleet"
+      );
+    });
 
-  it("has a fleet property that can be used to retrieve current ships", () => {
-    expect(gameboard.fleet).toEqual([]);
-  });
+    it("can check if a ship is already in the fleet", () => {
+      expect(gameboard.hasShip(shipName1)).toBeTruthy();
+      expect(gameboard.hasShip(shipName2)).toBeFalsy();
+    });
 
-  it("can add a ship to the fleet", () => {
-    gameboard.addShip(shipName1, shipLen1);
-    expect(gameboard.fleet).toEqual([shipName1]);
-  });
+    it("can check if a ship can be placed / is fully contained in the board", () => {
+      sampleShipCoordsArrIn.forEach((sampleCoords) =>
+        expect(gameboard.canPlaceShip(shipName1, ...sampleCoords)).toBeTruthy()
+      );
+      sampleShipCoordsArrOut.forEach((sampleCoords) =>
+        expect(gameboard.canPlaceShip(shipName1, ...sampleCoords)).toBeFalsy()
+      );
+    });
 
-  it("throws and error if you try to add the same ship to the fleet", () => {
-    expect(() => gameboard.addShip(shipName1, shipLen1)).toThrow(
-      "The ship is already in the fleet"
-    );
-  });
+    it("can place a Ship in the board", () => {
+      const sampleCoordsIn = sampleShipCoordsArrIn[0];
+      const sampleShipCells = [
+        [1, 3],
+        [1, 2],
+        [1, 1],
+        [1, 0],
+      ];
 
-  it("can check if a ship is already in the fleet", () => {
-    expect(gameboard.hasShip(shipName1)).toBeTruthy();
-    expect(gameboard.hasShip(shipName2)).toBeFalsy();
-  });
+      gameboard.placeShip(shipName1, ...sampleCoordsIn);
 
-  it("can check if a ship can be placed / is fully contained in the board", () => {
-    sampleShipCoordsArrIn.forEach((sampleCoords) =>
-      expect(gameboard.canPlaceShip(shipName1, ...sampleCoords)).toBeTruthy()
-    );
-    sampleShipCoordsArrOut.forEach((sampleCoords) =>
-      expect(gameboard.canPlaceShip(shipName1, ...sampleCoords)).toBeFalsy()
-    );
-  });
+      // Check the cells: only the ones occupied by the ship should be occupied by a ship
+      for (let c = 0; c < nCols; c++) {
+        for (let r = 0; r < nRows; r++) {
+          const cell = gameboard.getCell([c, r]);
+          const isShipCell = sampleShipCells.some(
+            ([cWithShip, rWithShip]) => cWithShip === c && rWithShip === r
+          );
 
-  it("can place a Ship in the board", () => {
-    const sampleCoordsIn = sampleShipCoordsArrIn[0];
-    const sampleShipCells = [
-      [1, 3],
-      [1, 2],
-      [1, 1],
-      [1, 0],
-    ];
-
-    gameboard.placeShip(shipName1, ...sampleCoordsIn);
-
-    // Check the cells: only the ones occupied by the ship should be occupied by a ship
-    for (let c = 0; c < nCols; c++) {
-      for (let r = 0; r < nRows; r++) {
-        const cell = gameboard.getCell([c, r]);
-        const isShipCell = sampleShipCells.some(
-          ([cWithShip, rWithShip]) => cWithShip === c && rWithShip === r
-        );
-
-        if (isShipCell) {
-          expect(cell.hasShip()).toBeTruthy();
-        } else {
-          expect(cell.hasShip()).toBeFalsy();
+          if (isShipCell) {
+            expect(cell.hasShip()).toBeTruthy();
+          } else {
+            expect(cell.hasShip()).toBeFalsy();
+          }
         }
       }
-    }
+    });
+
+    it("can check if a Ship can be placed / is not overlapped with other ships", () => {
+      gameboard.addShip(shipName2, shipLen2);
+      const sampleCoordsIn = sampleShipCoordsArrIn[1];
+      expect(gameboard.canPlaceShip(shipName2, ...sampleCoordsIn)).toBeFalsy();
+    });
+
+    it("throws an error if you place a ship in a forbidden place", () => {
+      const sampleCoordsIn = sampleShipCoordsArrIn[1];
+      expect(() => gameboard.placeShip(shipName2, ...sampleCoordsIn)).toThrow(
+        "The ship cannot be placed in this position"
+      );
+    });
+
+    it("can retrieve the deployed and not deployed fleet ships", () => {
+      expect(gameboard.deployedFleet).toEqual([shipName1]);
+      expect(gameboard.notDeployedFleet).toEqual([shipName2]);
+    });
+
+    it("can check if a ship is already in the deployed fleet", () => {
+      expect(gameboard.hasDeployedShip(shipName1)).toBeTruthy();
+      expect(gameboard.hasDeployedShip(shipName2)).toBeFalsy();
+    });
+
+    it("can check if a ship is already in the not deployed fleet", () => {
+      expect(gameboard.hasNotDeployedShip(shipName1)).toBeFalsy();
+      expect(gameboard.hasNotDeployedShip(shipName2)).toBeTruthy();
+    });
+
+    it("cannot place a ship if this is not in the not deployed fleet", () => {
+      const sampleShipCoords = [[3, 7], "N"];
+      expect(
+        gameboard.canPlaceShip(shipName1, ...sampleShipCoords)
+      ).toBeFalsy();
+    });
   });
 
-  it("can check if a Ship can be placed / is not overlapped with other ships", () => {
-    gameboard.addShip(shipName2, shipLen2);
-    const sampleCoordsIn = sampleShipCoordsArrIn[1];
-    expect(gameboard.canPlaceShip(shipName2, ...sampleCoordsIn)).toBeFalsy();
-  });
+  describe("attack handling", () => {
+    it("can receive an attack in a cell of the board", () => {
+      const sampleCoordsHit = sampleShipCoordsArrIn[0][0];
+      const sampleCoordsMiss = [0, 0];
 
-  it("throws an error if you place a ship in a forbidden place", () => {
-    const sampleCoordsIn = sampleShipCoordsArrIn[1];
-    expect(() => gameboard.placeShip(shipName2, ...sampleCoordsIn)).toThrow(
-      "The ship cannot be placed in this position"
-    );
-  });
+      expect(gameboard.getCell(sampleCoordsHit).hasBeenAttacked()).toBeFalsy();
+      expect(gameboard.getCell(sampleCoordsMiss).hasBeenAttacked()).toBeFalsy();
 
-  it("can retrieve the deployed and not deployed fleet ships", () => {
-    expect(gameboard.deployedFleet).toEqual([shipName1]);
-    expect(gameboard.notDeployedFleet).toEqual([shipName2]);
-  });
+      gameboard.receiveAttack(sampleCoordsHit);
+      gameboard.receiveAttack(sampleCoordsMiss);
 
-  it("can check if a ship is already in the deployed fleet", () => {
-    expect(gameboard.hasDeployedShip(shipName1)).toBeTruthy();
-    expect(gameboard.hasDeployedShip(shipName2)).toBeFalsy();
-  });
-
-  it("can check if a ship is already in the not deployed fleet", () => {
-    expect(gameboard.hasNotDeployedShip(shipName1)).toBeFalsy();
-    expect(gameboard.hasNotDeployedShip(shipName2)).toBeTruthy();
-  });
-
-  it("cannot place a ship if this is not in the not deployed fleet", () => {
-    const sampleShipCoords = [[3, 7], "N"];
-    expect(gameboard.canPlaceShip(shipName1, ...sampleShipCoords)).toBeFalsy();
-  });
-
-  it("can receive an attack in a cell of the board", () => {
-    const sampleCoordsHit = sampleShipCoordsArrIn[0][0];
-    const sampleCoordsMiss = [0, 0];
-
-    expect(gameboard.getCell(sampleCoordsHit).hasBeenAttacked()).toBeFalsy();
-    expect(gameboard.getCell(sampleCoordsMiss).hasBeenAttacked()).toBeFalsy();
-
-    gameboard.receiveAttack(sampleCoordsHit);
-    gameboard.receiveAttack(sampleCoordsMiss);
-
-    expect(gameboard.getCell(sampleCoordsHit).hasBeenAttacked()).toBeTruthy();
-    expect(gameboard.getCell(sampleCoordsMiss).hasBeenAttacked()).toBeTruthy();
+      expect(gameboard.getCell(sampleCoordsHit).hasBeenAttacked()).toBeTruthy();
+      expect(
+        gameboard.getCell(sampleCoordsMiss).hasBeenAttacked()
+      ).toBeTruthy();
+    });
   });
 });
