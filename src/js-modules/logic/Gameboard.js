@@ -137,4 +137,9 @@ export default class Gameboard {
     this.#notDeployedFleet.delete(name);
     this.#deployedFleet.set(name, ship);
   }
+
+  /* Attack functions */
+  receiveAttack([c, r]) {
+    this.#cells[c][r].receiveAttack();
+  }
 }
