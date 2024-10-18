@@ -51,6 +51,10 @@ export default class Gameboard {
   }
 
   addShip(name, length) {
+    if (this.#fleet.has(name)) {
+      throw new Error("The ship is already in the fleet");
+    }
+
     const ship = new Ship(length);
     this.#fleet.set(name, ship);
   }
