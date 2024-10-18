@@ -205,5 +205,13 @@ describe("Gameboard class", () => {
         "This cell has already been attacked"
       );
     });
+
+    it("can retrieve the sunk fleet ships", () => {
+      expect(gameboard.sunkFleet).toEqual([]);
+      // add attaks to sunk the ship 1 (two attacks have already been done in the previous tests)
+      gameboard.receiveAttack([1, 1]);
+      gameboard.receiveAttack([1, 0]);
+      expect(gameboard.sunkFleet).toEqual([shipName1]);
+    });
   });
 });
