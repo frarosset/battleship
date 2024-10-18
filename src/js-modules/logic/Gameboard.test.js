@@ -158,4 +158,18 @@ describe("Gameboard class", () => {
     const sampleShipCoords = [[3, 7], "N"];
     expect(gameboard.canPlaceShip(shipName1, ...sampleShipCoords)).toBeFalsy();
   });
+
+  it("can receive an attack in a cell of the board", () => {
+    const sampleCoordsHit = sampleShipCoordsArrIn[0][0];
+    const sampleCoordsMiss = [0, 0];
+
+    expect(gameboard.getCell(sampleCoordsHit).hasBeenAttacked()).toBeFalsy();
+    expect(gameboard.getCell(sampleCoordsMiss).hasBeenAttacked()).toBeFalsy();
+
+    gameboard.receiveAttack(sampleCoordsHit);
+    gameboard.receiveAttack(sampleCoordsMiss);
+
+    expect(gameboard.getCell(sampleCoordsHit).hasBeenAttacked()).toBeTruthy();
+    expect(gameboard.getCell(sampleCoordsMiss).hasBeenAttacked()).toBeTruthy();
+  });
 });
