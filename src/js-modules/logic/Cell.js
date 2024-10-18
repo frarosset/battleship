@@ -35,6 +35,7 @@ export default class Cell {
 
   receiveAttack() {
     this.#hasBeenAttacked = true;
+    return this.hasShip();
   }
 
   hasBeenAttacked() {
