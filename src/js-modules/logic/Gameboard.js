@@ -99,6 +99,10 @@ export default class Gameboard {
     return this.#deployedFleet.size > 0;
   }
 
+  hasNotDeployedShips() {
+    return this.#notDeployedFleet.size > 0;
+  }
+
   addShip(name, length) {
     if (this.hasShip(name)) {
       throw new Error("The ship is already in the fleet");
