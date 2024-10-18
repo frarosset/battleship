@@ -138,4 +138,9 @@ describe("Gameboard class", () => {
       "The ship cannot be placed in this position"
     );
   });
+
+  it("Can retrieve the deployed and not deployed fleet ships", () => {
+    expect(gameboard.deployedFleet).toEqual([shipName1]);
+    expect(gameboard.notDeployedFleet).toEqual([shipName2]);
+  });
 });
