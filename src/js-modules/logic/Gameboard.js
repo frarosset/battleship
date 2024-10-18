@@ -31,6 +31,10 @@ export default class Gameboard {
     return this.#nRows;
   }
 
+  get fleet() {
+    return [];
+  }
+
   getCell([c, r]) {
     if (!this.isValidCell([c, r])) {
       throw new Error("The cell is out-of-bound");
