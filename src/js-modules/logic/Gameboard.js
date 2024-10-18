@@ -61,7 +61,7 @@ export default class Gameboard {
   }
 
   get fleet() {
-    return [...this.deployedFleet, ...this.notDeployedFleet];
+    return [...this.deployedFleet, ...this.notDeployedFleet, ...this.sunkFleet];
   }
 
   getCell([c, r]) {
@@ -88,7 +88,11 @@ export default class Gameboard {
   }
 
   hasShip(name) {
-    return this.hasDeployedShip(name) || this.hasNotDeployedShip(name);
+    return (
+      this.hasDeployedShip(name) ||
+      this.hasNotDeployedShip(name) ||
+      this.hasSunkShip(name)
+    );
   }
 
   addShip(name, length) {
@@ -157,6 +161,7 @@ export default class Gameboard {
     if (isHit && ship != null && ship.isSunk()) {
       // get the name of the ship
       const name = getMapKey(this.#deployedFleet, ship);
+      this.#deployedFleet.delete(name);
       this.#sunkFleet.set(name, ship);
     }
 
