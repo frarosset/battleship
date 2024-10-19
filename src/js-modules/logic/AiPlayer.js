@@ -29,8 +29,19 @@ export default class AiPlayer extends Player {
     return this.#getOpponentTargetCellCoordsRandom();
   }
 
+  applyPostAttackActions(cellCoords, otherData = {}) {
+    // this is a wrapper and allows to use different strategies in future
+    // implementations using the same interface: todo
+    // otherData is set as argument for future improvements
+    return this.#applyPostAttackActionsRandom(cellCoords);
+  }
+
   #getOpponentTargetCellCoordsRandom() {
     const idx = randomInt(0, this.#possibleTargets.size - 1);
     return Array.from(this.#possibleTargets)[idx];
+  }
+
+  #applyPostAttackActionsRandom(cellCoords) {
+    this.#possibleTargets.delete(cellCoords);
   }
 }
