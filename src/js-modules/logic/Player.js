@@ -1,4 +1,5 @@
 import Gameboard from "./Gameboard.js";
+import { randomInt } from "../../js-utilities/mathUtilities.js";
 
 const defaultSizeGameboard = 10;
 const defaultFleet = [
@@ -8,6 +9,7 @@ const defaultFleet = [
   ["Submarine", 3],
   ["Destroyer", 2],
 ];
+const allDirections = Gameboard.getAllDirections();
 
 export default class Player {
   #name;
@@ -31,5 +33,20 @@ export default class Player {
 
   get gameboard() {
     return this.#gameboard;
+  }
+
+  randomShipsPlacement() {
+    this.#gameboard.notDeployedFleet.forEach((name) => {
+      let cStern, rStern, direction;
+      do {
+        cStern = randomInt(0, this.#gameboard.nCols - 1);
+        rStern = randomInt(0, this.#gameboard.nRows - 1);
+        direction = allDirections[randomInt(0, allDirections.length - 1)];
+      } while (
+        !this.#gameboard.canPlaceShip(name, [cStern, rStern], direction)
+      );
+
+      this.#gameboard.placeShip(name, [cStern, rStern], direction);
+    });
   }
 }

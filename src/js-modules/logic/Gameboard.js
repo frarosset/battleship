@@ -18,6 +18,10 @@ export default class Gameboard {
   #notDeployedFleet;
   #sunkFleet;
 
+  static getAllDirections() {
+    return Object.keys(directionDisplacement);
+  }
+
   constructor(nCols = 10, nRows = nCols) {
     this.#nCols = nCols;
     this.#nRows = nRows;
