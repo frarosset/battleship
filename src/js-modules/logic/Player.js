@@ -1,24 +1,25 @@
 import Gameboard from "./Gameboard.js";
 import { randomInt } from "../../js-utilities/mathUtilities.js";
 
-const defaultSizeGameboard = 10;
-const defaultFleet = [
-  ["Carrier", 5],
-  ["Battleship", 4],
-  ["Cruiser", 3],
-  ["Submarine", 3],
-  ["Destroyer", 2],
-];
 const allDirections = Gameboard.getAllDirections();
 
 export default class Player {
   #name;
   #gameboard;
 
+  static defaultSizeGameboard = 10;
+  static defaultFleet = [
+    ["Carrier", 5],
+    ["Battleship", 4],
+    ["Cruiser", 3],
+    ["Submarine", 3],
+    ["Destroyer", 2],
+  ];
+
   constructor(
     name,
-    fleet = defaultFleet,
-    nColsGameboard = defaultSizeGameboard,
+    fleet = Player.defaultFleet,
+    nColsGameboard = Player.defaultSizeGameboard,
     nRowsGameboard = nColsGameboard
   ) {
     this.#name = name;
