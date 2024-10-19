@@ -52,6 +52,10 @@ export default class Gameboard {
     return this.#nRows;
   }
 
+  get cells() {
+    return this.#cells;
+  }
+
   get deployedFleet() {
     return [...this.#deployedFleet.keys()];
   }
