@@ -6,10 +6,18 @@ describe("Player class", () => {
     expect(Player).toBeDefined();
   });
 
-  const sizeGameboard = 10;
-
   const playerName = "Captain X";
-  const player = new Player(playerName, sizeGameboard);
+  const sizeGameboard = 10;
+  const fleet = [
+    ["Carrier", 5],
+    ["Battleship", 4],
+    ["Cruiser", 3],
+    ["Submarine", 3],
+    ["Destroyer", 2],
+  ];
+  const fleetNames = fleet.map((item) => item[0]);
+
+  const player = new Player(playerName, fleet, sizeGameboard);
 
   it("has a name", () => {
     expect(player.name).toBe(playerName);
@@ -17,5 +25,10 @@ describe("Player class", () => {
 
   it("has a gameboard", () => {
     expect(player.gameboard).toEqual(new Gameboard(sizeGameboard));
+  });
+
+  it("has a fleet", () => {
+    expect(player.gameboard.fleet).toEqual(fleetNames);
+    expect(player.gameboard.notDeployedFleet).toEqual(fleetNames);
   });
 });
