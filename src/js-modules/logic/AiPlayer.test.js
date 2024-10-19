@@ -41,4 +41,15 @@ describe("AiPlayer class", () => {
     const cellCoords = aiPlayer.getOpponentTargetCellCoords();
     expect(opponentPlayer.gameboard.isValidCell(cellCoords)).toBeTruthy();
   });
+
+  it("doesn't propose the same random target cell twice after this has been attacked", () => {
+    // a post-attack method is defined which has to be called after an attack
+    for (let i = 0; i < sizeGameboard * sizeGameboard; i++) {
+      const cellCoords = aiPlayer.getOpponentTargetCellCoords();
+      expect(() => {
+        const isHit = opponentPlayer.gameboard.receiveAttack(cellCoords);
+        aiPlayer.applyPostAttackActions(cellCoords, { isHit });
+      }).not.toThrow();
+    }
+  });
 });
