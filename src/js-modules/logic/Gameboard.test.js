@@ -236,5 +236,10 @@ describe("Gameboard class", () => {
       // ship 2 is not deployed, ship 1 is sunk
       expect(gameboard.hasNotDeployedShips()).toBeTruthy();
     });
+
+    it("can return the cell matrix (array of arrays)", () => {
+      expect(gameboard.cells.length).toBe(nCols);
+      expect(gameboard.cells[0].length).toBe(nRows);
+    });
   });
 });
