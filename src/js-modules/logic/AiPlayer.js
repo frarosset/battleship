@@ -37,6 +37,9 @@ export default class AiPlayer extends Player {
   }
 
   #getOpponentTargetCellCoordsRandom() {
+    if (this.#possibleTargets.size === 0) {
+      throw new Error("There are no possible opponent targets");
+    }
     const idx = randomInt(0, this.#possibleTargets.size - 1);
     return Array.from(this.#possibleTargets)[idx];
   }
