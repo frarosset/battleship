@@ -1,4 +1,5 @@
 import { initDiv, initH3 } from "../../js-utilities/commonDomComponents";
+import GameboardDom from "./GameboardDom.js";
 
 const blockName = "player";
 const cssClass = {
@@ -31,8 +32,10 @@ export default class PlayerDom {
 function initPlayerDiv(player) {
   const div = initDiv(blockName);
   const h3 = initNameDiv(player.name);
+  const gameboardDom = new GameboardDom(player.gameboard);
+  const gameboardDiv = gameboardDom.div;
 
-  div.append(h3);
+  div.append(h3, gameboardDiv);
 
   return div;
 }
