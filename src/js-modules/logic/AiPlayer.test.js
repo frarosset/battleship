@@ -52,4 +52,11 @@ describe("AiPlayer class", () => {
       }).not.toThrow();
     }
   });
+
+  it("throws an error if there are no possible opponent targets", () => {
+    // after the previous test, there are no more opponent target cells available
+    expect(() => aiPlayer.getOpponentTargetCellCoords()).toThrow(
+      "There are no possible opponent targets"
+    );
+  });
 });
