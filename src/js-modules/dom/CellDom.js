@@ -15,6 +15,7 @@ export default class CellDom {
 
     // temporarily mark the ships // todo: remove
     markShip.call(this);
+    setAttackedStatus.call(this);
   }
 
   // getters
@@ -35,12 +36,21 @@ function initCellDiv(cell) {
   div.style.gridCol = cell.x + 1;
   div.style.gridRow = cell.y + 1;
   div.style.aspectRatio = 1;
-  div.style.border = "1px solid darkblue"; //temporary
   return div;
 }
 
 function markShip() {
   if (this.cell.hasShip()) {
     this.div.textContent = "#";
+  }
+}
+
+function setAttackedStatus() {
+  if (this.cell.hasBeenAttacked()) {
+    if (this.cell.hasShip()) {
+      this.div.classList.add("hit");
+    } else {
+      this.div.classList.add("miss");
+    }
   }
 }

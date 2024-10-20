@@ -5,9 +5,17 @@
   /* Colors (palette)*/
   --col-black: rgb(20, 20, 20);
   --col-white: rgb(255, 255, 255);
+  --col-red-alpha: rgb(255, 0, 0, 80%);
+  --col-white-alpha: rgb(255, 255, 255, 80%);
+  --col-darker-blue: rgb(38, 24, 117);
+  --col-dark-blue: rgb(61, 44, 161);
 
   /* Colors (background)*/
-  --bg-col: rgb(227, 248, 242);
+  --bg-col: var(--col-white);
+  --gameboard-bg-col: var(--col-dark-blue);
+  --cell-border-col: var(--col-darker-blue);
+  --cell-hit-col: var(--col-red-alpha);
+  --cell-miss-col: var(--col-white-alpha);
 
   /* Colors (text/icons)*/
   --col-txt: var(--col-black);
@@ -17,8 +25,8 @@
   --main-font: "Nunito", sans-serif;
 
   /* Font sizes */
-  --txt-fontsize:     18px;
-  --txt-lineheight:   1.2;
+  --txt-fontsize: 18px;
+  --txt-lineheight: 1.2;
 
   /* Text clamping: number of lines */
   /* --max-lines: 4; */
@@ -31,7 +39,7 @@
   /* --radius-inner: 25px; */
 
   /*Margins, gaps and paddings (+widths)*/
- 
+
   /* Images / icons size */
 
   /* Shadows */
@@ -44,8 +52,8 @@
 }
 
 /* ::backdrop { */
-    /* background-color: var(--col-black); */
-    /* opacity: 0.75; */
+/* background-color: var(--col-black); */
+/* opacity: 0.75; */
 /* } */
 
 html {
@@ -96,6 +104,7 @@ body {
   flex-direction: column;
   align-items: center;
   overflow: auto;
+  background-color: var(--bg-col);
 }
 
 body > * {
@@ -104,17 +113,17 @@ body > * {
 
 /* .header-container, */
 /* .main-container{ */
-    /* width: 100%; */
-    /* max-width: var(--max-width); */
-    /* margin: 0 auto; */
+/* width: 100%; */
+/* max-width: var(--max-width); */
+/* margin: 0 auto; */
 /* } */
 
 /* main { */
-  /* width: 100%; */
-  /* max-width: var(--max-width); */
-  /* min-height: 100dvh; */
-  /* flex-shrink: 0; */
-  /* margin: 0 auto; */
+/* width: 100%; */
+/* max-width: var(--max-width); */
+/* min-height: 100dvh; */
+/* flex-shrink: 0; */
+/* margin: 0 auto; */
 /* } */
 
 p {
@@ -133,7 +142,7 @@ a:visited {
   text-decoration: none;
 }
 
-button{
+button {
   cursor: pointer;
 }
 
@@ -143,8 +152,7 @@ button{
 }
 
 /* tablet or larger, or landscape (vs portrait), 641px (phone), 961px (tablet) */
-@media only screen and (min-width: 768px), (orientation: landscape){
-
+@media only screen and (min-width: 768px), (orientation: landscape) {
 }
 
 /* Customize scrollbars */
@@ -164,4 +172,20 @@ button{
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555; /* color of the scroll thumb on hover */
+}
+
+/* Custom gameboard style */
+.gameboard {
+  background-color: var(--gameboard-bg-col);
+}
+
+/* Custom cell style */
+.cell {
+  border: 1px solid var(--cell-border-col);
+}
+.cell.hit {
+  background-color: var(--cell-hit-col);
+}
+.cell.miss {
+  background-color: var(--cell-miss-col);
 }
