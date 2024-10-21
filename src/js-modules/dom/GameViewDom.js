@@ -1,10 +1,11 @@
-import { initDiv } from "../../js-utilities/commonDomComponents";
+import { initDiv, initP } from "../../js-utilities/commonDomComponents";
 import initMainHeader from "./initMainHeader.js";
 import PlayerDom from "./PlayerDom.js";
 
 const blockName = "game";
 const cssClass = {
   playersDiv: "players-div",
+  msgP: "msg-p",
 };
 const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
 
@@ -31,10 +32,17 @@ function initGameViewDiv(player1Dom, player2Dom) {
   const header = initMainHeader();
 
   const playersDiv = initDiv(getCssClass("playersDiv"));
-
   playersDiv.append(player1Dom.div, player2Dom.div);
 
-  div.append(header, playersDiv);
+  const msgP = initGameMsg();
+
+  div.append(header, playersDiv, msgP);
 
   return div;
+}
+
+function initGameMsg() {
+  // for now show a temporary msg, to setup the page...the actual message selection is todo
+  const msg = "A message to show game status (TODO)";
+  return initP(getCssClass("msgP"), null, msg);
 }
