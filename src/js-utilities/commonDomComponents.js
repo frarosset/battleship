@@ -8,6 +8,12 @@ export function initDiv(className = null) {
   return element;
 }
 
+export function initHeader(className = null) {
+  const element = document.createElement("header");
+  applyClass(element, className);
+  return element;
+}
+
 export function initH1(
   className = null,
   faIcon = null,
