@@ -27,6 +27,9 @@
   /* Font sizes */
   --txt-fontsize: 18px;
   --txt-lineheight: 1.2;
+  --h1-fontsize: 1.2rem;
+  --player-h3-fontsize: 1rem;
+  --msg-fontsize: 1rem;
 
   /* Text clamping: number of lines */
   /* --max-lines: 4; */
@@ -39,6 +42,9 @@
   /* --radius-inner: 25px; */
 
   /*Margins, gaps and paddings (+widths)*/
+  --page-padding: 1rem;
+  --page-gap: 1rem;
+  --players-gap: 2rem;
 
   /* Images / icons size */
 
@@ -174,9 +180,83 @@ button {
   background: #555; /* color of the scroll thumb on hover */
 }
 
+/* Structural styles ----------------------------------------------------- */
+.game,
+.game__players-div,
+.game__player-div,
+.player {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+@media only screen and (orientation: landscape) {
+  .game__players-div {
+    flex-direction: row;
+  }
+}
+
+.game,
+.game__players-div,
+.game__player-div,
+.player,
+.player__gameboard,
+.cell {
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
+}
+
+.game__player-div {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  /* border: 2px solid green; */
+}
+
+/* .player__gameboard { */
+/* border: 2px solid red; */
+/* } */
+
+.player {
+  justify-content: center;
+}
+
+.player__name-h3 {
+  text-align: center;
+}
+
+.gameboard {
+  max-height: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Colors, dimensions and padding styles --------------------------------- */
+
+.game {
+  padding: var(--page-padding);
+  gap: var(--page-gap);
+}
+
+.game__players-div {
+  gap: var(--players-gap);
+}
+
+/* Custom Header style*/
+.header__h1 {
+  text-align: center;
+  font-size: var(--h1-fontsize);
+}
+
 /* Custom gameboard style */
 .gameboard {
   background-color: var(--gameboard-bg-col);
+}
+
+/* Custom player style */
+.player__name-h3 {
+  font-size: var(--player-h3-fontsize);
 }
 
 /* Custom cell style */
@@ -188,4 +268,11 @@ button {
 }
 .cell.miss {
   background-color: var(--cell-miss-col);
+}
+
+/* Custom msg p style*/
+.game__msg-p {
+  text-align: center;
+  font-size: var(--msg-fontsize);
+  text-wrap: pretty;
 }
