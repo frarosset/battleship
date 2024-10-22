@@ -1,5 +1,7 @@
 import Player from "./Player.js";
 import AiPlayer from "./AiPlayer.js";
+import PubSub from "pubsub-js";
+import { pubSubTokens } from "../pubSubTokens.js";
 
 export default class GameController {
   #player1;
@@ -34,6 +36,7 @@ export default class GameController {
   #initGame() {
     this.#deployFleets();
     this.#initCurrentPlayer();
+    this.#initGameView();
   }
 
   #deployFleets() {
@@ -50,5 +53,12 @@ export default class GameController {
 
   #switchCurrentPlayer() {
     [this.#player, this.#opponent] = [this.#opponent, this.#player];
+  }
+
+  #initGameView() {
+    PubSub.publish(pubSubTokens.initGameView, {
+      player1: this.#player1,
+      player2: this.#player2,
+    });
   }
 }
