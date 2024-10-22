@@ -9,6 +9,8 @@ export default class GameController {
     // create the players
     this.#player1 = this.#initPlayer(player1Name, false);
     this.#player2 = this.#initPlayer(player2Name, versusAi);
+
+    this.#initGame();
   }
 
   get player1() {
@@ -24,5 +26,15 @@ export default class GameController {
     } else {
       return new Player(name);
     }
+  }
+
+  #initGame() {
+    this.#deployFleets();
+  }
+
+  #deployFleets() {
+    // TODO: let the user place the fleet
+    this.player1.randomShipsPlacement();
+    this.player2.randomShipsPlacement();
   }
 }
