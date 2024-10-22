@@ -20,4 +20,6 @@ function renderGameViewDom(token, { player1, player2 }) {
   console.log(`${token} - ${player1.name} vs ${player2.name}`);
   const gameViewDom = new GameViewDom(player1, player2);
   document.body.append(gameViewDom.div);
+  // Notify the initialization of the page
+  PubSub.publish(pubSubTokens.gameViewInitialized, renderGameViewDom);
 }

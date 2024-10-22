@@ -18,6 +18,8 @@ export default class GameController {
     this.#initGame();
   }
 
+  /* Players methods */
+
   get player1() {
     return this.#player1;
   }
@@ -33,18 +35,6 @@ export default class GameController {
     }
   }
 
-  #initGame() {
-    this.#deployFleets();
-    this.#initCurrentPlayer();
-    this.#initGameView();
-  }
-
-  #deployFleets() {
-    // TODO: let the user place the fleet
-    this.player1.randomShipsPlacement();
-    this.player2.randomShipsPlacement();
-  }
-
   #initCurrentPlayer() {
     // TODO: randomly select first player
     this.#player = this.#player1;
@@ -55,10 +45,42 @@ export default class GameController {
     [this.#player, this.#opponent] = [this.#opponent, this.#player];
   }
 
+  /* Gameplay methods */
+
+  #initGame() {
+    this.#deployFleets();
+    this.#initGameView();
+  }
+
+  #deployFleets() {
+    // TODO: let the user place the fleet
+    this.player1.randomShipsPlacement();
+    this.player2.randomShipsPlacement();
+  }
+
   #initGameView() {
+    // First subscribe to the token that notifies when the next action should be performed
+    PubSub.subscribe(
+      pubSubTokens.gameViewInitialized,
+      this.#playGame.bind(this)
+    );
+
+    // Publish the token that triggers the expected action
     PubSub.publish(pubSubTokens.initGameView, {
       player1: this.#player1,
       player2: this.#player2,
     });
   }
+
+  #playGame() {
+    // Unsubscribe from the token which triggers this function call
+    PubSub.unsubscribe(pubSubTokens.gameViewInitialized);
+
+    this.#initCurrentPlayer();
+    console.log(`${this.#player.name} starts`);
+
+    while (true) this.#playMove();
+  }
+
+  #playMove() {}
 }
