@@ -35,6 +35,10 @@ export default class GameController {
     }
   }
 
+  #isAIPlayer() {
+    return this.#player instanceof AiPlayer;
+  }
+
   #initCurrentPlayer() {
     // TODO: randomly select first player
     this.#player = this.#player1;
@@ -77,10 +81,94 @@ export default class GameController {
     PubSub.unsubscribe(pubSubTokens.gameViewInitialized);
 
     this.#initCurrentPlayer();
-    console.log(`${this.#player.name} starts`);
+    this.#consoleLogMessage("startGame");
 
-    while (true) this.#playMove();
+    // Continue playing until moves are allowed
+    let play = true;
+    while (play) {
+      play = this.#playTurn();
+    }
   }
 
-  #playMove() {}
+  #playTurn() {
+    this.#consoleLogMessage("startTurn");
+
+    // Get the coords of the move to be done
+    const coords = this.#getAttackCoords();
+
+    // Attack the opponent and get outcome info
+    const outcome = this.#attackTheOpponent(coords);
+
+    // Perform actions based on hit or miss outcome (todo)
+    this.#consoleLogMessage("attackInfo", { coords, outcome });
+
+    // End the game if the current player wins
+    if (outcome.isWin) {
+      this.#consoleLogMessage("endGame");
+      return false;
+    }
+
+    // Perform post-attack actions
+    this.#applyPostAttackActions(coords);
+
+    // Pass turn to opponent
+    this.#switchCurrentPlayer();
+
+    return true;
+  }
+
+  #getAttackCoords() {
+    // this depends on whether #player is AI or not
+    if (this.#isAIPlayer()) {
+      return this.#player.getOpponentTargetCellCoords();
+    } else {
+      // todo
+      return [0, 0];
+    }
+  }
+
+  #attackTheOpponent(coords) {
+    // attacks, and returns an object with info about the outcome of the attack
+    const outcomeCode = this.#opponent.gameboard.receiveAttack(coords);
+
+    const isHit = outcomeCode > 0;
+    const isSunk = outcomeCode == 2;
+    const isWin = !this.#opponent.gameboard.hasDeployedShips();
+
+    // The player can only know the hit ship if this gets sunk
+    const sunkShip = isSunk
+      ? this.#opponent.gameboard.getCell(coords).getShip()
+      : null;
+
+    return { isHit, isSunk, isWin, sunkShip };
+  }
+
+  #applyPostAttackActions(coords) {
+    // this depends on whether #player is AI or not
+    if (this.#isAIPlayer()) {
+      return this.#player.applyPostAttackActions(coords);
+    } else {
+      // nothing so far...
+    }
+  }
+
+  #consoleLogMessage(label, data = {}) {
+    // A method for debugging the code
+
+    const messages = {
+      startGame: () => `${this.#player.name} starts`,
+      startTurn: () => `${this.#player.name}'s turn`,
+      attackInfo: ({ coords, outcome }) => {
+        const coordsStr = `[${coords[0]},${coords[1]}]`;
+        const outcomeStr = `${outcome.isHit ? "hit" : "miss"}${outcome.isSunk ? " and sunk" : ""}`;
+        const sunkShip = outcome.isSunk
+          ? `( ${outcome.sunkShip.name}, length: ${outcome.sunkShip.length})`
+          : "";
+        return `Attacks ${coordsStr} > ${outcomeStr} ${sunkShip}`;
+      },
+      endGame: () => `${this.#player.name} WINS!`,
+    };
+
+    console.log(messages[label](data));
+  }
 }
