@@ -193,7 +193,7 @@ describe("Gameboard class", () => {
     const sampleCoordsMiss2 = [0, 3];
     const sampleCoordsHit2 = [1, 2];
 
-    it("returns true if the attack is a hit, increasing the ship hits, and false otherwise", () => {
+    it("returns truthy if the attack is a hit, increasing the ship hits, and falsy otherwise", () => {
       expect(gameboard.receiveAttack(sampleCoordsMiss2)).toBeFalsy();
       expect(gameboard.receiveAttack(sampleCoordsHit2)).toBeTruthy();
       // the considered ship has received two attacks, one in [1,4] and [1,3]
@@ -240,6 +240,14 @@ describe("Gameboard class", () => {
     it("can return the cell matrix (array of arrays)", () => {
       expect(gameboard.cells.length).toBe(nCols);
       expect(gameboard.cells[0].length).toBe(nRows);
+    });
+
+    it("return an outcome code when receiving an attack", () => {
+      gameboard.placeShip(shipName2, [3, 1], "S");
+      // attacking these cells (not attacked yet) produces, respectively, a miss, a hit, and a hit and miss
+      expect(gameboard.receiveAttack([3, 0])).toEqual(0);
+      expect(gameboard.receiveAttack([3, 1])).toEqual(1);
+      expect(gameboard.receiveAttack([3, 2])).toEqual(2);
     });
   });
 });
