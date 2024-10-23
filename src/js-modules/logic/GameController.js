@@ -83,11 +83,11 @@ export default class GameController {
     this.#initCurrentPlayer();
     this.#consoleLogMessage("startGame");
 
-    // Continue playing until moves are allowed
-    let play = true;
-    while (play) {
-      play = this.#playTurn();
-    }
+    // Subscribe to pubSubTokens.playTurn token to continue playing until moves are allowed
+    PubSub.subscribe(pubSubTokens.playTurn, this.#playTurn.bind(this));
+
+    // Play the first turn: this will publish pubSubTokens.playTurn to play new turns
+    this.#playTurn();
   }
 
   #playTurn() {
@@ -104,8 +104,9 @@ export default class GameController {
 
     // End the game if the current player wins
     if (outcome.isWin) {
+      PubSub.unsubscribe(pubSubTokens.playTurn);
       this.#consoleLogMessage("endGame");
-      return false;
+      return;
     }
 
     // Perform post-attack actions
@@ -114,7 +115,7 @@ export default class GameController {
     // Pass turn to opponent
     this.#switchCurrentPlayer();
 
-    return true;
+    PubSub.publish(pubSubTokens.playTurn);
   }
 
   #getAttackCoords() {
