@@ -47,7 +47,7 @@ describe("AiPlayer class", () => {
     for (let i = 0; i < sizeGameboard * sizeGameboard; i++) {
       const cellCoords = aiPlayer.getOpponentTargetCellCoords();
       expect(() => {
-        const isHit = opponentPlayer.gameboard.receiveAttack(cellCoords);
+        const isHit = opponentPlayer.gameboard.receiveAttack(cellCoords) > 0;
         aiPlayer.applyPostAttackActions(cellCoords, { isHit });
       }).not.toThrow();
     }
