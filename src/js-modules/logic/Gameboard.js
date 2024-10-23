@@ -170,18 +170,28 @@ export default class Gameboard {
 
   /* Attack functions */
   receiveAttack([c, r]) {
+    // returns the outcomeCode:
+    // 0 (falsy): miss
+    // 1 (truthy): hit
+    // 2 (truthy): hit and sunk
+
     const cell = this.getCell([c, r]);
     const isHit = cell.receiveAttack();
 
-    const ship = cell.getShip();
-    if (isHit && ship != null && ship.isSunk()) {
-      // get the name of the ship
-      const name = getMapKey(this.#deployedFleet, ship);
-      this.#deployedFleet.delete(name);
-      this.#sunkFleet.set(name, ship);
+    if (isHit) {
+      const ship = cell.getShip();
+      if (ship.isSunk()) {
+        // get the name of the ship
+        const name = getMapKey(this.#deployedFleet, ship);
+        this.#deployedFleet.delete(name);
+        this.#sunkFleet.set(name, ship);
+        return 2;
+      } else {
+        return 1;
+      }
+    } else {
+      return 0;
     }
-
-    return isHit;
   }
 }
 
