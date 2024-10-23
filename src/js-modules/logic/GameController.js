@@ -83,7 +83,7 @@ export default class GameController {
     this.#initCurrentPlayer();
     this.#consoleLogMessage("startGame");
 
-    // Subscribe to pubSubTokens.playTurn token to continue playing until moves are allowed
+    // First, subscribe to pubSubTokens.playTurn token to continue playing until moves are allowed
     PubSub.subscribe(pubSubTokens.playTurn, this.#playTurn.bind(this));
 
     // Play the first turn: this will publish pubSubTokens.playTurn to play new turns
@@ -93,8 +93,19 @@ export default class GameController {
   #playTurn() {
     this.#consoleLogMessage("startTurn");
 
-    // Get the coords of the move to be done
-    const coords = this.#getAttackCoords();
+    // First, subscribe to the token that perform the attack when its coords are acquired
+    PubSub.subscribe(
+      pubSubTokens.attackCoordsAcquired,
+      this.#attackCoordsAcquiredCallback.bind(this)
+    );
+
+    // Get the coords of the move to be done (and publish a attackCoordsAcquired token)
+    this.#getAttackCoords();
+  }
+
+  #attackCoordsAcquiredCallback(msg, coords) {
+    // First, unsubscribe from attackCoordsAcquired token
+    PubSub.unsubscribe(pubSubTokens.attackCoordsAcquired);
 
     // Attack the opponent and get outcome info
     const outcome = this.#attackTheOpponent(coords);
@@ -121,10 +132,10 @@ export default class GameController {
   #getAttackCoords() {
     // this depends on whether #player is AI or not
     if (this.#isAIPlayer()) {
-      return this.#player.getOpponentTargetCellCoords();
+      const coords = this.#player.getOpponentTargetCellCoords();
+      PubSub.publish(pubSubTokens.attackCoordsAcquired, coords);
     } else {
-      // todo
-      return [0, 0];
+      PubSub.publish(pubSubTokens.attackCoordsAcquired, [0, 0]);
     }
   }
 
