@@ -111,11 +111,21 @@ export default class GameController {
     // First, unsubscribe from attackCoordsAcquired token
     PubSub.unsubscribe(pubSubTokens.attackCoordsAcquired);
 
+    // Perform actions based on hit or miss outcome (todo)
+    PubSub.subscribe(
+      pubSubTokens.attackOutcomeShown,
+      this.#attackOutcomeShownCallback.bind(this)
+    );
+
     // Attack the opponent and get outcome info
     const outcome = this.#attackTheOpponent(coords);
 
-    // Perform actions based on hit or miss outcome (todo)
-    this.#consoleLogMessage("attackInfo", { coords, outcome });
+    this.#showAttackOutcome(coords, outcome);
+  }
+
+  #attackOutcomeShownCallback(msg, { coords, outcome }) {
+    // First, unsubscribe from attackOutcomeShown token
+    PubSub.unsubscribe(pubSubTokens.attackOutcomeShown);
 
     // End the game if the current player wins
     if (outcome.isWin) {
@@ -158,6 +168,15 @@ export default class GameController {
       : null;
 
     return { isHit, isSunk, isWin, sunkShip };
+  }
+
+  #showAttackOutcome(coords, outcome) {
+    this.#consoleLogMessage("attackInfo", { coords, outcome });
+    // subscribe to return ...
+    PubSub.publish(pubSubTokensUi.showAttackOutcome(this.#opponent), {
+      coords,
+      outcome,
+    });
   }
 
   #applyPostAttackActions(coords) {

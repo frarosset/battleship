@@ -11,10 +11,12 @@ const aimingClass = "aiming";
 export default class GameboardDom {
   #div;
   #gameboard;
+  #cells;
 
   constructor(gameboard) {
     this.#gameboard = gameboard;
-    this.#div = initGameboardDiv(gameboard);
+    this.#cells = new Map();
+    this.#div = this.#initGameboardDiv(gameboard);
     this.#div.obj = this;
   }
 
@@ -33,6 +35,12 @@ export default class GameboardDom {
       "click",
       this.#getAttackCoordsOnClickCallback.bind(this)
     );
+  }
+
+  showAttackOutcome(coords, outcome) {
+    const cellDom = this.#cells.get(coords.join(","));
+    cellDom.setAttackedStatus();
+    PubSub.publish(pubSubTokens.attackOutcomeShown, { coords, outcome });
   }
 
   #getAttackCoordsOnClickCallback(e) {
@@ -58,26 +66,24 @@ export default class GameboardDom {
       PubSub.publish(pubSubTokens.attackCoordsAcquired, cell.coords);
     }
   }
-}
 
-// private methods
-// if they use 'this', they have to be evoked as: methodName.call(this,args)
+  #initGameboardDiv(gameboard) {
+    const div = initDiv(blockName);
 
-function initGameboardDiv(gameboard) {
-  const div = initDiv(blockName);
+    // Force grid appearance
+    div.style.display = "grid";
+    div.style.aspectRatio = `${gameboard.nCols}/${gameboard.nRows}`;
+    div.style.gridTemplateColumns = `repeat(${gameboard.nCols},minmax(0,1fr))`;
+    div.style.gridTemplateRows = `repeat(${gameboard.nRows},minmax(0,1fr))`;
 
-  // Force grid appearance
-  div.style.display = "grid";
-  div.style.aspectRatio = `${gameboard.nCols}/${gameboard.nRows}`;
-  div.style.gridTemplateColumns = `repeat(${gameboard.nCols},minmax(0,1fr))`;
-  div.style.gridTemplateRows = `repeat(${gameboard.nRows},minmax(0,1fr))`;
-
-  const cells = gameboard.cells;
-  cells.forEach((column) => {
-    column.forEach((cell) => {
-      const cellDom = new CellDom(cell);
-      div.append(cellDom.div);
+    const cells = gameboard.cells;
+    cells.forEach((column) => {
+      column.forEach((cell) => {
+        const cellDom = new CellDom(cell);
+        this.#cells.set(cell.coords.join(","), cellDom);
+        div.append(cellDom.div);
+      });
     });
-  });
-  return div;
+    return div;
+  }
 }
