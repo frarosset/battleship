@@ -1,9 +1,12 @@
 import { initDiv } from "../../js-utilities/commonDomComponents";
 import CellDom from "./CellDom.js";
+import { pubSubTokens } from "../pubSubTokens.js";
 
 const blockName = "gameboard";
 const cssClass = {};
 const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
+
+const aimingClass = "aiming";
 
 export default class GameboardDom {
   #div;
@@ -22,6 +25,38 @@ export default class GameboardDom {
 
   get gameboard() {
     return this.#gameboard;
+  }
+
+  enableAiming() {
+    this.#div.classList.add(aimingClass);
+    this.#div.addEventListener(
+      "click",
+      this.#getAttackCoordsOnClickCallback.bind(this)
+    );
+  }
+
+  #getAttackCoordsOnClickCallback(e) {
+    // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate cell
+    const targetClassList = e.target.classList;
+    if (![...targetClassList].includes("cell")) {
+      return;
+    }
+
+    e.preventDefault();
+
+    const cellDiv = e.target;
+    const cell = cellDiv.obj.cell;
+
+    if (!cell.hasBeenAttacked()) {
+      // exit aiming mode
+      this.#div.classList.remove(aimingClass);
+      this.#div.removeEventListener(
+        "click",
+        this.#getAttackCoordsOnClickCallback.bind(this)
+      );
+
+      PubSub.publish(pubSubTokens.attackCoordsAcquired, cell.coords);
+    }
   }
 }
 
