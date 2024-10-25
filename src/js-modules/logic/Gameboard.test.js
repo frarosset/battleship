@@ -25,6 +25,9 @@ describe("Gameboard class", () => {
   const shipName2 = "My second ship";
   const shipLen2 = 2;
 
+  const shipName3 = "My third ship";
+  const shipLen3 = 2;
+
   const sampleShipCoordsArrIn = [
     [[1, 3], "N"],
     [[1, 3], "E"],
@@ -35,6 +38,16 @@ describe("Gameboard class", () => {
     [[-1, 0], "E"],
     [[-1, 0], "W"],
   ];
+
+  const shipCoords1 = sampleShipCoordsArrIn[0];
+  const shipCellsCoords1 = [
+    [1, 3],
+    [1, 2],
+    [1, 1],
+    [1, 0],
+  ];
+
+  const shipCoords2 = [[3, 1], "S"];
 
   it("is defined", () => {
     expect(Gameboard).toBeDefined();
@@ -102,21 +115,13 @@ describe("Gameboard class", () => {
     });
 
     it("can place a Ship in the board", () => {
-      const sampleCoordsIn = sampleShipCoordsArrIn[0];
-      const sampleShipCells = [
-        [1, 3],
-        [1, 2],
-        [1, 1],
-        [1, 0],
-      ];
-
-      gameboard.placeShip(shipName1, ...sampleCoordsIn);
+      gameboard.placeShip(shipName1, ...shipCoords1);
 
       // Check the cells: only the ones occupied by the ship should be occupied by a ship
       for (let c = 0; c < nCols; c++) {
         for (let r = 0; r < nRows; r++) {
           const cell = gameboard.getCell([c, r]);
-          const isShipCell = sampleShipCells.some(
+          const isShipCell = shipCellsCoords1.some(
             ([cWithShip, rWithShip]) => cWithShip === c && rWithShip === r
           );
 
@@ -163,11 +168,20 @@ describe("Gameboard class", () => {
         gameboard.canPlaceShip(shipName1, ...sampleShipCoords)
       ).toBeFalsy();
     });
+
+    it("can return the coordinates of the deployed or sunk fleet, and null for the not deployed one", () => {
+      expect(gameboard.getShipPosition(shipName1)).toEqual([
+        shipCellsCoords1,
+        shipCoords1[1],
+      ]);
+      gameboard.addShip(shipName3, shipLen3); // not deployed ship
+      expect(gameboard.getShipPosition(shipName3)).toEqual(null);
+    });
   });
 
   describe("attack handling", () => {
     it("can receive an attack in a cell of the board", () => {
-      const sampleCoordsHit = sampleShipCoordsArrIn[0][0];
+      const sampleCoordsHit = shipCoords1[0];
       const sampleCoordsMiss = [0, 0];
 
       expect(gameboard.getCell(sampleCoordsHit).hasBeenAttacked()).toBeFalsy();
@@ -224,7 +238,9 @@ describe("Gameboard class", () => {
       // the following must still be truth though
       expect(gameboard.hasShip(shipName1)).toBeTruthy();
       // use sets: items can be roerdered here
-      expect(new Set(gameboard.fleet)).toEqual(new Set([shipName1, shipName2]));
+      expect(new Set(gameboard.fleet)).toEqual(
+        new Set([shipName1, shipName2, shipName3])
+      );
     });
 
     it("check if there are deployed ships", () => {
@@ -243,7 +259,7 @@ describe("Gameboard class", () => {
     });
 
     it("return an outcome code when receiving an attack", () => {
-      gameboard.placeShip(shipName2, [3, 1], "S");
+      gameboard.placeShip(shipName2, ...shipCoords2);
       // attacking these cells (not attacked yet) produces, respectively, a miss, a hit, and a hit and miss
       expect(gameboard.receiveAttack([3, 0])).toEqual(0);
       expect(gameboard.receiveAttack([3, 1])).toEqual(1);
