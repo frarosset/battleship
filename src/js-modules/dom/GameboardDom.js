@@ -12,12 +12,16 @@ export default class GameboardDom {
   #div;
   #gameboard;
   #cells;
+  #getAttackCoordsOnClickCallbackBinded;
 
   constructor(gameboard) {
     this.#gameboard = gameboard;
     this.#cells = new Map();
     this.#div = this.#initGameboardDiv(gameboard);
     this.#div.obj = this;
+
+    this.#getAttackCoordsOnClickCallbackBinded =
+      this.#getAttackCoordsOnClickCallback.bind(this);
   }
 
   // getters
@@ -33,7 +37,7 @@ export default class GameboardDom {
     this.#div.classList.add(aimingClass);
     this.#div.addEventListener(
       "click",
-      this.#getAttackCoordsOnClickCallback.bind(this)
+      this.#getAttackCoordsOnClickCallbackBinded
     );
   }
 
@@ -50,8 +54,6 @@ export default class GameboardDom {
       return;
     }
 
-    e.preventDefault();
-
     const cellDiv = e.target;
     const cell = cellDiv.obj.cell;
 
@@ -60,7 +62,7 @@ export default class GameboardDom {
       this.#div.classList.remove(aimingClass);
       this.#div.removeEventListener(
         "click",
-        this.#getAttackCoordsOnClickCallback.bind(this)
+        this.#getAttackCoordsOnClickCallbackBinded
       );
 
       PubSub.publish(pubSubTokens.attackCoordsAcquired, cell.coords);

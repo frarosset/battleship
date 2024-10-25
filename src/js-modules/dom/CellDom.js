@@ -43,7 +43,7 @@ export default class CellDom {
 
 function initCellDiv(cell) {
   const div = initDiv(blockName);
-  div.style.gridCol = cell.x + 1;
+  div.style.gridColumn = cell.x + 1;
   div.style.gridRow = cell.y + 1;
   div.style.aspectRatio = 1;
   return div;
