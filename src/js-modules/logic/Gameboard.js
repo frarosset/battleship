@@ -17,6 +17,7 @@ export default class Gameboard {
   #deployedFleet;
   #notDeployedFleet;
   #sunkFleet;
+  #fleetPosition;
 
   static getAllDirections() {
     return Object.keys(directionDisplacement);
@@ -38,6 +39,7 @@ export default class Gameboard {
     this.#deployedFleet = new Map();
     this.#notDeployedFleet = new Map();
     this.#sunkFleet = new Map();
+    this.#fleetPosition = new Map();
   }
 
   get size() {
@@ -118,6 +120,7 @@ export default class Gameboard {
 
     const ship = new Ship(length);
     this.#notDeployedFleet.set(name, ship);
+    this.#fleetPosition.set(name, null);
   }
 
   canPlaceShip(name, [cStern, rStern], direction) {
@@ -158,14 +161,22 @@ export default class Gameboard {
 
     const [cDispl, rDispl] = directionDisplacement[direction];
 
+    const cellCoords = [];
+
     for (let i = 0; i < ship.length; i++) {
       const [c, r] = [cStern + cDispl * i, rStern + rDispl * i];
       this.#cells[c][r].placeShip(ship);
+      cellCoords.push([c, r]);
     }
 
     // move the ship from the not deployed fleet to the deployed fleet
     this.#notDeployedFleet.delete(name);
     this.#deployedFleet.set(name, ship);
+    this.#fleetPosition.set(name, [cellCoords, direction]);
+  }
+
+  getShipPosition(name) {
+    return this.#fleetPosition.get(name);
   }
 
   /* Attack functions */
