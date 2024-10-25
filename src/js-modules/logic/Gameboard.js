@@ -176,6 +176,9 @@ export default class Gameboard {
   }
 
   getShipPosition(name) {
+    if (!this.hasShip(name)) {
+      throw new Error("The ship is not in the fleet");
+    }
     return this.#fleetPosition.get(name);
   }
 
