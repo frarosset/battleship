@@ -177,6 +177,12 @@ describe("Gameboard class", () => {
       gameboard.addShip(shipName3, shipLen3); // not deployed ship
       expect(gameboard.getShipPosition(shipName3)).toEqual(null);
     });
+
+    it("throws an error if you try to get the coordinates of a ship not in the fleet", () => {
+      expect(() => gameboard.getShipPosition("not deployed ship")).toThrow(
+        "The ship is not in the fleet"
+      );
+    });
   });
 
   describe("attack handling", () => {
