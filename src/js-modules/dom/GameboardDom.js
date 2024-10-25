@@ -1,6 +1,7 @@
 import { initDiv } from "../../js-utilities/commonDomComponents";
 import CellDom from "./CellDom.js";
 import { pubSubTokens } from "../pubSubTokens.js";
+import ShipDom from "./ShipDom.js";
 
 const blockName = "gameboard";
 const cssClass = {};
@@ -22,6 +23,19 @@ export default class GameboardDom {
 
     this.#getAttackCoordsOnClickCallbackBinded =
       this.#getAttackCoordsOnClickCallback.bind(this);
+
+    // temporary code for testing
+    const shipObj = new ShipDom([
+      [0, 0],
+      [0, 1],
+      [0, 2],
+    ]);
+    const shipObj2 = new ShipDom([
+      [4, 6],
+      [5, 6],
+      [6, 6],
+    ]);
+    this.#div.append(shipObj.div, shipObj2.div);
   }
 
   // getters
@@ -51,6 +65,10 @@ export default class GameboardDom {
     // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate cell
     const targetClassList = e.target.classList;
     if (![...targetClassList].includes("cell")) {
+      const origDisplay = e.target.style.display;
+      e.target.style.display = "none";
+      document.elementFromPoint(e.clientX, e.clientY).click();
+      e.target.style.display = origDisplay;
       return;
     }
 
