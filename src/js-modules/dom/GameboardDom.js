@@ -25,16 +25,24 @@ export default class GameboardDom {
       this.#getAttackCoordsOnClickCallback.bind(this);
 
     // temporary code for testing
-    const shipObj = new ShipDom([
-      [0, 0],
-      [0, 1],
-      [0, 2],
-    ]);
-    const shipObj2 = new ShipDom([
-      [4, 6],
-      [5, 6],
-      [6, 6],
-    ]);
+    const shipObj = new ShipDom(
+      "ship_3a",
+      [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ],
+      "N"
+    );
+    const shipObj2 = new ShipDom(
+      "ship_3b",
+      [
+        [4, 6],
+        [5, 6],
+        [6, 6],
+      ],
+      "E"
+    );
     this.#div.append(shipObj.div, shipObj2.div);
   }
 
