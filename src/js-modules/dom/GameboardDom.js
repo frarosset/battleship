@@ -14,6 +14,7 @@ export default class GameboardDom {
   #gameboard;
   #cells;
   #getAttackCoordsOnClickCallbackBinded;
+  #deployedFleetDom;
 
   constructor(gameboard) {
     this.#gameboard = gameboard;
@@ -24,7 +25,11 @@ export default class GameboardDom {
     this.#getAttackCoordsOnClickCallbackBinded =
       this.#getAttackCoordsOnClickCallback.bind(this);
 
+    this.#deployedFleetDom = new Map();
+
     // temporary code for testing
+    this.showDeployedFleet();
+    this.hideDeployedFleet();
     this.showDeployedFleet();
   }
 
@@ -97,17 +102,40 @@ export default class GameboardDom {
     return div;
   }
 
-  #showShip(shipName) {
+  #createShipDom(shipName) {
     const shipObj = new ShipDom(
       shipName,
       ...this.#gameboard.getShipPosition(shipName)
     );
+    return shipObj;
+  }
+
+  #showShip(shipObj) {
     this.#div.append(shipObj.div);
   }
 
+  #hideShip(shipObj) {
+    this.#div.removeChild(shipObj.div);
+  }
+
   showDeployedFleet() {
-    this.#gameboard.deployedFleet.forEach((shipName) =>
-      this.#showShip(shipName)
-    );
+    console.log("PRE", this.#deployedFleetDom.keys());
+    this.#gameboard.deployedFleet.forEach((shipName) => {
+      let shipObj;
+      if (!this.#deployedFleetDom.has(shipName)) {
+        shipObj = this.#createShipDom(shipName);
+        this.#deployedFleetDom.set(shipName, shipObj);
+      } else {
+        shipObj = this.#deployedFleetDom.get(shipName);
+      }
+      this.#showShip(shipObj);
+    });
+    console.log("POST", this.#deployedFleetDom.keys());
+  }
+
+  hideDeployedFleet() {
+    this.#deployedFleetDom.forEach((shipObj) => {
+      this.#hideShip(shipObj);
+    });
   }
 }
