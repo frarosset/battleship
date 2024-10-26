@@ -1,6 +1,7 @@
 import { initDiv } from "../../js-utilities/commonDomComponents";
 import CellDom from "./CellDom.js";
 import { pubSubTokens } from "../pubSubTokens.js";
+import PubSub from "pubsub-js";
 import ShipDom from "./ShipDom.js";
 
 const blockName = "gameboard";
@@ -121,7 +122,6 @@ export default class GameboardDom {
   }
 
   showDeployedFleet() {
-    console.log("PRE", this.#deployedFleetDom.keys());
     this.#gameboard.deployedFleet.forEach((shipName) => {
       let shipObj;
       if (!this.#deployedFleetDom.has(shipName)) {
@@ -132,7 +132,6 @@ export default class GameboardDom {
       }
       this.#showShip(shipObj);
     });
-    console.log("POST", this.#deployedFleetDom.keys());
     this.#deployedFleetShown = true;
   }
 

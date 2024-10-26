@@ -5,6 +5,7 @@ import {
 } from "../../js-utilities/commonDomComponents";
 import GameboardDom from "./GameboardDom.js";
 import { pubSubTokensUi } from "../pubSubTokens.js";
+import PubSub from "pubsub-js";
 
 const blockName = "player";
 const cssClass = {
@@ -36,6 +37,10 @@ export default class PlayerDom {
       pubSubTokensUi.showAttackOutcome(player),
       this.#showAttackOutcome.bind(this)
     );
+
+    PubSub.subscribe(pubSubTokensUi.toggleDeployedFleetShown(player), () => {
+      this.#gameboardDiv.obj.toggleDeployedFleet();
+    });
   }
 
   // getters
