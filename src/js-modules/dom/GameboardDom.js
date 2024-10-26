@@ -25,25 +25,7 @@ export default class GameboardDom {
       this.#getAttackCoordsOnClickCallback.bind(this);
 
     // temporary code for testing
-    const shipObj = new ShipDom(
-      "ship_3a",
-      [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-      ],
-      "N"
-    );
-    const shipObj2 = new ShipDom(
-      "ship_3b",
-      [
-        [4, 6],
-        [5, 6],
-        [6, 6],
-      ],
-      "E"
-    );
-    this.#div.append(shipObj.div, shipObj2.div);
+    this.showDeployedFleet();
   }
 
   // getters
@@ -113,5 +95,19 @@ export default class GameboardDom {
       });
     });
     return div;
+  }
+
+  #showShip(shipName) {
+    const shipObj = new ShipDom(
+      shipName,
+      ...this.#gameboard.getShipPosition(shipName)
+    );
+    this.#div.append(shipObj.div);
+  }
+
+  showDeployedFleet() {
+    this.#gameboard.deployedFleet.forEach((shipName) =>
+      this.#showShip(shipName)
+    );
   }
 }

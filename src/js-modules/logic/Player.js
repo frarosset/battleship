@@ -9,11 +9,11 @@ export default class Player {
 
   static defaultSizeGameboard = 10;
   static defaultFleet = [
-    ["Carrier", 5],
-    ["Battleship", 4],
-    ["Cruiser", 3],
-    ["Submarine", 3],
-    ["Destroyer", 2],
+    ["ship_5", 5],
+    ["ship_4", 4],
+    ["ship_3a", 3],
+    ["ship_3b", 3],
+    ["ship_2a", 2],
   ];
 
   constructor(
