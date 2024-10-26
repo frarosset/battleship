@@ -29,11 +29,6 @@ export default class GameboardDom {
 
     this.#deployedFleetDom = new Map();
     this.#deployedFleetShown = false;
-
-    // temporary code for testing
-    this.showDeployedFleet();
-    this.toggleDeployedFleet();
-    this.toggleDeployedFleet();
   }
 
   // getters
@@ -136,10 +131,12 @@ export default class GameboardDom {
   }
 
   hideDeployedFleet() {
-    this.#deployedFleetDom.forEach((shipObj) => {
-      this.#hideShip(shipObj);
-    });
-    this.#deployedFleetShown = false;
+    if (this.#deployedFleetShown) {
+      this.#deployedFleetDom.forEach((shipObj) => {
+        this.#hideShip(shipObj);
+      });
+      this.#deployedFleetShown = false;
+    }
   }
 
   toggleDeployedFleet() {

@@ -14,10 +14,14 @@ export default class GameController {
   #player; // current player
   #opponent; // current opponent
 
+  #versusAi;
+
   constructor(player1Name, player2Name, versusAi = true) {
     // create the players
     this.#player1 = this.#initPlayer(player1Name, false);
     this.#player2 = this.#initPlayer(player2Name, versusAi);
+
+    this.#versusAi = versusAi;
 
     this.#initGame();
   }
@@ -60,9 +64,12 @@ export default class GameController {
 
     PubSub.publish(pubSubTokensUi.playersSwitch, {
       player: this.#player,
-      opponent: this.#opponent,
       isAIPlayer: this.#isAIPlayer(),
     });
+
+    if (!this.#versusAi) {
+      PubSub.publish(pubSubTokensUi.hideDeployedFleetShown(this.#opponent));
+    }
   }
 
   /* Gameplay methods */
