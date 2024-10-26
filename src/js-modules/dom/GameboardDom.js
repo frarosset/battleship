@@ -15,6 +15,7 @@ export default class GameboardDom {
   #cells;
   #getAttackCoordsOnClickCallbackBinded;
   #deployedFleetDom;
+  #deployedFleetShown;
 
   constructor(gameboard) {
     this.#gameboard = gameboard;
@@ -26,11 +27,12 @@ export default class GameboardDom {
       this.#getAttackCoordsOnClickCallback.bind(this);
 
     this.#deployedFleetDom = new Map();
+    this.#deployedFleetShown = false;
 
     // temporary code for testing
     this.showDeployedFleet();
-    this.hideDeployedFleet();
-    this.showDeployedFleet();
+    this.toggleDeployedFleet();
+    this.toggleDeployedFleet();
   }
 
   // getters
@@ -131,11 +133,21 @@ export default class GameboardDom {
       this.#showShip(shipObj);
     });
     console.log("POST", this.#deployedFleetDom.keys());
+    this.#deployedFleetShown = true;
   }
 
   hideDeployedFleet() {
     this.#deployedFleetDom.forEach((shipObj) => {
       this.#hideShip(shipObj);
     });
+    this.#deployedFleetShown = false;
+  }
+
+  toggleDeployedFleet() {
+    if (this.#deployedFleetShown) {
+      this.hideDeployedFleet();
+    } else {
+      this.showDeployedFleet();
+    }
   }
 }
