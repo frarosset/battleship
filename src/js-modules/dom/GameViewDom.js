@@ -20,13 +20,19 @@ export default class GameViewDom {
   #div;
   #players;
   #currentPlayer;
+  #isAIPlayer;
   #showCurrentPlayerDeployedFleetCallbackBinded;
 
   constructor(player1, player2) {
     this.#players = [new PlayerDom(player1), new PlayerDom(player2)];
 
-    // temporary
-    this.#currentPlayer = player1;
+    PubSub.subscribe(
+      pubSubTokensUi.playersSwitch,
+      (msg, { player, isAIPlayer }) => {
+        this.#currentPlayer = player;
+        this.#isAIPlayer = isAIPlayer;
+      }
+    );
 
     this.#showCurrentPlayerDeployedFleetCallbackBinded =
       this.#showCurrentPlayerDeployedFleetCallback.bind(this);
@@ -67,9 +73,11 @@ export default class GameViewDom {
   }
 
   #showCurrentPlayerDeployedFleetCallback() {
-    PubSub.publish(
-      pubSubTokensUi.toggleDeployedFleetShown(this.#currentPlayer)
-    );
+    if (!this.#isAIPlayer) {
+      PubSub.publish(
+        pubSubTokensUi.toggleDeployedFleetShown(this.#currentPlayer)
+      );
+    }
   }
 
   #initShowFleetButton() {

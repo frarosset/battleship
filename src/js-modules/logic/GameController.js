@@ -47,10 +47,22 @@ export default class GameController {
     // TODO: randomly select first player
     this.#player = this.#player1;
     this.#opponent = this.#player2;
+
+    PubSub.publish(pubSubTokensUi.playersSwitch, {
+      player: this.#player,
+      opponent: this.#opponent,
+      isAIPlayer: this.#isAIPlayer(),
+    });
   }
 
   #switchCurrentPlayer() {
     [this.#player, this.#opponent] = [this.#opponent, this.#player];
+
+    PubSub.publish(pubSubTokensUi.playersSwitch, {
+      player: this.#player,
+      opponent: this.#opponent,
+      isAIPlayer: this.#isAIPlayer(),
+    });
   }
 
   /* Gameplay methods */

@@ -8,7 +8,7 @@ export default function initWebpage() {
 
   const player1Name = "Captain X";
   const player2Name = "Captain Y";
-  const versusAi = true;
+  const versusAi = false;
 
   PubSub.subscribe(pubSubTokens.initGameView, renderGameViewDom);
 
