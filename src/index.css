@@ -9,6 +9,7 @@
   --col-white-alpha: rgb(255, 255, 255, 80%);
   --col-darker-blue: rgb(38, 24, 117);
   --col-dark-blue: rgb(61, 44, 161);
+  --col-sunk-ship-overlay: rgb(255, 0, 150, 0.3);
 
   /* Colors (background)*/
   --bg-col: var(--col-white);
@@ -275,4 +276,10 @@ button {
   text-align: center;
   font-size: var(--msg-fontsize);
   text-wrap: pretty;
+}
+
+/* Ships */
+.ship.sunk {
+  background-color: var(--col-sunk-ship-overlay);
+  background-blend-mode: overlay;
 }

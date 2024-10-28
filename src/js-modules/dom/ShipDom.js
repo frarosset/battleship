@@ -24,6 +24,9 @@ export default class ShipDom extends PlaceableObjectDom {
       this.div.style.backgroundImage = `url("${image}")`;
       this.div.style.backgroundRepeat = "no-repeat";
       this.div.style.backgroundSize = "100% 100%";
+      this.div.style.maskImage = `url("${image}")`;
+      this.div.style.maskRepeat = "no-repeat";
+      this.div.style.maskSize = "100%";
       if (direction == "N" || direction == "W") {
         this.div.style.transform = "rotate(180deg)";
       }
