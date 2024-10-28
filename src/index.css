@@ -1,12 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Passero+One&family=Labrada&display=swap");
 
 :root,
 ::backdrop {
   /* Colors (palette)*/
   --col-black: rgb(20, 20, 20);
   --col-white: rgb(255, 255, 255);
-  --col-orange-dark: rgb(238, 132, 52);
-  --col-orange-light: rgb(236, 164, 0);
+  --col-orange-dark: rgb(224, 60, 36);
+  --col-orange-light: rgb(249, 167, 34);
+  --col-orange: rgb(245, 117, 16);
   --col-darker-sea-blue: rgb(1, 64, 79); /*014e65*/
   --col-sea-blue: rgb(6, 70, 84);
   --col-lighter-sea-blue: rgb(51, 99, 109);
@@ -19,13 +20,20 @@
   --cell-border-col: var(--col-darker-sea-blue-alpha);
   --cell-hit-col: var(--col-orange-light);
   --cell-miss-col: var(--col-white);
+  --orange-gradient: linear-gradient(
+    var(--col-orange-light),
+    var(--col-orange),
+    var(--col-orange-dark)
+  );
 
   /* Colors (text/icons)*/
   --col-txt: var(--col-black);
   --col-txt-alt: var(--col-white);
+  --col-txt-accent: var(--col-orange);
 
   /* Font family */
-  --main-font: "Nunito", sans-serif;
+  --main-font: "Passero One", monospace;
+  --accent-font: "Labrada", serif;
 
   /* Font sizes */
   --txt-fontsize: 18px;
@@ -33,6 +41,9 @@
   --h1-fontsize: 1.2rem;
   --player-h3-fontsize: 1rem;
   --msg-fontsize: 1rem;
+  --title-fontsize: 4rem;
+  --subtitle-fontsize: 1.2rem;
+  --button-fontsize: 1.5rem;
 
   /* Text clamping: number of lines */
   /* --max-lines: 4; */
@@ -41,8 +52,7 @@
   --max-width: min(1440px, 100%);
 
   /* Radius */
-  /* --radius: 30px; */
-  /* --radius-inner: 25px; */
+  --button-radius: 0.25rem;
 
   /*Margins, gaps and paddings (+widths)*/
   --page-padding: 1rem;
@@ -50,6 +60,8 @@
   --players-gap: 2rem;
   --shadow-len: 0.75rem;
   --shadow-len-mark: calc(var(--shadow-len) / 4);
+  --shadow-len-txt: calc(var(--shadow-len) / 4);
+  --button-padding: 0.5rem 0.5rem;
 
   /* Images / icons size */
 
@@ -59,7 +71,7 @@
     --inset-shadow: 2px 2px 2px var(--col-accent-light) inset; */
 
   /* Animations on hover / active / ...*/
-  /* --transition-time: 0.8s; */
+  --time-animation: 0.2s;
 }
 
 /* ::backdrop { */
@@ -187,6 +199,7 @@ button {
 
 /* Structural styles ----------------------------------------------------- */
 .game,
+.game-end,
 .game__players-div,
 .game__player-div,
 .player {
@@ -239,7 +252,8 @@ button {
 
 /* Colors, dimensions and padding styles --------------------------------- */
 
-.game {
+.game,
+.game-end {
   padding: var(--page-padding);
   gap: var(--page-gap);
 }
@@ -256,12 +270,6 @@ button {
 
 /* Custom gameboard style */
 .gameboard {
-  background-color: var(--gameboard-bg-col);
-  background-image: url("./assets/images/backgrounds/sea.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  box-shadow: 0px 0px var(--shadow-len) var(--col-black) inset;
   padding: var(--shadow-len);
 }
 
@@ -275,11 +283,37 @@ button {
   border: 1px solid var(--cell-border-col);
 }
 
+/* game end view */
+.game-end {
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem auto 10vh;
+}
+
+/* backgrounds and shadows */
+body,
+.gameboard,
 .hit-mark,
 .miss-mark {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.gameboard {
+  background-color: var(--gameboard-bg-col);
+  background-image: url("./assets/images/backgrounds/sea.jpg");
+  box-shadow: 0px 0px var(--shadow-len) var(--col-black) inset;
+}
+
+body:has(.game-end.winner-2p) {
+  background-image: url("./assets/images/backgrounds/winner-2p.jpg");
+}
+body:has(.game-end.defeated-1p) {
+  background-image: url("./assets/images/backgrounds/defeated-1p.jpg");
+}
+body:has(.game-end.winner-1p) {
+  background-image: url("./assets/images/backgrounds/winner-1p.jpg");
 }
 
 .hit-mark {
@@ -305,4 +339,55 @@ button {
 }
 .ship.sunk .ship__mask {
   background-color: var(--col-sunk-ship-overlay);
+}
+
+/* Texts */
+.game-end__title-h2,
+.game-end__subtitle-p {
+  text-align: center;
+  text-wrap: balance;
+}
+
+.game-end__title-h2 {
+  font-size: var(--title-fontsize);
+  font-family: var(--accent-font);
+  font-weight: bold;
+  background: var(--orange-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(
+    0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt)
+  );
+  line-height: 1;
+  padding-bottom: 0.2em;
+}
+
+.game-end__subtitle-p {
+  color: var(--col-txt-alt);
+  font-size: var(--subtitle-fontsize);
+  text-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
+}
+
+/* buttons */
+button {
+  padding: var(--button-padding);
+  font-family: var(--accent-font);
+  background: var(--orange-gradient);
+  font-weight: bold;
+  border: none;
+  border-radius: var(--button-radius);
+  font-size: var(--button-fontsize);
+  transition: transform var(--time-animation);
+  box-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
+}
+
+button:active {
+  transform: translateY(-5px);
+}
+
+@media not all and (hover: none) {
+  button:hover {
+    transform: translateY(-5px);
+  }
 }
