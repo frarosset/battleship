@@ -5,16 +5,18 @@
   /* Colors (palette)*/
   --col-black: rgb(20, 20, 20);
   --col-white: rgb(255, 255, 255);
-  --col-red-alpha: rgb(255, 0, 0, 80%);
-  --col-white-alpha: rgb(255, 255, 255, 80%);
-  --col-darker-blue: rgb(38, 24, 117);
-  --col-dark-blue: rgb(61, 44, 161);
+  --col-red-alpha: rgb(255, 0, 0, 0.3);
+  --col-white-alpha: rgb(255, 255, 255, 0.3);
+  --col-darker-sea-blue: rgb(1, 64, 79); /*014e65*/
+  --col-sea-blue: rgb(6, 70, 84);
+  --col-lighter-sea-blue: rgb(51, 99, 109);
+  --col-darker-sea-blue-alpha: rgb(1, 64, 79, 0.7);
   --col-sunk-ship-overlay: rgb(255, 0, 150, 0.3);
 
   /* Colors (background)*/
   --bg-col: var(--col-white);
-  --gameboard-bg-col: var(--col-dark-blue);
-  --cell-border-col: var(--col-darker-blue);
+  --gameboard-bg-col: var(--col-sea-blue);
+  --cell-border-col: var(--col-darker-sea-blue-alpha);
   --cell-hit-col: var(--col-red-alpha);
   --cell-miss-col: var(--col-white-alpha);
 
@@ -46,6 +48,7 @@
   --page-padding: 1rem;
   --page-gap: 1rem;
   --players-gap: 2rem;
+  --shadow-len: 0.75rem;
 
   /* Images / icons size */
 
@@ -253,6 +256,12 @@ button {
 /* Custom gameboard style */
 .gameboard {
   background-color: var(--gameboard-bg-col);
+  background-image: url("./assets/images/backgrounds/sea.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0px 0px var(--shadow-len) var(--col-black) inset;
+  padding: var(--shadow-len);
 }
 
 /* Custom player style */
@@ -279,7 +288,9 @@ button {
 }
 
 /* Ships */
-.ship.sunk {
+.ship {
+  filter: drop-shadow(0 0 var(--shadow-len) var(--col-black));
+}
+.ship.sunk .ship__mask {
   background-color: var(--col-sunk-ship-overlay);
-  background-blend-mode: overlay;
 }
