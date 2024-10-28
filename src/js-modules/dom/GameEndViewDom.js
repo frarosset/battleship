@@ -6,6 +6,8 @@ import {
   initH2,
 } from "../../js-utilities/commonDomComponents";
 import { getGameEndMessage } from "../messages.js";
+import { pubSubTokens } from "../pubSubTokens.js";
+import PubSub from "pubsub-js";
 
 const blockName = "game-end";
 const cssClass = {
@@ -16,7 +18,7 @@ const cssClass = {
 };
 const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
 
-export default class GameViewDom {
+export default class GameEndViewDom {
   #div;
 
   constructor(winnerPlayerName, defeatedPlayerName, versusAi, isWinnerAi) {
@@ -59,7 +61,7 @@ export default class GameViewDom {
   }
 
   #initPlayAgainBtnCallback() {
-    console.log("PLAY AGAIN! (todo)");
+    PubSub.publish(pubSubTokens.showHomeView);
   }
 
   #initPlayAgainBtn() {

@@ -1,6 +1,7 @@
 export const pubSubTokens = {
   showGameView: "SHOW GAME VIEW",
   showGameEndView: "SHOW GAME END VIEW",
+  showHomeView: "SHOW HOME VIEW",
   gameViewInitialized: "GAME VIEW INITIALIZED",
   playTurn: "PLAY TURN",
   attackCoordsAcquired: "ATTACK COORDS ACQUIRED",

@@ -1,4 +1,5 @@
 import GameController from "./logic/GameController.js";
+import HomeViewDom from "./dom/HomeViewDom.js";
 import GameViewDom from "./dom/GameViewDom.js";
 import GameEndViewDom from "./dom/GameEndViewDom.js";
 import PubSub from "pubsub-js";
@@ -16,6 +17,7 @@ export default function initWebpage() {
 
   PubSub.subscribe(pubSubTokens.showGameView, renderGameViewDom);
   PubSub.subscribe(pubSubTokens.showGameEndView, renderGameEndViewDom);
+  PubSub.subscribe(pubSubTokens.showHomeView, renderHomeViewDom);
 
   // call this after having subscribed to the above
   new GameController(player1Name, player2Name, versusAi);
@@ -43,4 +45,11 @@ function renderGameEndViewDom(
     isWinnerAi
   );
   container.append(gameEndViewDom.div);
+}
+
+function renderHomeViewDom(token) {
+  console.log(`${token}`);
+  removeDescendants(container);
+  const homeViewDom = new HomeViewDom();
+  container.append(homeViewDom.div);
 }
