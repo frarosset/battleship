@@ -1,11 +1,16 @@
 import Ship from "./Ship.js";
 
 describe("Ship class", () => {
+  const shipName = "Test ship";
   const shipLength = 4;
-  const ship = new Ship(shipLength);
+  const ship = new Ship(shipLength, shipName);
 
   it("is defined", () => {
     expect(Ship).toBeDefined();
+  });
+
+  it("has a name", () => {
+    expect(ship.name).toBe(shipName);
   });
 
   it("has a length", () => {
