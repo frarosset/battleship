@@ -1,10 +1,16 @@
 export default class Ship {
+  #name;
   #length;
   #hits;
 
-  constructor(length) {
+  constructor(length, name = "") {
+    this.#name = name;
     this.#length = length;
     this.#hits = 0;
+  }
+
+  get name() {
+    return this.#name;
   }
 
   get length() {
