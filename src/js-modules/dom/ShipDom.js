@@ -11,6 +11,10 @@ export default class ShipDom extends PlaceableObjectDom {
     this.#applyStyle(name, direction);
   }
 
+  makeItSunk() {
+    this.div.classList.add("sunk");
+  }
+
   #applyStyle(name, direction) {
     const imgDirection = direction == "N" || direction == "S" ? "S" : "E";
 

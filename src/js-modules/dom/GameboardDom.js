@@ -50,6 +50,12 @@ export default class GameboardDom {
   showAttackOutcome(coords, outcome) {
     const cellDom = this.#cells.get(coords.join(","));
     cellDom.setAttackedStatus();
+    if (outcome.isSunk) {
+      const shipName = outcome.sunkShip.name;
+      const shipObj = this.#fleetDom.get(shipName);
+      shipObj.makeItSunk();
+      this.#showShip(shipObj);
+    }
     PubSub.publish(pubSubTokens.attackOutcomeShown, { coords, outcome });
   }
 
