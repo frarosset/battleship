@@ -12,13 +12,9 @@ export default [
   },
   eslintConfigPrettier,
   {
-    overrides: [
-      {
-        files: ["tests/**/*"],
-        env: {
-          jest: true,
-        },
-      },
-    ],
+	files: ["src/**/**.test.js"],
+	env: {
+	  jest: true,
+	},
   },
 ];

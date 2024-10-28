@@ -210,7 +210,7 @@ export default class Gameboard {
 }
 
 function getMapKey(map, val) {
-  for (let [key, value] of map.entries()) {
+  for (const [key, value] of map.entries()) {
     if (value === val) return key;
   }
   return null;

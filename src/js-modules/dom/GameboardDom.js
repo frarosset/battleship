@@ -5,8 +5,6 @@ import PubSub from "pubsub-js";
 import ShipDom from "./ShipDom.js";
 
 const blockName = "gameboard";
-const cssClass = {};
-const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
 
 const aimingClass = "aiming";
 

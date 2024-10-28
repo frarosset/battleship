@@ -1,8 +1,6 @@
 import { initDiv } from "../../js-utilities/commonDomComponents";
 
 const blockName = "cell";
-const cssClass = {};
-const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
 
 export default class CellDom {
   #div;

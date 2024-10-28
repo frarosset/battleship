@@ -55,52 +55,50 @@ export function resetContent(contentDiv) {
 // either vertically or horizontally.
 // Will temporarily modify the "overflow" style to detect this
 // if necessary.
-function checkOverflow(el)
-{
-   let curOverflow = el.style.overflow;
+export function checkOverflow(el) {
+  const curOverflow = el.style.overflow;
 
-   if ( !curOverflow || curOverflow === "visible" )
-      el.style.overflow = "hidden";
+  if (!curOverflow || curOverflow === "visible") el.style.overflow = "hidden";
 
-   let isOverflowing = el.clientWidth < el.scrollWidth 
-                    || el.clientHeight < el.scrollHeight;
+  const isOverflowing =
+    el.clientWidth < el.scrollWidth || el.clientHeight < el.scrollHeight;
 
-   el.style.overflow = curOverflow;
+  el.style.overflow = curOverflow;
 
-   return isOverflowing;
+  return isOverflowing;
 }
 
 // throttle function to avoid calling the actual callback continuously (eg, on resize or scroll)
 // from: https://stackoverflow.com/questions/68751736/throttle-window-scroll-event-in-react-with-settimeout
-function throttle (callbackFn, limit=100) {
-    let wait = false;                  
-    return function () {              
-        if (!wait) {                  
-            callbackFn.call();           
-            wait = true;               
-            setTimeout(function () {
-                callbackFn.call();
-                wait = false;          
-            }, limit);
-        }
+export function throttle(callbackFn, limit = 100) {
+  let wait = false;
+  return function () {
+    if (!wait) {
+      callbackFn.call();
+      wait = true;
+      setTimeout(function () {
+        callbackFn.call();
+        wait = false;
+      }, limit);
     }
+  };
 }
 
-function fitFontSize(elem, defaultFontSize='',delta=0.9){
-    // Initialize the fontSize, if the initial value is provided
-    if (defaultFontSize)
-        elem.style.fontSize = defaultFontSize;
-    let fontSize = getComputedStyle(elem).getPropertyValue('font-size');
+export function fitFontSize(elem, defaultFontSize = "", delta = 0.9) {
+  // Initialize the fontSize, if the initial value is provided
+  if (defaultFontSize) elem.style.fontSize = defaultFontSize;
+  const fontSize = getComputedStyle(elem).getPropertyValue("font-size");
 
-    let fontSizeVal,fontSizeUnit; 
-    [fontSizeVal,fontSizeUnit] = splitCSSUnits(fontSize);
+  const CSSUnits = splitCSSUnits(fontSize);
+  let fontSizeVal = CSSUnits[0];
+  const fontSizeUnit = CSSUnits[1];
 
-    while (checkOverflow(elem)){
-        fontSizeVal *= delta;
-        elem.style.fontSize = fontSizeVal + fontSizeUnit;
-    }
+  while (checkOverflow(elem)) {
+    fontSizeVal *= delta;
+    elem.style.fontSize = fontSizeVal + fontSizeUnit;
+  }
 }
 
-function splitCSSUnits(CSSAttrVal){
-    return [CSSAttrVal.match(/[\d.]+/)[0],CSSAttrVal.match(/[^\d.]+/)[0]];
+export function splitCSSUnits(CSSAttrVal) {
+  return [CSSAttrVal.match(/[\d.]+/)[0], CSSAttrVal.match(/[^\d.]+/)[0]];
 }
