@@ -3,6 +3,8 @@ import CellDom from "./CellDom.js";
 import { pubSubTokens } from "../pubSubTokens.js";
 import PubSub from "pubsub-js";
 import ShipDom from "./ShipDom.js";
+import HitMarkDom from "./HitMarkDom.js";
+import MissMarkDom from "./MissMarkDom.js";
 
 const blockName = "gameboard";
 
@@ -50,6 +52,12 @@ export default class GameboardDom {
   showAttackOutcome(coords, outcome) {
     const cellDom = this.#cells.get(coords.join(","));
     cellDom.setAttackedStatus();
+
+    const outcomeMarkDom = outcome.isHit
+      ? new HitMarkDom(coords)
+      : new MissMarkDom(coords);
+    this.#div.append(outcomeMarkDom.div);
+
     if (outcome.isSunk) {
       const shipName = outcome.sunkShip.name;
       const shipObj = this.#fleetDom.get(shipName);

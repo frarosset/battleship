@@ -5,8 +5,8 @@
   /* Colors (palette)*/
   --col-black: rgb(20, 20, 20);
   --col-white: rgb(255, 255, 255);
-  --col-red-alpha: rgb(255, 0, 0, 0.3);
-  --col-white-alpha: rgb(255, 255, 255, 0.3);
+  --col-orange-dark: rgb(238, 132, 52);
+  --col-orange-light: rgb(236, 164, 0);
   --col-darker-sea-blue: rgb(1, 64, 79); /*014e65*/
   --col-sea-blue: rgb(6, 70, 84);
   --col-lighter-sea-blue: rgb(51, 99, 109);
@@ -17,8 +17,8 @@
   --bg-col: var(--col-white);
   --gameboard-bg-col: var(--col-sea-blue);
   --cell-border-col: var(--col-darker-sea-blue-alpha);
-  --cell-hit-col: var(--col-red-alpha);
-  --cell-miss-col: var(--col-white-alpha);
+  --cell-hit-col: var(--col-orange-light);
+  --cell-miss-col: var(--col-white);
 
   /* Colors (text/icons)*/
   --col-txt: var(--col-black);
@@ -49,6 +49,7 @@
   --page-gap: 1rem;
   --players-gap: 2rem;
   --shadow-len: 0.75rem;
+  --shadow-len-mark: calc(var(--shadow-len) / 4);
 
   /* Images / icons size */
 
@@ -273,11 +274,22 @@ button {
 .cell {
   border: 1px solid var(--cell-border-col);
 }
-.cell.hit {
-  background-color: var(--cell-hit-col);
+
+.hit-mark,
+.miss-mark {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-.cell.miss {
-  background-color: var(--cell-miss-col);
+
+.hit-mark {
+  background-image: url("./assets/images/hit_miss_marks/hit.png");
+  filter: drop-shadow(0 0 var(--shadow-len-mark) var(--cell-hit-col));
+}
+.miss-mark {
+  background-image: url("./assets/images/hit_miss_marks/miss.png");
+  filter: drop-shadow(0 0 var(--shadow-len-mark) var(--cell-miss-col));
+  transform: scale(0.6);
 }
 
 /* Custom msg p style*/
