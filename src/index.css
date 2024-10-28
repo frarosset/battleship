@@ -41,7 +41,7 @@
   --h1-fontsize: 1.2rem;
   --player-h3-fontsize: 1rem;
   --msg-fontsize: 1rem;
-  --title-fontsize: 4rem;
+  --title-fontsize: 3.5rem;
   --subtitle-fontsize: 1.2rem;
   --button-fontsize: 1.5rem;
 
@@ -200,6 +200,7 @@ button {
 /* Structural styles ----------------------------------------------------- */
 .game,
 .game-end,
+.home,
 .game__players-div,
 .game__player-div,
 .player {
@@ -253,7 +254,8 @@ button {
 /* Colors, dimensions and padding styles --------------------------------- */
 
 .game,
-.game-end {
+.game-end,
+.home {
   padding: var(--page-padding);
   gap: var(--page-gap);
 }
@@ -284,7 +286,8 @@ button {
 }
 
 /* game end view */
-.game-end {
+.game-end,
+.home {
   align-items: center;
   justify-content: space-between;
   margin: 1rem auto 10vh;
@@ -315,6 +318,9 @@ body:has(.game-end.defeated-1p) {
 body:has(.game-end.winner-1p) {
   background-image: url("./assets/images/backgrounds/winner-1p.jpg");
 }
+body:has(.home) {
+  background-image: url("./assets/images/backgrounds/home.jpg");
+}
 
 .hit-mark {
   background-image: url("./assets/images/hit_miss_marks/hit.png");
@@ -343,12 +349,15 @@ body:has(.game-end.winner-1p) {
 
 /* Texts */
 .game-end__title-h2,
-.game-end__subtitle-p {
+.game-end__subtitle-p,
+.home__title-h1,
+.home__subtitle-p {
   text-align: center;
   text-wrap: balance;
 }
 
-.game-end__title-h2 {
+.game-end__title-h2,
+.home__title-h1 {
   font-size: var(--title-fontsize);
   font-family: var(--accent-font);
   font-weight: bold;
@@ -363,7 +372,8 @@ body:has(.game-end.winner-1p) {
   padding-bottom: 0.2em;
 }
 
-.game-end__subtitle-p {
+.game-end__subtitle-p,
+.home__subtitle-p {
   color: var(--col-txt-alt);
   font-size: var(--subtitle-fontsize);
   text-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
@@ -390,4 +400,16 @@ button:active {
   button:hover {
     transform: translateY(-5px);
   }
+}
+
+.home__players-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: center;
+}
+.home__players-btns button {
+  width: 8em;
 }

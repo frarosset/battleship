@@ -10,11 +10,11 @@ import { getHomeViewMessage } from "../messages.js";
 const blockName = "home";
 const cssClass = {
   header: "header",
-  titleH1: "title-h2",
+  titleH1: "title-h1",
   subtitleP: "subtitle-p",
   play1Player: "play-1-player",
   play2Players: "play-2-players",
-  playersBtn: "players-btn",
+  playersBtns: "players-btns",
 };
 const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
 
@@ -40,13 +40,13 @@ export default class HomeViewDom {
     const titleH1 = initH1(getCssClass("titleH1"), null, title);
     const subtitleP = initP(getCssClass("subtitleP"), null, subtitle);
 
-    const playersBtn = initDiv(getCssClass("playersBtn"));
+    const playersBtns = initDiv(getCssClass("playersBtns"));
     const play1Player = this.#initPlay1Player();
     const play2Players = this.#initPlay2Players();
 
     header.append(titleH1, subtitleP);
-    playersBtn.append(play1Player, play2Players);
-    div.append(header, playersBtn);
+    playersBtns.append(play1Player, play2Players);
+    div.append(header, playersBtns);
 
     return div;
   }
