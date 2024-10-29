@@ -413,3 +413,13 @@ button:active {
 .home__players-btns button {
   width: 8em;
 }
+
+.gameboard.aiming .cell.hit,
+.gameboard.aiming .cell.miss,
+.gameboard.aiming .hit-mark,
+.gameboard.aiming .miss-mark {
+  cursor: not-allowed;
+}
+.gameboard.aiming .cell:not(.hit):not(.miss) {
+  cursor: crosshair;
+}
