@@ -11,6 +11,7 @@ export const pubSubTokens = {
 
 export const pubSubTopicUi = "ui";
 export const pubSubTokensUi = {
+  setCurrentPlayer: (player) => `ui: SET ${player.name} AS CURRENT PLAYER`,
   enableAimingOnGameboard: (player) =>
     `ui: ENABLE AIMING ON ${player.name} GAMEBOARD`,
   showAttackOutcome: (player) => `ui: SHOW ATTACK ON ${player.name} GAMEBOARD`,

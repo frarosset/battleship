@@ -469,6 +469,17 @@ body:has(.game) {
   font-size: var(--player-name-fontsize);
 }
 
+.currentPlayer .player__name-span {
+  background: var(--orange-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(
+    0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt)
+  );
+  text-shadow: none;
+}
+
 /* Custom msg p style*/
 .game__msg-p {
   text-align: center;

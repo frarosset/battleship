@@ -29,6 +29,11 @@ export default class PlayerDom {
     this.#div.obj = this;
 
     PubSub.subscribe(
+      pubSubTokensUi.setCurrentPlayer(player),
+      this.#markCurrentPlayer.bind(this)
+    );
+
+    PubSub.subscribe(
       pubSubTokensUi.enableAimingOnGameboard(player),
       this.#enableAimingOnGameboard.bind(this)
     );
@@ -53,6 +58,10 @@ export default class PlayerDom {
   }
   get player() {
     return this.#player;
+  }
+
+  #markCurrentPlayer(msg, currentPlayer) {
+    this.#div.classList.toggle("currentPlayer", currentPlayer);
   }
 
   #enableAimingOnGameboard() {
