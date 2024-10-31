@@ -162,7 +162,7 @@ export default class GameController {
     }
 
     // Perform post-attack actions
-    this.#applyPostAttackActions(coords);
+    this.#applyPostAttackActions(coords, outcome);
 
     // Pass turn to opponent
     this.#switchCurrentPlayer();
@@ -205,10 +205,10 @@ export default class GameController {
     });
   }
 
-  #applyPostAttackActions(coords) {
+  #applyPostAttackActions(coords, outcome) {
     // this depends on whether #player is AI or not
     if (this.#isAIPlayer()) {
-      return this.#player.applyPostAttackActions(coords);
+      return this.#player.applyPostAttackActions(coords, outcome);
     } else {
       // nothing so far...
     }

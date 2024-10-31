@@ -2,6 +2,7 @@ import Player from "./Player.js";
 import { randomInt } from "../../js-utilities/mathUtilities.js";
 
 const defaultSkills = "random";
+const arr2str = (arr) => arr.join(",");
 
 export default class AiPlayer extends Player {
   #possibleTargets;
@@ -26,8 +27,10 @@ export default class AiPlayer extends Player {
   #initPossibleTargets() {
     // The possible targets are defined as the coordinates of the cells, which are the same
     // for both this player and the opponent... so use this players coordinates
-    this.#possibleTargets = new Set(
-      this.gameboard.cells.flat().map((cell) => cell.coords)
+    this.#possibleTargets = new Map(
+      this.gameboard.cells
+        .flat()
+        .map((cell) => [arr2str(cell.coords), cell.coords])
     );
   }
 
@@ -45,11 +48,11 @@ export default class AiPlayer extends Player {
     return this.#getOpponentTargetCellCoords();
   }
 
-  applyPostAttackActions(cellCoords, otherData = {}) {
+  applyPostAttackActions(cellCoords, outcome = {}) {
     // this is a wrapper and allows to use different strategies in future
     // implementations using the same interface: todo
-    // otherData is set as argument for future improvements
-    return this.#applyPostAttackActions(cellCoords, otherData);
+    // outcome is set as argument for future improvements
+    return this.#applyPostAttackActions(cellCoords, outcome);
   }
 
   /* random strategy */
@@ -58,11 +61,13 @@ export default class AiPlayer extends Player {
     if (this.#possibleTargets.size === 0) {
       throw new Error("There are no possible opponent targets");
     }
+
     const idx = randomInt(0, this.#possibleTargets.size - 1);
-    return Array.from(this.#possibleTargets)[idx];
+
+    return Array.from(this.#possibleTargets.values())[idx];
   }
 
   #applyPostAttackActionsRandom(cellCoords) {
-    this.#possibleTargets.delete(cellCoords);
+    this.#possibleTargets.delete(arr2str(cellCoords));
   }
 }
