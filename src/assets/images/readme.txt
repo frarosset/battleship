@@ -5,3 +5,5 @@ Images have been edited using:
 - Pixelcut (https://www.pixelcut.ai/)
 - removebg (https://www.remove.bg/)
 - onlinepngtools (https://onlinepngtools.com/rotate-png)
+- Image Resizer.com (https://imageresizer.com/)
+- TinyPNG (https://tinypng.com/)
