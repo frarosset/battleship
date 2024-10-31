@@ -1,5 +1,6 @@
 import AiPlayer from "./AiPlayer.js";
 import Gameboard from "./Gameboard.js";
+import * as math from "../../js-utilities/mathUtilities.js";
 
 describe("AiPlayer class", () => {
   it("is defined", () => {
@@ -58,5 +59,37 @@ describe("AiPlayer class", () => {
     expect(() => aiPlayer.getOpponentTargetCellCoords()).toThrow(
       "There are no possible opponent targets"
     );
+  });
+
+  it("can apply the random strategy", () => {
+    // mock the randomInt function from math module
+    const randomInt = jest.spyOn(math, "randomInt");
+
+    const aiPlayer = new AiPlayer(
+      playerName,
+      fleet,
+      sizeGameboard,
+      sizeGameboard,
+      "random"
+    );
+    const opponentPlayer = new AiPlayer(opponentName, fleet, sizeGameboard);
+    opponentPlayer.gameboard.placeShip("Destroyer", [0, 0], "E");
+
+    randomInt.mockImplementation(() => 0); // Mock the return value to 0
+    const cellCoords = aiPlayer.getOpponentTargetCellCoords();
+    const isHit = opponentPlayer.gameboard.receiveAttack(cellCoords) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords, { isHit });
+
+    // after the previous attack, [0,0] is removed from the possible targets array
+    expect(cellCoords).toEqual([0, 0]);
+    expect(isHit).toBe(true);
+
+    randomInt.mockImplementation(() => 5); // Mock the return value to 5
+    const cellCoords2 = aiPlayer.getOpponentTargetCellCoords();
+    const isHit2 = opponentPlayer.gameboard.receiveAttack(cellCoords2) > 0;
+
+    // given that [0,0] has been removed from the targets, the 5th target is now [0,6]
+    expect(cellCoords2).toEqual([0, 6]);
+    expect(isHit2).toBe(false);
   });
 });
