@@ -6,6 +6,8 @@ import {
   initH1,
 } from "../../js-utilities/commonDomComponents";
 import { getHomeViewMessage } from "../messages.js";
+import PubSub from "pubsub-js";
+import { pubSubTokens } from "../pubSubTokens.js";
 
 const blockName = "home";
 const cssClass = {
@@ -52,10 +54,10 @@ export default class HomeViewDom {
   }
 
   #initPlay1PlayerCallback() {
-    console.log("PLAY WITH 1 PLAYER");
+    PubSub.publish(pubSubTokens.showPlayersNameView, { versusAi: true });
   }
   #initPlay2PlayersCallback() {
-    console.log("PLAY WITH 2 PLAYERS");
+    PubSub.publish(pubSubTokens.showPlayersNameView, { versusAi: false });
   }
 
   #initPlay1Player() {
