@@ -2,6 +2,9 @@ import AiPlayer from "./AiPlayer.js";
 import Gameboard from "./Gameboard.js";
 import * as math from "../../js-utilities/mathUtilities.js";
 
+// The Ai can have different skiils, which define different applied stategies.
+// see AiPlayer.js for more details
+
 describe("AiPlayer class", () => {
   it("is defined", () => {
     expect(AiPlayer).toBeDefined();
@@ -91,5 +94,47 @@ describe("AiPlayer class", () => {
     // given that [0,0] has been removed from the targets, the 5th target is now [0,6]
     expect(cellCoords2).toEqual([0, 6]);
     expect(isHit2).toBe(false);
+  });
+
+  it("can apply the HuntTarget strategy", () => {
+    // mock the randomInt function from math module
+    const randomInt = jest.spyOn(math, "randomInt");
+
+    const aiPlayer = new AiPlayer(
+      playerName,
+      fleet,
+      sizeGameboard,
+      sizeGameboard,
+      "huntTarget"
+    );
+    const opponentPlayer = new AiPlayer(opponentName, fleet, sizeGameboard);
+    opponentPlayer.gameboard.placeShip("Destroyer", [0, 0], "E");
+
+    // Score a miss
+    randomInt.mockImplementation(() => 5);
+    const cellCoords = aiPlayer.getOpponentTargetCellCoords();
+    const isHit = opponentPlayer.gameboard.receiveAttack(cellCoords) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords, { isHit });
+
+    expect(cellCoords).toEqual([0, 5]);
+    expect(isHit).toBe(false);
+
+    // Now score a hit
+    randomInt.mockImplementation(() => 0);
+    const cellCoords2 = aiPlayer.getOpponentTargetCellCoords();
+    const isHit2 = opponentPlayer.gameboard.receiveAttack(cellCoords2) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords2, { isHit: isHit2 });
+
+    expect(cellCoords2).toEqual([0, 0]);
+    expect(isHit2).toBe(true);
+
+    // For the random strategy, this should give [0,2], but using the huntTarget strategy it gives [1,0] (high priority)
+    randomInt.mockImplementation(() => 1);
+    const cellCoords3 = aiPlayer.getOpponentTargetCellCoords();
+    const isHit3 = opponentPlayer.gameboard.receiveAttack(cellCoords3) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords3, { isHit: isHit3 });
+
+    expect(cellCoords3).toEqual([1, 0]);
+    expect(isHit3).toBe(true);
   });
 });
