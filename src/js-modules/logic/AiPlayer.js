@@ -1,11 +1,30 @@
 import Player from "./Player.js";
 import { randomInt } from "../../js-utilities/mathUtilities.js";
 
-const defaultSkills = "random";
+// The Ai can have different skiils, which define different applied stategies.
+//
+// - random: chose just a random cell of the board. A target list is kept, and after each attack,
+//           the attacked cell is removed from the list.
+//
+// - huntTarget: chose a random target as a base. However, when you score a hit, add the neighbouring cells
+//           which have not been attacked yet to some high priority list. When the high priority list is not
+//           empty, chose the next cell to attack among these instead of the global one.
+//
+// See https://www.datagenetics.com/blog/december32011/
+// See https://towardsdatascience.com/coding-an-intelligent-battleship-agent-bf0064a4b319
+
+const defaultSkills = "huntTarget";
 const arr2str = (arr) => arr.join(",");
+const neighboursCellDisplacement = [
+  [0, 1],
+  [0, -1],
+  [1, 0],
+  [-1, 0],
+];
 
 export default class AiPlayer extends Player {
   #possibleTargets;
+  #highPriorityPossibleTargets;
   #skills;
   #getOpponentTargetCellCoords; // methods initalized based on the #skills
   #applyPostAttackActions; // methods initalized based on the #skills
@@ -32,6 +51,7 @@ export default class AiPlayer extends Player {
         .flat()
         .map((cell) => [arr2str(cell.coords), cell.coords])
     );
+    this.#highPriorityPossibleTargets = new Map();
   }
 
   #initPlayerSkills() {
@@ -39,6 +59,10 @@ export default class AiPlayer extends Player {
       this.#getOpponentTargetCellCoords =
         this.#getOpponentTargetCellCoordsRandom;
       this.#applyPostAttackActions = this.#applyPostAttackActionsRandom;
+    } else if (this.#skills == "huntTarget") {
+      this.#getOpponentTargetCellCoords =
+        this.#getOpponentTargetCellCoordsHuntTarget;
+      this.#applyPostAttackActions = this.#applyPostAttackActionsHuntTarget;
     }
   }
 
@@ -57,17 +81,54 @@ export default class AiPlayer extends Player {
 
   /* random strategy */
 
-  #getOpponentTargetCellCoordsRandom() {
-    if (this.#possibleTargets.size === 0) {
+  #getOpponentTargetCellCoordsRandom(targetMap = this.#possibleTargets) {
+    if (targetMap.size === 0) {
       throw new Error("There are no possible opponent targets");
     }
 
-    const idx = randomInt(0, this.#possibleTargets.size - 1);
+    const idx = randomInt(0, targetMap.size - 1);
 
-    return Array.from(this.#possibleTargets.values())[idx];
+    return Array.from(targetMap.values())[idx];
   }
 
   #applyPostAttackActionsRandom(cellCoords) {
     this.#possibleTargets.delete(arr2str(cellCoords));
+  }
+
+  /* hunt-target strategy */
+
+  #getOpponentTargetCellCoordsHuntTarget() {
+    // If the high priority targets list is not empty, select one of that
+    const targetMap =
+      this.#highPriorityPossibleTargets.size > 0
+        ? this.#highPriorityPossibleTargets
+        : this.#possibleTargets;
+
+    return this.#getOpponentTargetCellCoordsRandom(targetMap);
+  }
+
+  #applyPostAttackActionsHuntTarget(cellCoords, outcome) {
+    // Delete current cell
+    this.#possibleTargets.delete(arr2str(cellCoords));
+    this.#highPriorityPossibleTargets.delete(arr2str(cellCoords));
+
+    // If hit, add neighbours target cell to high priority cells
+    if (outcome.isHit) {
+      const [col, row] = cellCoords;
+      neighboursCellDisplacement.forEach(([dCol, dRow]) => {
+        // Compute the neighbour cell
+        const neighCellCoords = [col + dCol, row + dRow];
+
+        // If the cell is in the possible targets list (ie, not attacked yet),
+        // and not yet in the high priority one, move it there
+        if (this.#possibleTargets.has(arr2str(neighCellCoords))) {
+          this.#possibleTargets.delete(arr2str(neighCellCoords));
+          this.#highPriorityPossibleTargets.set(
+            arr2str(neighCellCoords),
+            neighCellCoords
+          );
+        }
+      });
+    }
   }
 }
