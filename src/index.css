@@ -4,6 +4,8 @@
 ::backdrop {
   /* Colors (palette)*/
   --col-black: rgb(20, 20, 20);
+  --col-black-alpha: rgb(20, 20, 20, 0.5);
+  --col-grey: rgb(200, 200, 200, 0.8);
   --col-white: rgb(255, 255, 255);
   --col-orange-dark: rgb(224, 60, 36);
   --col-orange-light: rgb(249, 167, 34);
@@ -25,6 +27,7 @@
     var(--col-orange),
     var(--col-orange-dark)
   );
+  --txt-bg-col: var(--col-black-alpha);
 
   /* Colors (text/icons)*/
   --col-txt: var(--col-black);
@@ -37,13 +40,18 @@
 
   /* Font sizes */
   --txt-fontsize: 18px;
-  --txt-lineheight: 1.2;
+  --txt-lineheight: 1;
   --h1-fontsize: 1.2rem;
   --player-h3-fontsize: 1rem;
   --msg-fontsize: 1rem;
-  --title-fontsize: 3.5rem;
+  --title-fontsize: 3.2rem;
   --subtitle-fontsize: 1.2rem;
   --button-fontsize: 1.5rem;
+  --player-name-fontsize: 2rem;
+  --player-title-fontsize: 1.5rem;
+  --player-vs-fontsize: 1.5rem;
+
+  --fix-font-padding-bottom: 5px;
 
   /* Text clamping: number of lines */
   /* --max-lines: 4; */
@@ -61,7 +69,11 @@
   --shadow-len: 0.75rem;
   --shadow-len-mark: calc(var(--shadow-len) / 4);
   --shadow-len-txt: calc(var(--shadow-len) / 4);
-  --button-padding: 0.5rem 0.5rem;
+  --button-padding: 0.5rem;
+  --button-padding-fixed: var(--button-padding) var(--button-padding)
+    calc(var(--button-padding) + var(--fix-font-padding-bottom));
+  --input-padding-bottom: 0.1em;
+  --vs-padding: 2vmax;
 
   /* Images / icons size */
 
@@ -86,6 +98,7 @@ html {
   font-weight: 400;
   font-size: var(--txt-fontsize);
   line-height: var(--txt-lineheight);
+  user-select: none;
 }
 
 *,
@@ -201,6 +214,7 @@ button {
 .game,
 .game-end,
 .home,
+.players-name,
 .game__players-div,
 .game__player-div,
 .player {
@@ -255,7 +269,8 @@ button {
 
 .game,
 .game-end,
-.home {
+.home,
+.players-name {
   padding: var(--page-padding);
   gap: var(--page-gap);
 }
@@ -285,12 +300,101 @@ button {
   border: 1px solid var(--cell-border-col);
 }
 
-/* game end view */
+/* page view */
 .game-end,
-.home {
+.home,
+.players-name {
   align-items: center;
   justify-content: space-between;
   margin: 1rem auto 10vh;
+}
+
+/* players name view */
+.players-name__players-cnt-div {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) min-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+.players-name__player-div {
+  background-color: var(--txt-bg-col);
+  padding: var(--button-padding);
+  border: none;
+  border-radius: var(--button-radius);
+  box-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.players-name__player-name-p,
+.players-name__player-name-input,
+.players-name__player-title-p,
+.players-name__vs-p {
+  color: var(--col-txt-alt);
+  text-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.players-name__player-name-p,
+.players-name__player-name-input {
+  font-size: var(--player-name-fontsize);
+  background: var(--orange-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(
+    0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt)
+  );
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.players-name__player-name-input {
+  height: calc(
+    var(--line-height) * var(--player-name-fontsize) +
+      var(--input-padding-bottom)
+  );
+  outline: none;
+  border: none;
+  border-bottom: 2px solid var(--col-txt-alt);
+  background-color: transparent;
+  padding-bottom: var(--input-padding-bottom);
+  width: 80%;
+}
+
+.players-name__player-name-input::placeholder {
+  color: var(--col-grey);
+}
+
+.players-name__player-name-input:focus {
+  border-bottom-color: var(--col-txt-accent);
+}
+
+.players-name__player-title-p {
+  font-size: var(--player-title-fontsize);
+}
+
+.players-name__vs-p {
+  font-size: var(--player-vs-fontsize);
+  font-family: var(--accent-font);
+  padding: var(--vs-padding) 0
+    calc(var(--fix-font-padding-bottom) + var(--vs-padding));
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+@media only screen and (orientation: landscape) {
+  .players-name__players-cnt-div {
+    grid-template-columns: minmax(0, 1fr) min-content minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .players-name__vs-p {
+    padding: 0 var(--vs-padding) var(--fix-font-padding-bottom);
+  }
 }
 
 /* backgrounds and shadows */
@@ -318,7 +422,8 @@ body:has(.game-end.defeated-1p) {
 body:has(.game-end.winner-1p) {
   background-image: url("./assets/images/backgrounds/winner-1p.jpg");
 }
-body:has(.home) {
+body:has(.home),
+body:has(.players-name) {
   background-image: url("./assets/images/backgrounds/home.jpg");
 }
 
@@ -351,13 +456,16 @@ body:has(.home) {
 .game-end__title-h2,
 .game-end__subtitle-p,
 .home__title-h1,
-.home__subtitle-p {
+.home__subtitle-p,
+.players-name__title-h1,
+.players-name__subtitle-p {
   text-align: center;
   text-wrap: balance;
 }
 
 .game-end__title-h2,
-.home__title-h1 {
+.home__title-h1,
+.players-name__title-h1 {
   font-size: var(--title-fontsize);
   font-family: var(--accent-font);
   font-weight: bold;
@@ -373,7 +481,8 @@ body:has(.home) {
 }
 
 .game-end__subtitle-p,
-.home__subtitle-p {
+.home__subtitle-p,
+.players-name__subtitle-p {
   color: var(--col-txt-alt);
   font-size: var(--subtitle-fontsize);
   text-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
@@ -381,7 +490,7 @@ body:has(.home) {
 
 /* buttons */
 button {
-  padding: var(--button-padding);
+  padding: var(--button-padding-fixed);
   font-family: var(--accent-font);
   background: var(--orange-gradient);
   font-weight: bold;
@@ -410,7 +519,8 @@ button:active {
   width: 100%;
   align-items: center;
 }
-.home__players-btns button {
+.home__players-btns button,
+.players-name__play-btn {
   width: 8em;
 }
 
