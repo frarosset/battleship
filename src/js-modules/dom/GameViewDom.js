@@ -2,14 +2,15 @@ import {
   initDiv,
   initP,
   initButton,
+  initHeader,
 } from "../../js-utilities/commonDomComponents";
-import initMainHeader from "./initMainHeader.js";
 import PlayerDom from "./PlayerDom.js";
 import { pubSubTokensUi } from "../pubSubTokens.js";
 import PubSub from "pubsub-js";
 
 const blockName = "game";
 const cssClass = {
+  header: "header",
   playersDiv: "players-div",
   playerDiv: "player-div",
   msgP: "msg-p",
@@ -48,9 +49,7 @@ export default class GameViewDom {
   #initGameViewDiv(player1Dom, player2Dom) {
     const div = initDiv(blockName);
 
-    const header = initMainHeader();
-    const showFleetBtn = this.#initShowFleetButton();
-    header.append(showFleetBtn);
+    const header = this.#initHeader();
 
     const playersDiv = initDiv(getCssClass("playersDiv"));
     const player1Div = initDiv(getCssClass("playerDiv"));
@@ -64,6 +63,14 @@ export default class GameViewDom {
     div.append(header, playersDiv, msgP);
 
     return div;
+  }
+
+  #initHeader() {
+    const header = initHeader(getCssClass("header"));
+    // const h1 = initH1(getCssClass("h1"), null, "BATTLESHIP");
+    const showFleetBtn = this.#initShowFleetButton();
+    header.append(showFleetBtn);
+    return header;
   }
 
   #initGameMsg() {
@@ -85,7 +92,7 @@ export default class GameViewDom {
       "btn",
       this.#showCurrentPlayerDeployedFleetCallbackBinded,
       null,
-      "Toggle fleet"
+      "Toggle my fleet"
     );
 
     return btn;
