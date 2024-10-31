@@ -1,18 +1,26 @@
 import Player from "./Player.js";
 import { randomInt } from "../../js-utilities/mathUtilities.js";
 
+const defaultSkills = "random";
+
 export default class AiPlayer extends Player {
   #possibleTargets;
+  #skills;
+  #getOpponentTargetCellCoords; // methods initalized based on the #skills
+  #applyPostAttackActions; // methods initalized based on the #skills
 
   constructor(
     name,
     fleet = Player.defaultFleet,
     nColsGameboard = Player.defaultSizeGameboard,
-    nRowsGameboard = nColsGameboard
+    nRowsGameboard = nColsGameboard,
+    skills = defaultSkills
   ) {
     super(name, fleet, nColsGameboard, nRowsGameboard);
 
     this.#initPossibleTargets();
+    this.#skills = skills;
+    this.#initPlayerSkills();
   }
 
   #initPossibleTargets() {
@@ -23,18 +31,28 @@ export default class AiPlayer extends Player {
     );
   }
 
+  #initPlayerSkills() {
+    if (this.#skills == "random") {
+      this.#getOpponentTargetCellCoords =
+        this.#getOpponentTargetCellCoordsRandom;
+      this.#applyPostAttackActions = this.#applyPostAttackActionsRandom;
+    }
+  }
+
   getOpponentTargetCellCoords() {
     // this is a wrapper and allows to use different strategies in future
     // implementations using the same interface: todo
-    return this.#getOpponentTargetCellCoordsRandom();
+    return this.#getOpponentTargetCellCoords();
   }
 
   applyPostAttackActions(cellCoords, otherData = {}) {
     // this is a wrapper and allows to use different strategies in future
     // implementations using the same interface: todo
     // otherData is set as argument for future improvements
-    return this.#applyPostAttackActionsRandom(cellCoords);
+    return this.#applyPostAttackActions(cellCoords, otherData);
   }
+
+  /* random strategy */
 
   #getOpponentTargetCellCoordsRandom() {
     if (this.#possibleTargets.size === 0) {
