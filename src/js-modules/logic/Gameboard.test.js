@@ -1,4 +1,5 @@
 import Gameboard from "./Gameboard.js";
+import Ship from "./Ship.js";
 
 /* By convention, to place a ship you specify the coordinates of the stern (back of the ship) and the direction (N,E,S,W) */
 
@@ -150,6 +151,20 @@ describe("Gameboard class", () => {
     it("can retrieve the deployed and not deployed fleet ships", () => {
       expect(gameboard.deployedFleet).toEqual([shipName1]);
       expect(gameboard.notDeployedFleet).toEqual([shipName2]);
+    });
+
+    it("can retrieve the deployed/not deployed/sunk/fleet Ship objects", () => {
+      expect(gameboard.deployedFleetAsShipObj).toEqual([
+        new Ship(shipName1, shipLen1),
+      ]);
+      expect(gameboard.notDeployedFleetAsShipObj).toEqual([
+        new Ship(shipName2, shipLen2),
+      ]);
+      expect(gameboard.sunkFleetAsShipObj).toEqual([]);
+      expect(gameboard.fleetAsShipObj).toEqual([
+        new Ship(shipName2, shipLen2),
+        new Ship(shipName2, shipLen2),
+      ]);
     });
 
     it("can check if a ship is already in the deployed fleet", () => {
