@@ -74,6 +74,26 @@ export default class Gameboard {
     return [...this.deployedFleet, ...this.notDeployedFleet, ...this.sunkFleet];
   }
 
+  get deployedFleetAsShipObj() {
+    return [...this.#deployedFleet.values()];
+  }
+
+  get notDeployedFleetAsShipObj() {
+    return [...this.#notDeployedFleet.values()];
+  }
+
+  get sunkFleetAsShipObj() {
+    return [...this.#sunkFleet.values()];
+  }
+
+  get fleetAsShipObj() {
+    return [
+      ...this.deployedFleetAsShipObj,
+      ...this.notDeployedFleetAsShipObj,
+      ...this.sunkFleetAsShipObj,
+    ];
+  }
+
   getCell([c, r]) {
     if (!this.isValidCell([c, r])) {
       throw new Error("The cell is out-of-bound");
