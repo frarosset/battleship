@@ -3,12 +3,16 @@ import { randomInt } from "../../js-utilities/mathUtilities.js";
 
 // The Ai can have different skiils, which define different applied stategies.
 //
-// - random: chose just a random cell of the board. A target list is kept, and after each attack,
+// - random: choose just a random cell of the board. A target list is kept, and after each attack,
 //           the attacked cell is removed from the list.
 //
-// - huntTarget: chose a random target as a base. However, when you score a hit, add the neighbouring cells
+// - huntTarget: choose a random target as a base. However, when you score a hit, add the neighbouring cells
 //           which have not been attacked yet to some high priority list. When the high priority list is not
 //           empty, chose the next cell to attack among these instead of the global one.
+//
+//   imporvedHuntTarget: the same as the huntTarget one. However, in hunt mode, not all cells are considered,
+//           but just the ones for which: (row + col) % opponentMinShipSize === 0, where opponentMinShipSize
+//           is the minimum ship size of the opponent.
 //
 // See https://www.datagenetics.com/blog/december32011/
 // See https://towardsdatascience.com/coding-an-intelligent-battleship-agent-bf0064a4b319
@@ -28,6 +32,7 @@ export default class AiPlayer extends Player {
   #skills;
   #getOpponentTargetCellCoords; // methods initalized based on the #skills
   #applyPostAttackActions; // methods initalized based on the #skills
+  #opponentMinShipSize = 2;
 
   constructor(
     name,
@@ -63,6 +68,11 @@ export default class AiPlayer extends Player {
       this.#getOpponentTargetCellCoords =
         this.#getOpponentTargetCellCoordsHuntTarget;
       this.#applyPostAttackActions = this.#applyPostAttackActionsHuntTarget;
+    } else if (this.#skills == "improvedHuntTarget") {
+      this.#getOpponentTargetCellCoords =
+        this.#getOpponentTargetCellCoordsImprovedHuntTarget;
+      this.#applyPostAttackActions =
+        this.#applyPostAttackActionsImprovedHuntTarget;
     }
   }
 
@@ -101,8 +111,8 @@ export default class AiPlayer extends Player {
     // If the high priority targets list is not empty, select one of that
     const targetMap =
       this.#highPriorityPossibleTargets.size > 0
-        ? this.#highPriorityPossibleTargets
-        : this.#possibleTargets;
+        ? this.#highPriorityPossibleTargets // target mode
+        : this.#possibleTargets; // hunt mode
 
     return this.#getOpponentTargetCellCoordsRandom(targetMap);
   }
@@ -130,5 +140,31 @@ export default class AiPlayer extends Player {
         }
       });
     }
+  }
+
+  /* improvedHuntTarget strategy */
+
+  #getOpponentTargetCellCoordsImprovedHuntTarget() {
+    // If the high priority targets list is not empty, select one of that
+    if (this.#highPriorityPossibleTargets.size > 0) {
+      // target mode
+      const targetMap = this.#highPriorityPossibleTargets;
+
+      return this.#getOpponentTargetCellCoordsRandom(targetMap);
+    } else {
+      // hunt mode
+      const targetMap = this.#possibleTargets;
+      while (true) {
+        const [row, col] = this.#getOpponentTargetCellCoordsRandom(targetMap);
+
+        if ((row + col) % this.#opponentMinShipSize === 0) {
+          return [row, col];
+        }
+      }
+    }
+  }
+
+  #applyPostAttackActionsImprovedHuntTarget(cellCoords, outcome) {
+    this.#applyPostAttackActionsHuntTarget(cellCoords, outcome);
   }
 }
