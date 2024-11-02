@@ -32,7 +32,8 @@ export default class AiPlayer extends Player {
   #skills;
   #getOpponentTargetCellCoords; // methods initalized based on the #skills
   #applyPostAttackActions; // methods initalized based on the #skills
-  #opponentMinShipSize = 2;
+  #opponentMinShipSize;
+  #opponentShipSizes;
 
   constructor(
     name,
@@ -44,6 +45,9 @@ export default class AiPlayer extends Player {
     super(name, fleet, nColsGameboard, nRowsGameboard);
 
     this.#initPossibleTargets();
+    if (skills == "improvedHuntTarget") {
+      this.#initOpponentShipsLength();
+    }
     this.#skills = skills;
     this.#initPlayerSkills();
   }
@@ -57,6 +61,16 @@ export default class AiPlayer extends Player {
         .map((cell) => [arr2str(cell.coords), cell.coords])
     );
     this.#highPriorityPossibleTargets = new Map();
+  }
+
+  #initOpponentShipsLength() {
+    // The opponent ships' length are the same of the current player... so use this players coordinates
+    // Sort the array by ship length (ascending)
+    this.#opponentShipSizes = this.gameboard.fleetAsShipObj
+      .map((ship) => ship.length)
+      .sort((a, b) => a - b);
+    // the minimum is the first element, as it is sorted
+    this.#opponentMinShipSize = this.#opponentShipSizes[0];
   }
 
   #initPlayerSkills() {
@@ -166,5 +180,15 @@ export default class AiPlayer extends Player {
 
   #applyPostAttackActionsImprovedHuntTarget(cellCoords, outcome) {
     this.#applyPostAttackActionsHuntTarget(cellCoords, outcome);
+
+    // if the ship is sunk, update the opponentMinShipSize
+    if (outcome.isSunk) {
+      this.#removeOpponentSunkShipSize(outcome.sunkShip.length);
+    }
+  }
+
+  #removeOpponentSunkShipSize(size) {
+    this.#opponentShipSizes.splice(this.#opponentShipSizes.indexOf(size), 1);
+    this.#opponentMinShipSize = this.#opponentShipSizes[0];
   }
 }
