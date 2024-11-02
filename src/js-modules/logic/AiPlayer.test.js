@@ -137,4 +137,46 @@ describe("AiPlayer class", () => {
     expect(cellCoords3).toEqual([1, 0]);
     expect(isHit3).toBe(true);
   });
+
+  it("can apply the improvedHuntTarget strategy", () => {
+    // mock the randomInt function from math module
+    const randomInt = jest.spyOn(math, "randomInt");
+
+    const aiPlayer = new AiPlayer(
+      playerName,
+      fleet,
+      sizeGameboard,
+      sizeGameboard,
+      "improvedHuntTarget"
+    );
+    const opponentPlayer = new AiPlayer(opponentName, fleet, sizeGameboard);
+    opponentPlayer.gameboard.placeShip("Destroyer", [0, 0], "E");
+
+    // Score a miss: the [0,1] cell is skipped in hunt mode
+    randomInt.mockImplementation(() => 2);
+    const cellCoords = aiPlayer.getOpponentTargetCellCoords();
+    const isHit = opponentPlayer.gameboard.receiveAttack(cellCoords) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords, { isHit });
+
+    expect(cellCoords).toEqual([0, 2]);
+    expect(isHit).toBe(false);
+
+    // Now score a hit
+    randomInt.mockImplementation(() => 0);
+    const cellCoords2 = aiPlayer.getOpponentTargetCellCoords();
+    const isHit2 = opponentPlayer.gameboard.receiveAttack(cellCoords2) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords2, { isHit: isHit2 });
+
+    expect(cellCoords2).toEqual([0, 0]);
+    expect(isHit2).toBe(true);
+
+    // Uusing the improvedHuntTarget strategy it gives [1,0] (high priority)
+    randomInt.mockImplementation(() => 1);
+    const cellCoords3 = aiPlayer.getOpponentTargetCellCoords();
+    const isHit3 = opponentPlayer.gameboard.receiveAttack(cellCoords3) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords3, { isHit: isHit3 });
+
+    expect(cellCoords3).toEqual([1, 0]);
+    expect(isHit3).toBe(true);
+  });
 });
