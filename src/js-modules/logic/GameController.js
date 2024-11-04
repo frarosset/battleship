@@ -17,10 +17,10 @@ export default class GameController {
 
   #versusAi;
 
-  constructor(player1Name, player2Name, versusAi = true) {
+  constructor(player1Name, player2Name, versusAi = true, aiSKills = null) {
     // create the players
     this.#player1 = this.#initPlayer(player1Name, false);
-    this.#player2 = this.#initPlayer(player2Name, versusAi);
+    this.#player2 = this.#initPlayer(player2Name, versusAi, aiSKills);
 
     this.#versusAi = versusAi;
 
@@ -36,9 +36,9 @@ export default class GameController {
     return this.#player2;
   }
 
-  #initPlayer(name, isAi = false) {
+  #initPlayer(name, isAi = false, aiSkills) {
     if (isAi) {
-      return new AiPlayer(name);
+      return new AiPlayer(name, aiSkills);
     } else {
       return new Player(name);
     }
@@ -206,7 +206,11 @@ export default class GameController {
       ? this.#opponent.gameboard.getCell(coords).getShip()
       : null;
 
-    return { isHit, isSunk, isWin, sunkShip };
+    const sunkShipCoords = isSunk
+      ? this.#opponent.gameboard.getShipPosition(sunkShip.name)
+      : null;
+
+    return { isHit, isSunk, isWin, sunkShip, sunkShipCoords };
   }
 
   #showAttackOutcome(coords, outcome) {

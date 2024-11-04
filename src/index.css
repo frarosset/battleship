@@ -342,6 +342,43 @@ button {
   align-items: center;
 }
 
+.players-name__ai-player-div {
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+}
+
+.players-name__prev-ai-btn,
+.players-name__next-ai-btn {
+  grid-row: 1 / span 2;
+  font-size: var(--player-title-fontsize);
+}
+
+.players-name__prev-ai-btn:active,
+.players-name__next-ai-btn:active {
+  transform: scaleX(0.9);
+}
+
+.players-name__prev-ai-btn:disabled,
+.players-name__next-ai-btn:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media not all and (hover: none) {
+  .players-name__prev-ai-btn:hover,
+  .players-name__next-ai-btn:hover {
+    transform: scaleX(0.9);
+  }
+}
+
+.players-name__prev-ai-btn {
+  grid-column: 1;
+}
+
+.players-name__next-ai-btn {
+  grid-column: 3;
+}
+
 .players-name__player-name-p,
 .players-name__player-name-input,
 .players-name__player-title-p,
@@ -364,13 +401,13 @@ button {
   );
   text-shadow: none;
   font-weight: bold;
+  height: calc(
+    var(--txt-lineheight) * var(--player-name-fontsize) +
+      var(--input-padding-bottom) + 2px
+  );
 }
 
 .players-name__player-name-input {
-  height: calc(
-    var(--line-height) * var(--player-name-fontsize) +
-      var(--input-padding-bottom)
-  );
   outline: none;
   border: none;
   border-bottom: 2px solid var(--col-txt-alt);

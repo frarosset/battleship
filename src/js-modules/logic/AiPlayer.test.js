@@ -22,8 +22,13 @@ describe("AiPlayer class", () => {
   ];
   const fleetNames = fleet.map((item) => item[0]);
 
-  const aiPlayer = new AiPlayer(playerName, fleet, sizeGameboard);
-  const opponentPlayer = new AiPlayer(opponentName, fleet, sizeGameboard);
+  const aiPlayer = new AiPlayer(playerName, "random", fleet, sizeGameboard);
+  const opponentPlayer = new AiPlayer(
+    opponentName,
+    "random",
+    fleet,
+    sizeGameboard
+  );
 
   it("has the characteristics of a normal Player", () => {
     // copy the same tests as Player class
@@ -68,14 +73,13 @@ describe("AiPlayer class", () => {
     // mock the randomInt function from math module
     const randomInt = jest.spyOn(math, "randomInt");
 
-    const aiPlayer = new AiPlayer(
-      playerName,
+    const aiPlayer = new AiPlayer(playerName, "random", fleet, sizeGameboard);
+    const opponentPlayer = new AiPlayer(
+      opponentName,
+      "random",
       fleet,
-      sizeGameboard,
-      sizeGameboard,
-      "random"
+      sizeGameboard
     );
-    const opponentPlayer = new AiPlayer(opponentName, fleet, sizeGameboard);
     opponentPlayer.gameboard.placeShip("Destroyer", [0, 0], "E");
 
     randomInt.mockImplementation(() => 0); // Mock the return value to 0
@@ -102,12 +106,16 @@ describe("AiPlayer class", () => {
 
     const aiPlayer = new AiPlayer(
       playerName,
+      "huntTarget",
       fleet,
-      sizeGameboard,
-      sizeGameboard,
-      "huntTarget"
+      sizeGameboard
     );
-    const opponentPlayer = new AiPlayer(opponentName, fleet, sizeGameboard);
+    const opponentPlayer = new AiPlayer(
+      opponentName,
+      "random",
+      fleet,
+      sizeGameboard
+    );
     opponentPlayer.gameboard.placeShip("Destroyer", [0, 0], "E");
 
     // Score a miss
@@ -144,21 +152,25 @@ describe("AiPlayer class", () => {
 
     const aiPlayer = new AiPlayer(
       playerName,
+      "improvedHuntTarget",
       fleet,
-      sizeGameboard,
-      sizeGameboard,
-      "improvedHuntTarget"
+      sizeGameboard
     );
-    const opponentPlayer = new AiPlayer(opponentName, fleet, sizeGameboard);
-    opponentPlayer.gameboard.placeShip("Destroyer", [0, 0], "E");
+    const opponentPlayer = new AiPlayer(
+      opponentName,
+      "random",
+      fleet,
+      sizeGameboard
+    );
+    opponentPlayer.gameboard.placeShip("Destroyer", [0, 1], "E");
 
     // Score a miss: the [0,1] cell is skipped in hunt mode
-    randomInt.mockImplementation(() => 2);
+    randomInt.mockImplementation(() => 1);
     const cellCoords = aiPlayer.getOpponentTargetCellCoords();
     const isHit = opponentPlayer.gameboard.receiveAttack(cellCoords) > 0;
     aiPlayer.applyPostAttackActions(cellCoords, { isHit });
 
-    expect(cellCoords).toEqual([0, 2]);
+    expect(cellCoords).toEqual([0, 3]);
     expect(isHit).toBe(false);
 
     // Now score a hit
@@ -167,7 +179,7 @@ describe("AiPlayer class", () => {
     const isHit2 = opponentPlayer.gameboard.receiveAttack(cellCoords2) > 0;
     aiPlayer.applyPostAttackActions(cellCoords2, { isHit: isHit2 });
 
-    expect(cellCoords2).toEqual([0, 0]);
+    expect(cellCoords2).toEqual([0, 1]);
     expect(isHit2).toBe(true);
 
     // Uusing the improvedHuntTarget strategy it gives [1,0] (high priority)
@@ -176,7 +188,14 @@ describe("AiPlayer class", () => {
     const isHit3 = opponentPlayer.gameboard.receiveAttack(cellCoords3) > 0;
     aiPlayer.applyPostAttackActions(cellCoords3, { isHit: isHit3 });
 
-    expect(cellCoords3).toEqual([1, 0]);
-    expect(isHit3).toBe(true);
+    expect(cellCoords3).toEqual([0, 0]);
+    expect(isHit3).toBe(false);
+
+    const cellCoords4 = aiPlayer.getOpponentTargetCellCoords();
+    const isHit4 = opponentPlayer.gameboard.receiveAttack(cellCoords4) > 0;
+    aiPlayer.applyPostAttackActions(cellCoords4, { isHit: isHit4 });
+
+    expect(cellCoords4).toEqual([1, 1]);
+    expect(isHit4).toBe(true);
   });
 });
