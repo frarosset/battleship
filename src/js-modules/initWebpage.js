@@ -19,10 +19,10 @@ export default function initWebpage() {
   renderHomeViewDom();
 }
 
-function renderGameViewDom(token, { player1, player2 }) {
+function renderGameViewDom(token, { player1, player2, versusAi }) {
   console.log(`${token} - ${player1.name} vs ${player2.name}`);
   removeDescendants(container);
-  const gameViewDom = new GameViewDom(player1, player2);
+  const gameViewDom = new GameViewDom(player1, player2, versusAi);
   container.append(gameViewDom.div);
   // Notify the initialization of the page
   PubSub.publish(pubSubTokens.gameViewInitialized);

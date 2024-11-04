@@ -106,6 +106,7 @@ export default class GameController {
     PubSub.publish(pubSubTokens.showGameView, {
       player1: this.#player1,
       player2: this.#player2,
+      versusAi: this.#versusAi,
     });
   }
 

@@ -22,10 +22,12 @@ export default class GameViewDom {
   #players;
   #currentPlayer;
   #isAIPlayer;
+  #versusAi;
   #showCurrentPlayerDeployedFleetCallbackBinded;
 
-  constructor(player1, player2) {
+  constructor(player1, player2, versusAi) {
     this.#players = [new PlayerDom(player1), new PlayerDom(player2)];
+    this.#versusAi = versusAi;
 
     PubSub.subscribe(
       pubSubTokensUi.playersSwitch,
@@ -69,6 +71,11 @@ export default class GameViewDom {
     const header = initHeader(getCssClass("header"));
     // const h1 = initH1(getCssClass("h1"), null, "BATTLESHIP");
     const showFleetBtn = this.#initShowFleetButton();
+
+    if (this.#versusAi) {
+      showFleetBtn.style.visibility = "hidden";
+    }
+
     header.append(showFleetBtn);
     return header;
   }
