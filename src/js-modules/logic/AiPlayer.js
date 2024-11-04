@@ -34,6 +34,7 @@ export default class AiPlayer extends Player {
   #applyPostAttackActions; // methods initalized based on the #skills
   #opponentMinShipSize;
   #opponentShipSizes;
+  #selectedPossibleTargets;
 
   constructor(
     name,
@@ -46,7 +47,7 @@ export default class AiPlayer extends Player {
 
     this.#initPossibleTargets();
     if (skills == "improvedHuntTarget") {
-      this.#initOpponentShipsLength();
+      this.#initOpponentShipsSize();
     }
     this.#skills = skills;
     this.#initPlayerSkills();
@@ -61,16 +62,6 @@ export default class AiPlayer extends Player {
         .map((cell) => [arr2str(cell.coords), cell.coords])
     );
     this.#highPriorityPossibleTargets = new Map();
-  }
-
-  #initOpponentShipsLength() {
-    // The opponent ships' length are the same of the current player... so use this players coordinates
-    // Sort the array by ship length (ascending)
-    this.#opponentShipSizes = this.gameboard.fleetAsShipObj
-      .map((ship) => ship.length)
-      .sort((a, b) => a - b);
-    // the minimum is the first element, as it is sorted
-    this.#opponentMinShipSize = this.#opponentShipSizes[0];
   }
 
   #initPlayerSkills() {
@@ -187,8 +178,69 @@ export default class AiPlayer extends Player {
     }
   }
 
+  #initOpponentShipsSize() {
+    // The opponent ships' length are the same of the current player... so use this players coordinates
+    // Sort the array by ship length (ascending)
+    this.#opponentShipSizes = this.gameboard.fleetAsShipObj
+      .map((ship) => ship.length)
+      .sort((a, b) => a - b);
+    this.#updateOpponentMinShipSize();
+  }
+
   #removeOpponentSunkShipSize(size) {
     this.#opponentShipSizes.splice(this.#opponentShipSizes.indexOf(size), 1);
+    this.#updateOpponentMinShipSize();
+  }
+
+  #updateOpponentMinShipSize() {
+    // the minimum is the first element, as it is sorted
     this.#opponentMinShipSize = this.#opponentShipSizes[0];
+
+    console.log(this.#opponentShipSizes, this.#opponentMinShipSize);
+
+    // get the selected possible targets based on this.#opponentMinShipSize
+    this.#getSelectedPossibleTargets();
+  }
+
+  #getSelectedPossibleTargets() {
+    const minShipSize = this.#opponentMinShipSize;
+
+    // initialize the possible targets Map with the full possibleTargets list
+    // store it in an array, which will be used to keep track of different sets of the same Map size
+    let selectedPossibleTargetsArr = [
+      new Map(JSON.parse(JSON.stringify(Array.from(this.#possibleTargets)))),
+    ];
+    let minMapSize = selectedPossibleTargetsArr[0].size;
+
+    console.log("full:", minMapSize);
+    // There are different possible Maps that can be considered, each one with a different offset.
+    // The elements in each one are those who fulfill: (row + col) % minShipSize === offset
+    for (let offset = 0; offset < minShipSize; offset++) {
+      // Create a temporary Map with the possible targets cells fulfilling parity with this offset
+      const tempSelectedPossibleTargets = new Map();
+      [...this.#possibleTargets.entries()].forEach(([key, [row, col]]) => {
+        if ((row + col) % minShipSize === offset) {
+          tempSelectedPossibleTargets.set(key, [row, col]);
+        }
+      });
+      const tempMapSize = tempSelectedPossibleTargets.size;
+
+      console.log("offset", offset, tempMapSize, tempSelectedPossibleTargets);
+
+      // If this temporary Map has a smaller size than minMapSize, replace the selectedPossibleTargetsArr and update (reduce) minMapSize
+      if (tempMapSize < minMapSize) {
+        selectedPossibleTargetsArr = [tempSelectedPossibleTargets];
+        minMapSize = tempMapSize;
+        console.log("replaced", minMapSize);
+      } else if (tempMapSize === minMapSize) {
+        selectedPossibleTargetsArr.push(tempSelectedPossibleTargets);
+        console.log("append", minMapSize);
+      }
+    }
+
+    // use a set from selectedPossibleTargetsArr. Choose randomly, as they are equivalent
+    const idx = randomInt(0, selectedPossibleTargetsArr.length - 1);
+    console.log(idx, selectedPossibleTargetsArr);
+    this.#selectedPossibleTargets = selectedPossibleTargetsArr[idx];
   }
 }
