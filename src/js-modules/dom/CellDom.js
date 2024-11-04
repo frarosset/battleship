@@ -11,8 +11,7 @@ export default class CellDom {
     this.#div = initCellDiv(cell);
     this.#div.obj = this;
 
-    // temporarily mark the ships // todo: remove
-    markShip.call(this);
+    //markShip.call(this); // for debug
     this.setAttackedStatus();
   }
 
@@ -47,8 +46,8 @@ function initCellDiv(cell) {
   return div;
 }
 
-function markShip() {
-  if (this.cell.hasShip()) {
-    this.div.textContent = "#";
-  }
-}
+// function markShip() {
+//   if (this.cell.hasShip()) {
+//     this.div.textContent = "#";
+//   }
+// }
