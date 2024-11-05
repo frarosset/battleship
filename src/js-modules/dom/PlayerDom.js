@@ -74,7 +74,7 @@ export default class PlayerDom {
 
   #showAttackOutcome(msg, { coords, outcome }) {
     if (outcome.isSunk) {
-      PubSub.publish(pubSubTokensUi.shipHasSunk(this.#player.name));
+      PubSub.publish(pubSubTokensUi.shipHasSunk(this.#player));
     }
     this.#gameboardDiv.obj.showAttackOutcome(coords, outcome);
   }
@@ -107,7 +107,7 @@ export default class PlayerDom {
     deployedFleetSizeSpan.textContent = player.gameboard.deployedFleet.length;
     textShipsSpan.textContent = " ships";
 
-    PubSub.subscribe(pubSubTokensUi.shipHasSunk(player.name), () => {
+    PubSub.subscribe(pubSubTokensUi.shipHasSunk(player), () => {
       const fleetLength = player.gameboard.deployedFleet.length;
       deployedFleetSizeSpan.textContent = fleetLength;
       textShipsSpan.textContent = fleetLength == 1 ? " ship " : " ships";

@@ -107,6 +107,7 @@ export default class GameController {
 
   #deployPlayer2Fleet() {
     PubSub.unsubscribe(pubSubTokens.fleetDeployed);
+    PubSub.unsubscribe(pubSubTopicUi); // remove all UI PubSub subscriptions
 
     PubSub.subscribe(pubSubTokens.fleetDeployed, this.#initGameView.bind(this));
 
@@ -120,6 +121,7 @@ export default class GameController {
 
   #initGameView() {
     PubSub.unsubscribe(pubSubTokens.fleetDeployed);
+    PubSub.unsubscribe(pubSubTopicUi); // remove all UI PubSub subscriptions
 
     // First subscribe to the token that notifies when the next action should be performed
     PubSub.subscribe(
