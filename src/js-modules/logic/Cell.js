@@ -25,6 +25,10 @@ export default class Cell {
     this.#ship = ship;
   }
 
+  removeShip() {
+    this.#ship = null;
+  }
+
   hasShip() {
     return this.#ship !== null;
   }
