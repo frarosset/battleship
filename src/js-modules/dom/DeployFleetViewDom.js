@@ -5,7 +5,7 @@ import {
   initHeader,
 } from "../../js-utilities/commonDomComponents.js";
 import PlayerDom from "./PlayerDom.js";
-import { pubSubTokens } from "../pubSubTokens.js";
+import { pubSubTokens, pubSubTokensUi } from "../pubSubTokens.js";
 import PubSub from "pubsub-js";
 
 const blockName = "deploy-fleet";
@@ -41,6 +41,11 @@ export default class DeployFleetViewDom {
     const playerDiv = initDiv(getCssClass("playerDiv"));
 
     playerDiv.append(this.#playerDom.div);
+
+    // show the ships
+    PubSub.publish(
+      pubSubTokensUi.toggleDeployedFleetShown(this.#playerDom.player)
+    );
 
     const msgP = this.#initGameMsg();
 
