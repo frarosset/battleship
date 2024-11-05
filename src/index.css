@@ -17,7 +17,7 @@
   --col-sunk-ship-overlay: rgb(255, 0, 150, 0.3);
 
   /* Colors (background)*/
-  --bg-col: var(--col-white);
+  --bg-col: var(--col-lighter-sea-blue);
   --gameboard-bg-col: var(--col-sea-blue);
   --cell-border-col: var(--col-darker-sea-blue-alpha);
   --cell-hit-col: var(--col-orange-light);
@@ -52,7 +52,8 @@
   --player-vs-fontsize: 1.5rem;
   --player-fontsize: 1rem;
   --player-name-fontsize: 1.2rem;
-  --game-button-fontsize: 1rem;
+  --game-button-fontsize: 0.8rem;
+  --footer-fontsize: 0.8rem;
 
   --fix-font-padding-bottom: 5px;
 
@@ -121,33 +122,37 @@ html {
 
 body {
   margin: 0 auto;
-  height: 100vh; /*it is assumed the same for <html>*/
-  height: 100dvh; /* if supported */
+  min-height: 100vh; /*it is assumed the same for <html>*/
+  min-height: 100dvh; /* if supported */
 
   /* if you want to allow scroll: */
-  /* min-height: 100vh; */
-  /* height: 100%; */
+  height: 100%;
 
   width: 100%;
   /* or max-width -- this avoids horizontal scroll bars */
 
   touch-action: manipulation; /* disable double tap to zoom on some browsers*/
   /* user-select: none; */
+
+  background-color: var(--bg-col);
+  background-attachment: fixed;
 }
 
 /*****************************************************/
 
 /* || Generic */
 
-body {
+main {
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: auto;
-  background-color: var(--bg-col);
+
+  height: 100vh; /*it is assumed the same for <html>*/
+  height: 100dvh; /* if supported */
 }
 
-body > * {
+main > * {
   width: 100%;
 }
 
@@ -660,4 +665,36 @@ button:active {
 
 .ship.initial-state {
   transition-timing-function: ease-out;
+}
+
+/* main footer */
+
+.main-footer {
+  background-color: var(--col-black-alpha);
+  color: var(--col-grey);
+  font-weight: normal;
+  font-family: var(--accent-font);
+  font-size: var(--footer-fontsize);
+  padding: var(--page-padding);
+}
+
+.main-footer__p {
+  max-width: min(100%, 50rem);
+  padding: var(--page-padding) 0
+    calc(var(--page-padding) + var(--fix-font-padding-bottom));
+  margin: 0 auto;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.main-footer__p a {
+  text-shadow: 2px 2px 2px var(--col-black);
+  color: var(--col-white);
+}
+
+@media not all and (hover: none) {
+  .main-footer__p a:hover {
+    cursor: pointer;
+    color: var(--col-txt-accent);
+  }
 }

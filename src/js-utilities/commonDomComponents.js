@@ -20,6 +20,12 @@ export function initHeader(className = null) {
   return element;
 }
 
+export function initFooter(className = null) {
+  const element = document.createElement("footer");
+  applyClass(element, className);
+  return element;
+}
+
 export function initH1(
   className = null,
   faIcon = null,

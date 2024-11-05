@@ -5,10 +5,18 @@ import GameEndViewDom from "./dom/GameEndViewDom.js";
 import PubSub from "pubsub-js";
 import { pubSubTokens } from "./pubSubTokens.js";
 import { resetContent } from "../js-utilities/commonDomUtilities.js";
+import setCreditFooter from "../js-utilities/creditFooter.js";
+import initMainFooter from "./initMainFooter.js";
 
-const container = document.body;
+let container;
 
 export default function initWebpage() {
+  container = document.createElement("main");
+  const mainFooter = initMainFooter();
+  document.body.append(container, mainFooter);
+
+  setCreditFooter();
+
   // temporary code: a proper external dom structure is to be initialized todo
   PubSub.subscribe(pubSubTokens.showGameView, renderGameViewDom);
   PubSub.subscribe(pubSubTokens.showGameEndView, renderGameEndViewDom);
@@ -42,7 +50,7 @@ function renderGameEndViewDom(
   resetContent(container, gameEndViewDom.div);
 }
 
-function renderHomeViewDom(token) {
+function renderHomeViewDom(token = "") {
   console.log(`${token}`);
   const homeViewDom = new HomeViewDom();
   resetContent(container, homeViewDom.div);
