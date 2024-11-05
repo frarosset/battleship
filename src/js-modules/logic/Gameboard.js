@@ -171,6 +171,24 @@ export default class Gameboard {
     return true;
   }
 
+  resetShip(name) {
+    if (!this.hasDeployedShip(name)) {
+      throw new Error("The ship is not depolyed.");
+    }
+
+    // you can reset a ship only if it is deployed
+    const ship = this.#deployedFleet.get(name);
+
+    // reset the cells
+    const cellCoords = this.#fleetPosition.get(name)[0];
+    cellCoords.forEach(([c, r]) => this.#cells[c][r].removeShip(ship));
+
+    // move the ship from the deployed fleet to the not deployed fleet
+    this.#deployedFleet.delete(name);
+    this.#notDeployedFleet.set(name, ship);
+    this.#fleetPosition.set(name, null);
+  }
+
   placeShip(name, [cStern, rStern], direction) {
     if (!this.canPlaceShip(name, [cStern, rStern], direction)) {
       throw new Error("The ship cannot be placed in this position");
