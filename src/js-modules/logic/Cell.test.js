@@ -24,6 +24,14 @@ describe("Cell class", () => {
     expect(cell.getShip()).toStrictEqual(ship);
   });
 
+  it("can remove the ship that occupies it", () => {
+    expect(cell.hasShip()).toBeTruthy();
+    expect(cell.getShip()).toStrictEqual(ship);
+    cell.removeShip(ship);
+    expect(cell.hasShip()).toBeFalsy();
+    expect(cell.getShip()).toBe(null);
+  });
+
   it("can be attacked", () => {
     expect(cell.hasBeenAttacked()).toBeFalsy();
     cell.receiveAttack();
