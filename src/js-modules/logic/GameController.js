@@ -8,7 +8,7 @@ import {
   pubSubTopicUi,
 } from "../pubSubTokens.js";
 
-const aiMoveDelay = 1000; //ms
+const aiMoveDelay = 500; //ms
 const genericDelay = 2000; //ms
 
 export default class GameController {

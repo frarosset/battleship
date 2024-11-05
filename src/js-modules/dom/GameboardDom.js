@@ -7,8 +7,16 @@ import HitMarkDom from "./HitMarkDom.js";
 import MissMarkDom from "./MissMarkDom.js";
 
 const blockName = "gameboard";
-
 const aimingClass = "aiming";
+
+const animationInitialStateClass = "initial-state";
+const animationDuration = 200; // ms
+
+// set the animation duration css property
+document.documentElement.style.setProperty(
+  "--time-animation",
+  `${animationDuration}ms`
+);
 
 export default class GameboardDom {
   #div;
@@ -17,6 +25,7 @@ export default class GameboardDom {
   #getAttackCoordsOnClickCallbackBinded;
   #fleetDom;
   #deployedFleetShown;
+  #deployedFleetAnimationOn;
 
   constructor(gameboard) {
     this.#gameboard = gameboard;
@@ -30,6 +39,7 @@ export default class GameboardDom {
     this.#fleetDom = new Map();
     this.#initFleet();
     this.#deployedFleetShown = false;
+    this.#deployedFleetAnimationOn = false;
   }
 
   // getters
@@ -49,7 +59,8 @@ export default class GameboardDom {
     );
   }
 
-  showAttackOutcome(coords, outcome) {
+  // the function is async, and awaits for the hit/miss mark show animation, if any
+  async showAttackOutcome(coords, outcome) {
     const cellDom = this.#cells.get(coords.join(","));
     cellDom.setAttackedStatus();
 
@@ -58,11 +69,13 @@ export default class GameboardDom {
       : new MissMarkDom(coords);
     this.#div.append(outcomeMarkDom.div);
 
+    await triggerAnimation(outcomeMarkDom.div);
+
     if (outcome.isSunk) {
       const shipName = outcome.sunkShip.name;
       const shipObj = this.#fleetDom.get(shipName);
       shipObj.makeItSunk();
-      this.#showShip(shipObj);
+      await this.#showShip(shipObj);
     }
     PubSub.publish(pubSubTokens.attackOutcomeShown, { coords, outcome });
   }
@@ -121,11 +134,16 @@ export default class GameboardDom {
     return shipObj;
   }
 
-  #showShip(shipObj) {
+  // the function is async, and awaits for the ship show animation, if any
+  async #showShip(shipObj) {
     this.#div.append(shipObj.div);
+    await triggerAnimation(shipObj.div);
   }
 
-  #hideShip(shipObj) {
+  // the function is async, and awaits for the ship hide animation, if any
+  async #hideShip(shipObj) {
+    await triggerAnimation(shipObj.div, true);
+    // wait for the animation to end before removing it
     this.#div.removeChild(shipObj.div);
   }
 
@@ -136,21 +154,45 @@ export default class GameboardDom {
     });
   }
 
-  showDeployedFleet() {
-    this.#gameboard.deployedFleet.forEach((shipName) => {
-      const shipObj = this.#fleetDom.get(shipName);
-      this.#showShip(shipObj);
-    });
-    this.#deployedFleetShown = true;
-  }
+  // the function is async, and awaits for all the ship show animations, if any
+  async showDeployedFleet() {
+    // do nothing if there is an animation ongoing or the fleet is already shown
+    if (!this.#deployedFleetShown && !this.#deployedFleetAnimationOn) {
+      this.#deployedFleetAnimationOn = true;
 
-  hideDeployedFleet() {
-    if (this.#deployedFleetShown) {
+      // save promises returned by #showShip to eventually wait for they resolution
+      const promiseArray = [];
+
       this.#gameboard.deployedFleet.forEach((shipName) => {
         const shipObj = this.#fleetDom.get(shipName);
-        this.#hideShip(shipObj);
+        promiseArray.push(this.#showShip(shipObj)); // returns a promise
       });
+
+      await Promise.all(promiseArray);
+
+      this.#deployedFleetShown = true;
+      this.#deployedFleetAnimationOn = false;
+    }
+  }
+
+  // the function is async, and awaits for all the ship hide animations, if any
+  async hideDeployedFleet() {
+    // do nothing if there is an animation ongoing or the fleet is already hidden
+    if (this.#deployedFleetShown && !this.#deployedFleetAnimationOn) {
+      this.#deployedFleetAnimationOn = true;
+
+      // save promises returned by #showShip to eventually wait for they resolution
+      const promiseArray = [];
+
+      this.#gameboard.deployedFleet.forEach((shipName) => {
+        const shipObj = this.#fleetDom.get(shipName);
+        promiseArray.push(this.#hideShip(shipObj)); // returns a promise
+      });
+
+      await Promise.all(promiseArray);
+
       this.#deployedFleetShown = false;
+      this.#deployedFleetAnimationOn = false;
     }
   }
 
@@ -161,4 +203,23 @@ export default class GameboardDom {
       this.showDeployedFleet();
     }
   }
+}
+
+async function triggerAnimation(div, hide = false) {
+  // this uses a trick to trigger the animation on the element
+
+  hide
+    ? div.classList.remove(animationInitialStateClass)
+    : div.classList.add(animationInitialStateClass);
+
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+  await new Promise((resolve) =>
+    setTimeout(() => {
+      div.classList.toggle(animationInitialStateClass);
+      resolve();
+    }, 0)
+  );
+
+  // wait for the animation to end before removing it
+  return new Promise((resolve) => setTimeout(resolve, animationDuration));
 }

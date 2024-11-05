@@ -86,7 +86,8 @@
     --inset-shadow: 2px 2px 2px var(--col-accent-light) inset; */
 
   /* Animations on hover / active / ...*/
-  --time-animation: 0.2s;
+  --time-animation-btn: 0.2s;
+  /* --time-animation: 0.4s; set via js in GameboardDom module */
 }
 
 /* ::backdrop { */
@@ -488,7 +489,6 @@ body:has(.game) {
 .miss-mark {
   background-image: url("./assets/images/hit_miss_marks/miss.png");
   filter: drop-shadow(0 0 var(--shadow-len-mark) var(--cell-miss-col));
-  transform: scale(0.6);
 }
 
 /* Players info */
@@ -579,7 +579,7 @@ button {
   border: none;
   border-radius: var(--button-radius);
   font-size: var(--button-fontsize);
-  transition: transform var(--time-animation);
+  transition: transform var(--time-animation-btn);
   box-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
 }
 
@@ -614,4 +614,50 @@ button:active {
 }
 .gameboard.aiming .cell:not(.hit):not(.miss) {
   cursor: crosshair;
+}
+
+/* animation class */
+.player__name-span {
+  transition:
+    color var(--time-animation),
+    background-color var(--time-animation);
+}
+
+.miss-mark,
+.hit-mark,
+.ship {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity var(--time-animation),
+    transform var(--time-animation),
+    background-color var(--time-animation);
+  transition-timing-function: ease;
+}
+
+.miss-mark {
+  transform: scale(0.6);
+}
+
+.ship {
+  transition-timing-function: ease-in;
+}
+
+.miss-mark.initial-state,
+.hit-mark.initial-state,
+.ship.initial-state {
+  opacity: 0;
+  transform: scale(1);
+}
+
+.hit-mark.initial-state {
+  transform: scale(2);
+}
+
+.miss-mark.initial-state {
+  transform: scale(0.3);
+}
+
+.ship.initial-state {
+  transition-timing-function: ease-out;
 }
