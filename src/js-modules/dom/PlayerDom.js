@@ -50,6 +50,10 @@ export default class PlayerDom {
     PubSub.subscribe(pubSubTokensUi.hideDeployedFleetShown(player), () => {
       this.#gameboardDiv.obj.hideDeployedFleet();
     });
+
+    PubSub.subscribe(pubSubTokensUi.updateDeployedFleetShown(player), () => {
+      this.#gameboardDiv.obj.updateDeployedFleet();
+    });
   }
 
   // getters

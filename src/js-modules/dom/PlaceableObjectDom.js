@@ -44,4 +44,8 @@ export default class PlaceableObjectDom {
     div.style.zIndex = this.constructor.zIndex;
     div.style.aspectRatio = `${maxCol - minCol + 1} / ${maxRow - minRow + 1}`;
   }
+
+  updatePosition(cellsCoords) {
+    this.#setGridLocation(this.#div, cellsCoords);
+  }
 }

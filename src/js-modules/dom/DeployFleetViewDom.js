@@ -73,8 +73,21 @@ export default class DeployFleetViewDom {
     return initP(getCssClass("msgP"), null, msg);
   }
 
+  #randomizeFleetCallback() {
+    this.#playerDom.player.repeatRandomShipsPlacement();
+
+    PubSub.publish(
+      pubSubTokensUi.updateDeployedFleetShown(this.#playerDom.player)
+    );
+  }
+
   #initRandomizeFleetButton() {
-    const btn = initButton("btn", () => {}, null, "Randomize");
+    const btn = initButton(
+      "btn",
+      this.#randomizeFleetCallback.bind(this),
+      null,
+      "Randomize"
+    );
 
     return btn;
   }

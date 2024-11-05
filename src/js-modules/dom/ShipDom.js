@@ -6,9 +6,12 @@ export default class ShipDom extends PlaceableObjectDom {
   static blockName = "ship";
   static zIndex = 1;
   #maskDiv;
+  #name;
 
   constructor(name, cellsCoords, direction) {
     super(cellsCoords);
+
+    this.#name = name;
 
     // Precompute mask (to be used when the ship will sunk, to add an overlay)
     this.#maskDiv = initDiv(`${this.constructor.blockName}__mask`);
@@ -16,6 +19,11 @@ export default class ShipDom extends PlaceableObjectDom {
     this.div.append(this.#maskDiv);
 
     this.#applyStyle(name, direction);
+  }
+
+  updatePosition(cellsCoords, direction) {
+    super.updatePosition(cellsCoords);
+    this.#applyStyle(this.#name, direction);
   }
 
   makeItSunk() {

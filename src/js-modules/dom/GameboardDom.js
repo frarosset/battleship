@@ -154,6 +154,18 @@ export default class GameboardDom {
     });
   }
 
+  async updateDeployedFleet() {
+    await this.hideDeployedFleet();
+
+    // change position of shipDom objects
+    this.#gameboard.fleet.forEach((shipName) => {
+      const shipObj = this.#fleetDom.get(shipName);
+      shipObj.updatePosition(...this.#gameboard.getShipPosition(shipName));
+    });
+
+    await this.showDeployedFleet();
+  }
+
   // the function is async, and awaits for all the ship show animations, if any
   async showDeployedFleet() {
     // do nothing if there is an animation ongoing or the fleet is already shown
