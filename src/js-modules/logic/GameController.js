@@ -8,6 +8,9 @@ import {
   pubSubTopicUi,
 } from "../pubSubTokens.js";
 
+const aiMoveDelay = 1000; //ms
+const genericDelay = 2000; //ms
+
 export default class GameController {
   #player1;
   #player2;
@@ -153,7 +156,10 @@ export default class GameController {
     // Attack the opponent and get outcome info
     const outcome = this.#attackTheOpponent(coords);
 
-    this.#showAttackOutcome(coords, outcome);
+    setTimeout(
+      () => this.#showAttackOutcome(coords, outcome),
+      this.#isAIPlayer() ? aiMoveDelay : 0
+    );
   }
 
   #attackOutcomeShownCallback(msg, { coords, outcome }) {
@@ -166,12 +172,16 @@ export default class GameController {
       PubSub.unsubscribe(pubSubTopicUi); // remove all UI PubSub subscriptions
       this.#consoleLogMessage("endGame");
 
-      PubSub.publish(pubSubTokens.showGameEndView, {
-        winnerPlayerName: this.#player.name,
-        defeatedPlayerName: this.#opponent.name,
-        versusAi: this.#versusAi,
-        isWinnerAi: this.#isAIPlayer(),
-      });
+      setTimeout(
+        () =>
+          PubSub.publish(pubSubTokens.showGameEndView, {
+            winnerPlayerName: this.#player.name,
+            defeatedPlayerName: this.#opponent.name,
+            versusAi: this.#versusAi,
+            isWinnerAi: this.#isAIPlayer(),
+          }),
+        genericDelay
+      );
       return;
     }
 
