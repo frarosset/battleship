@@ -222,10 +222,12 @@ button {
 /* Structural styles ----------------------------------------------------- */
 .game,
 .game-end,
+.deploy-fleet,
 .home,
 .players-name,
 .game__players-div,
 .game__player-div,
+.deploy-fleet__player-div,
 .player {
   display: flex;
   flex-direction: column;
@@ -241,6 +243,8 @@ button {
 .game,
 .game__players-div,
 .game__player-div,
+.deploy-fleet,
+.deploy-fleet__player-div,
 .player,
 .player__gameboard,
 .cell {
@@ -249,7 +253,8 @@ button {
   min-width: 0;
 }
 
-.game__player-div {
+.game__player-div,
+.deploy-fleet__player-div {
   width: 100%;
   height: 100%;
   justify-content: center;
@@ -278,6 +283,7 @@ button {
 
 .game,
 .game-end,
+.deploy-fleet,
 .home,
 .players-name {
   padding: var(--page-padding);
@@ -285,24 +291,35 @@ button {
 }
 
 .game,
-.game__players-div {
+.game__players-div,
+.deploy-fleet {
   gap: var(--players-gap);
 }
 
 @media only screen and (orientation: landscape) {
-  .game {
+  .game,
+  .deploy-fleet {
     gap: var(--page-gap);
   }
 }
 
 /* Custom Header style*/
-.game__header {
+.game__header,
+.deploy-fleet__header {
   display: flex;
   justify-content: center;
 }
+
+.deploy-fleet__btns {
+  display: flex;
+  gap: var(--players-gap);
+}
+
+.deploy-fleet__header button,
 .game__header button {
   text-align: center;
   font-size: var(--game-button-fontsize);
+  min-width: 7em;
 }
 
 /* Custom gameboard style */
@@ -486,6 +503,9 @@ body:has(.players-name) {
 body:has(.game) {
   background-image: url("./assets/images/backgrounds/battle.jpg");
 }
+body:has(.deploy-fleet) {
+  background-image: url("./assets/images/backgrounds/deploy-fleet.jpg");
+}
 
 .hit-mark {
   background-image: url("./assets/images/hit_miss_marks/hit.png");
@@ -506,12 +526,12 @@ body:has(.game) {
 }
 
 .player__name-span {
-  font-weight: bold;
   font-family: var(--accent-font);
   font-size: var(--player-name-fontsize);
 }
 
 .currentPlayer .player__name-span {
+  font-weight: bold;
   background: var(--orange-gradient);
   -webkit-background-clip: text;
   background-clip: text;
@@ -523,7 +543,8 @@ body:has(.game) {
 }
 
 /* Custom msg p style*/
-.game__msg-p {
+.game__msg-p,
+.deploy-fleet__msg-p {
   text-align: center;
   font-size: var(--msg-fontsize);
   text-wrap: pretty;
@@ -688,7 +709,7 @@ button:active {
 }
 
 .main-footer__p a {
-  text-shadow: 2px 2px 2px var(--col-black);
+  /* text-shadow: 2px 2px 2px var(--col-black); */
   color: var(--col-white);
 }
 
