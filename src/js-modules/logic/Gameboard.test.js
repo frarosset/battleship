@@ -198,10 +198,34 @@ describe("Gameboard class", () => {
         "The ship is not in the fleet"
       );
     });
+
+    it("can check reset a deployed ship into in the not deployed fleet", () => {
+      gameboard.resetShip(shipName1);
+      //, ...shipCoords1);
+
+      // the ship is moved into the not deployed fleet
+      expect(gameboard.hasDeployedShip(shipName1)).toBeFalsy();
+      expect(gameboard.hasNotDeployedShip(shipName1)).toBeTruthy();
+
+      // the ship position is null
+      expect(gameboard.getShipPosition(shipName1)).toBeNull();
+
+      // Check the cells: none of them is occupied by the ship
+      for (let c = 0; c < nCols; c++) {
+        for (let r = 0; r < nRows; r++) {
+          const cell = gameboard.getCell([c, r]);
+
+          expect(cell.hasShip()).toBeFalsy();
+        }
+      }
+    });
   });
 
   describe("attack handling", () => {
     it("can receive an attack in a cell of the board", () => {
+      // place again ship1
+      gameboard.placeShip(shipName1, ...shipCoords1);
+
       const sampleCoordsHit = shipCoords1[0];
       const sampleCoordsMiss = [0, 0];
 
