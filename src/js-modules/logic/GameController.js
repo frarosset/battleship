@@ -85,20 +85,42 @@ export default class GameController {
     }
   }
 
-  /* Gameplay methods */
+  /* Init game methods */
 
   #initGame() {
-    this.#deployFleets();
-    this.#initGameView();
+    // Start by deploying player 1 fleet: player 2 fleet will be deployd next
+    this.#deployPlayer1Fleet();
   }
 
-  #deployFleets() {
-    // TODO: let the user place the fleet
-    this.player1.randomShipsPlacement();
-    this.player2.randomShipsPlacement();
+  /* Fleet deployment methods */
+  #deployPlayer1Fleet() {
+    PubSub.subscribe(
+      pubSubTokens.fleetDeployed,
+      this.#deployPlayer2Fleet.bind(this)
+    );
+
+    PubSub.publish(pubSubTokens.showDeployFleetView, {
+      player: this.#player1,
+      isAi: false,
+    });
   }
+
+  #deployPlayer2Fleet() {
+    PubSub.unsubscribe(pubSubTokens.fleetDeployed);
+
+    PubSub.subscribe(pubSubTokens.fleetDeployed, this.#initGameView.bind(this));
+
+    PubSub.publish(pubSubTokens.showDeployFleetView, {
+      player: this.#player2,
+      isAi: this.#versusAi,
+    });
+  }
+
+  /* Gameplay methods */
 
   #initGameView() {
+    PubSub.unsubscribe(pubSubTokens.fleetDeployed);
+
     // First subscribe to the token that notifies when the next action should be performed
     PubSub.subscribe(
       pubSubTokens.gameViewInitialized,

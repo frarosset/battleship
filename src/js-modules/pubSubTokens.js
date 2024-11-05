@@ -1,9 +1,11 @@
 export const pubSubTokens = {
   showGameView: "SHOW GAME VIEW",
   showGameEndView: "SHOW GAME END VIEW",
+  showDeployFleetView: "SHOW DEPLOY FLEET VIEW",
   showHomeView: "SHOW HOME VIEW",
   showPlayersNameView: "SHOW PLAYERS NAME VIEW",
   gameViewInitialized: "GAME VIEW INITIALIZED",
+  fleetDeployed: "FLEET DEPLOYED",
   playTurn: "PLAY TURN",
   attackCoordsAcquired: "ATTACK COORDS ACQUIRED",
   attackOutcomeShown: "ATTACK OUTCOME SHOWN",
