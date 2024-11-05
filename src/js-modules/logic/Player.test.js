@@ -37,4 +37,24 @@ describe("Player class", () => {
     expect(player.gameboard.fleet).toEqual(fleetNames);
     expect(player.gameboard.deployedFleet).toEqual(fleetNames);
   });
+
+  it("can randomly place again the deployed fleet in the board", () => {
+    // get the old ship placement
+    const oldPlacement = new Map();
+    player.gameboard.deployedFleet.forEach((shipName) =>
+      oldPlacement.set(shipName, player.gameboard.getShipPosition(shipName))
+    );
+
+    player.repeatRandomShipsPlacement();
+
+    // get the new ship placement
+    const newPlacement = new Map();
+    player.gameboard.deployedFleet.forEach((shipName) =>
+      newPlacement.set(shipName, player.gameboard.getShipPosition(shipName))
+    );
+
+    expect(player.gameboard.fleet).toEqual(fleetNames);
+    expect(player.gameboard.deployedFleet).toEqual(fleetNames);
+    expect(oldPlacement).not.toEqual(newPlacement);
+  });
 });
