@@ -27,7 +27,7 @@ export default class GameboardDom {
   #deployedFleetShown;
   #deployedFleetAnimationOn;
 
-  constructor(gameboard) {
+  constructor(gameboard, canBeModified = false) {
     this.#gameboard = gameboard;
     this.#cells = new Map();
     this.#div = this.#initGameboardDiv(gameboard);
@@ -40,6 +40,10 @@ export default class GameboardDom {
     this.#initFleet();
     this.#deployedFleetShown = false;
     this.#deployedFleetAnimationOn = false;
+
+    if (canBeModified) {
+      this.#setEditCallbacks();
+    }
   }
 
   // getters
@@ -214,6 +218,38 @@ export default class GameboardDom {
     } else {
       this.showDeployedFleet();
     }
+  }
+
+  // set callback when edit is possible
+
+  #setEditCallbacks() {
+    this.#div.addEventListener("click", this.#rotateShipOnClickCallback);
+  }
+
+  #rotateShipOnClickCallback(e) {
+    // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate cell
+    const targetClassList = e.target.classList;
+    if (![...targetClassList].includes("cell")) {
+      const origDisplay = e.target.style.display;
+      e.target.style.display = "none";
+      document.elementFromPoint(e.clientX, e.clientY).click();
+      e.target.style.display = origDisplay;
+      return;
+    }
+
+    const cellDiv = e.target;
+    const cell = cellDiv.obj.cell;
+
+    if (!cell.hasShip()) {
+      console.log("No ship to rotate here...");
+      return;
+    }
+
+    const shipName = cell.getShip().name;
+    const centerOfRotation = cell.coords;
+    console.log(
+      `I'm rotating ship ${shipName} around [${centerOfRotation}]...`
+    );
   }
 }
 
