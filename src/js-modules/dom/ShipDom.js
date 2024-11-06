@@ -42,6 +42,8 @@ export default class ShipDom extends PlaceableObjectDom {
       this.div.style.backgroundSize = "100% 100%";
       if (direction == "N" || direction == "W") {
         this.div.style.transform = "rotate(180deg)";
+      } else {
+        this.div.style.transform = "rotate(0)";
       }
 
       // Precompute mask style (to be used when the ship will sunk, to add an overlay)
