@@ -9,6 +9,12 @@ const directionDisplacement = {
   S: [0, 1],
   W: [-1, 0],
 };
+const directionNext = {
+  N: "E",
+  E: "S",
+  S: "W",
+  W: "N",
+};
 
 export default class Gameboard {
   #nCols;
@@ -187,6 +193,29 @@ export default class Gameboard {
     this.#deployedFleet.delete(name);
     this.#notDeployedFleet.set(name, ship);
     this.#fleetPosition.set(name, null);
+  }
+
+  rotateShip(name) {
+    if (!this.hasDeployedShip(name)) {
+      throw new Error("The ship is not depolyed.");
+    }
+
+    // get the old position
+    const [cellCoords, direction] = this.#fleetPosition.get(name);
+    const sternCoords = cellCoords[0];
+
+    // reset the ship
+    this.resetShip(name);
+
+    // find a direction where you could place the rotate ship
+    // note that this loop is finite, since at most you return to the original direction
+    let newDirection = directionNext[direction];
+    while (!this.canPlaceShip(name, sternCoords, newDirection)) {
+      newDirection = directionNext[newDirection];
+    }
+
+    // place the rotated ship
+    this.placeShip(name, sternCoords, newDirection);
   }
 
   placeShip(name, [cStern, rStern], direction) {
