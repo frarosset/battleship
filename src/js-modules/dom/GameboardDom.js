@@ -158,6 +158,17 @@ export default class GameboardDom {
     });
   }
 
+  async updateDeployedShip(shipName) {
+    const shipObj = this.#fleetDom.get(shipName);
+
+    await this.#hideShip(shipObj);
+
+    // change position of shipDom objects
+    shipObj.updatePosition(...this.#gameboard.getShipPosition(shipName));
+
+    await this.#showShip(shipObj);
+  }
+
   async updateDeployedFleet() {
     await this.hideDeployedFleet();
 
@@ -223,7 +234,10 @@ export default class GameboardDom {
   // set callback when edit is possible
 
   #setEditCallbacks() {
-    this.#div.addEventListener("click", this.#rotateShipOnClickCallback);
+    this.#div.addEventListener(
+      "click",
+      this.#rotateShipOnClickCallback.bind(this)
+    );
   }
 
   #rotateShipOnClickCallback(e) {
@@ -250,6 +264,9 @@ export default class GameboardDom {
     console.log(
       `I'm rotating ship ${shipName} around [${centerOfRotation}]...`
     );
+
+    this.#gameboard.rotateShip(shipName, centerOfRotation);
+    this.updateDeployedShip(shipName);
   }
 }
 
