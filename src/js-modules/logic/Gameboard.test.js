@@ -324,5 +324,28 @@ describe("Gameboard class", () => {
         }
       }
     });
+
+    it("can rotate a deployed ship", () => {
+      gameboard.placeShip(shipName3, ...shipCoords3);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_W,
+        "W",
+      ]);
+
+      gameboard.rotateShip(shipName3);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_N,
+        "N",
+      ]);
+
+      gameboard.rotateShip(shipName3);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_W,
+        "W",
+      ]);
+    });
   });
 });
