@@ -62,6 +62,31 @@ describe("Gameboard class", () => {
     [4, 5],
     [4, 4],
   ];
+  const ship3_CenterOfRotation = [2, 7];
+  const shipCellsCoords3_cr_W = [
+    [4, 7],
+    [3, 7],
+    [2, 7],
+    [1, 7],
+  ];
+  const shipCellsCoords3_cr_N = [
+    [2, 9],
+    [2, 8],
+    [2, 7],
+    [2, 6],
+  ];
+  const shipCellsCoords3_cr_E = [
+    [0, 7],
+    [1, 7],
+    [2, 7],
+    [3, 7],
+  ];
+  const shipCellsCoords3_cr_S = [
+    [2, 5],
+    [2, 6],
+    [2, 7],
+    [2, 8],
+  ];
 
   it("is defined", () => {
     expect(Gameboard).toBeDefined();
@@ -344,6 +369,41 @@ describe("Gameboard class", () => {
 
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W,
+        "W",
+      ]);
+    });
+
+    it("can rotate a deployed ship around a center of rotation", () => {
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_cr_W,
+        "W",
+      ]);
+
+      gameboard.rotateShip(shipName3, ship3_CenterOfRotation);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_cr_N,
+        "N",
+      ]);
+
+      gameboard.rotateShip(shipName3, ship3_CenterOfRotation);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_cr_E,
+        "E",
+      ]);
+
+      gameboard.rotateShip(shipName3, ship3_CenterOfRotation);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_cr_S,
+        "S",
+      ]);
+
+      gameboard.rotateShip(shipName3, ship3_CenterOfRotation);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_cr_W,
         "W",
       ]);
     });
