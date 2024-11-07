@@ -24,6 +24,7 @@ export default class Gameboard {
   #notDeployedFleet;
   #sunkFleet;
   #fleetPosition;
+  #shipOnMoveData;
 
   static getAllDirections() {
     return Object.keys(directionDisplacement);
@@ -46,6 +47,7 @@ export default class Gameboard {
     this.#notDeployedFleet = new Map();
     this.#sunkFleet = new Map();
     this.#fleetPosition = new Map();
+    this.#shipOnMoveData = null;
   }
 
   get size() {
@@ -229,6 +231,30 @@ export default class Gameboard {
 
     // place the rotated ship
     this.placeShip(name, sternCoords, newDirection);
+  }
+
+  startMoveShip(name) {
+    if (!this.hasDeployedShip(name)) {
+      throw new Error("The ship is not depolyed.");
+    }
+
+    // get the current ship position
+    const shipPosition = this.#fleetPosition.get(name);
+
+    // save the current ship direction
+    this.#shipOnMoveData = { direction: shipPosition[1] };
+
+    // reset the ship (remove it from the gameboard)
+    this.resetShip(name);
+  }
+
+  endMoveShip(name, newSternCoords) {
+    // get the saved ship direction from #shipOnMoveData and then reset #shipOnMoveData
+    const { direction } = this.#shipOnMoveData;
+    this.#shipOnMoveData = null;
+
+    // place the ship in the new position
+    this.placeShip(name, newSternCoords, direction);
   }
 
   placeShip(name, [cStern, rStern], direction) {
