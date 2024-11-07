@@ -450,5 +450,22 @@ describe("Gameboard class", () => {
         "W",
       ]);
     });
+
+    it("restore the original position when no new position is specified", () => {
+      // start from the previous position
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_W_moved,
+        "W",
+      ]);
+
+      // it is assumed the new stern cell is specified
+      gameboard.startMoveShip(shipName3);
+      gameboard.endMoveShip(shipName3);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_W_moved,
+        "W",
+      ]);
+    });
   });
 });
