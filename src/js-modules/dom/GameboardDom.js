@@ -234,10 +234,39 @@ export default class GameboardDom {
   // set callback when edit is possible
 
   #setEditCallbacks() {
+    // Disable touch-action property on each ship div to enable dragging on touch devices
+    // see https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not
+    this.#disableTouchActionOnFleet();
+
+    // Disable dragStart events handling on each ship div
+    // see https://javascript.info/mouse-drag-and-drop
+    this.#disableDragStartOnFleet();
+
+    // Set event listeners just to the gameboard div and use event delegation: you can still retrieve the correct ship / cell
+
+    this.#div.addEventListener(
+      "pointerdown",
+      this.#startDragCallback.bind(this)
+    );
+
     this.#div.addEventListener(
       "click",
       this.#rotateShipOnClickCallback.bind(this)
     );
+  }
+
+  #disableTouchActionOnFleet() {
+    this.#gameboard.deployedFleet.forEach((shipName) => {
+      const shipObj = this.#fleetDom.get(shipName);
+      shipObj.div.style.touchAction = "none";
+    });
+  }
+
+  #disableDragStartOnFleet() {
+    this.#gameboard.deployedFleet.forEach((shipName) => {
+      const shipObj = this.#fleetDom.get(shipName);
+      shipObj.div.ondragstart = () => false;
+    });
   }
 
   #rotateShipOnClickCallback(e) {
@@ -267,6 +296,54 @@ export default class GameboardDom {
 
     this.#gameboard.rotateShip(shipName, centerOfRotation);
     this.updateDeployedShip(shipName);
+  }
+
+  #startDragCallback(e) {
+    // based on: https://javascript.info/mouse-drag-and-drop
+    // instead of absolutely positioning the dragging element, a transform translate() will be used
+
+    e.preventDefault();
+
+    // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate ship div
+    const targetClassList = e.target.classList;
+    if (![...targetClassList].includes("ship")) {
+      const origDisplay = e.target.style.display;
+      e.target.style.display = "none";
+      document.elementFromPoint(e.clientX, e.clientY).click();
+      e.target.style.display = origDisplay;
+      return;
+    }
+
+    const shipDiv = e.target;
+
+    // Save the current transform property of the shipDiv: it will be modified while dragging
+    const origShipDivTransform = shipDiv.style.transform;
+
+    // get current coordinates of pointer with respect to window (ie, use clientX, clientY)
+    const origX = e.clientX;
+    const origY = e.clientY;
+
+    // Define the onDrag and endDrag callbacks in here (use the variables defined on the startDrag callbacks)
+
+    function onDragCallback(e) {
+      // translate the ship to the current pointer coordinates updating the transform property of the shipDiv
+      // remember to include the original transform value
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+
+      shipDiv.style.transform = `translate(${currentX - origX}px,${currentY - origY}px) ${origShipDivTransform}`;
+    }
+
+    function endDragCallback() {
+      // restore the original transform property
+      shipDiv.style.transform = origShipDivTransform;
+
+      document.removeEventListener("pointermove", onDragCallback);
+      document.removeEventListener("pointerup", endDragCallback);
+    }
+
+    document.addEventListener("pointermove", onDragCallback);
+    document.addEventListener("pointerup", endDragCallback);
   }
 }
 

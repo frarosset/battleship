@@ -277,6 +277,7 @@ button {
   max-height: 100%;
   max-width: 100%;
   margin: 0 auto;
+  overflow: hidden;
 }
 
 /* Colors, dimensions and padding styles --------------------------------- */
