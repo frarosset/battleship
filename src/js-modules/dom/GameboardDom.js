@@ -244,12 +244,7 @@ export default class GameboardDom {
 
     this.#div.addEventListener(
       "pointerdown",
-      this.#startDragCallback.bind(this)
-    );
-
-    this.#div.addEventListener(
-      "click",
-      this.#rotateShipOnClickCallback.bind(this)
+      this.#startEditingPointerDownCallback.bind(this)
     );
   }
 
@@ -267,24 +262,12 @@ export default class GameboardDom {
     });
   }
 
-  #rotateShipOnClickCallback(e) {
-    // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate cell
-    const point = [e.clientX, e.clientY];
-    const cellDiv = getNestedElementOfClass(point, "cell");
-
-    if (cellDiv == null) {
-      return;
-    }
-
-    const cell = cellDiv.obj.cell;
-
-    if (!cell.hasShip()) {
-      console.log("No ship to rotate here...");
-      return;
-    }
+  #rotateShipAroundCell(cell) {
+    // this is an helper function that assumes that cell is defined, and it has a ship, too
 
     const shipName = cell.getShip().name;
     const centerOfRotation = cell.coords;
+
     console.log(
       `I'm rotating ship ${shipName} around [${centerOfRotation}]...`
     );
@@ -293,19 +276,28 @@ export default class GameboardDom {
     this.updateDeployedShip(shipName);
   }
 
-  #startDragCallback(e) {
-    // based on: https://javascript.info/mouse-drag-and-drop
+  #startEditingPointerDownCallback(e) {
+    // a single handler for both rotate and drag: the operation to perform is decided using
+    // a displacement threshold: within a given displacement, it is still considered a click
+    // see: https://stackoverflow.com/questions/6042202/how-to-distinguish-mouse-click-and-drag
+    //
+    // dragging based on: https://javascript.info/mouse-drag-and-drop
     // instead of absolutely positioning the dragging element, a transform translate() will be used
 
     e.preventDefault();
 
-    // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate ship div
+    // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate cell div
     const point = [e.clientX, e.clientY];
     const shipDiv = getNestedElementOfClass(point, "ship");
 
+    // if there is no ship, return
     if (shipDiv == null) {
       return;
     }
+
+    // if there is a ship div, there is necessarily a cell div, too, and the corresponding cell has a ship
+    const cellDiv = getNestedElementOfClass(point, "cell");
+    const cell = cellDiv.obj.cell;
 
     // Save the current transform property of the shipDiv: it will be modified while dragging
     const origShipDivTransform = shipDiv.style.transform;
@@ -314,27 +306,55 @@ export default class GameboardDom {
     const origX = e.clientX;
     const origY = e.clientY;
 
+    // variables used to distinguish between a simple click and a drag
+    const maxDeltaForClick = 6; // pixels
+    let dragOn = false;
+
     // Define the onDrag and endDrag callbacks in here (use the variables defined on the startDrag callbacks)
 
-    function onDragCallback(e) {
+    function onPointerMoveCallback(e) {
+      const deltaX = e.clientX - origX;
+      const deltaY = e.clientY - origY;
+
+      if (!dragOn) {
+        const maxDelta = Math.max(Math.abs(deltaX), Math.abs(deltaY));
+        if (maxDelta <= maxDeltaForClick) {
+          // too small displacement: consider it a click
+          return;
+        }
+
+        dragOn = true;
+      }
+
+      // you are actually dragging
       // translate the ship to the current pointer coordinates updating the transform property of the shipDiv
       // remember to include the original transform value
-      const currentX = e.clientX;
-      const currentY = e.clientY;
-
-      shipDiv.style.transform = `translate(${currentX - origX}px,${currentY - origY}px) ${origShipDivTransform}`;
+      shipDiv.style.transform = `translate(${deltaX}px,${deltaY}px) ${origShipDivTransform}`;
     }
 
-    function endDragCallback() {
-      // restore the original transform property
-      shipDiv.style.transform = origShipDivTransform;
+    function stopEditingPointerUpCallback() {
+      document.removeEventListener("pointermove", onPointerMoveCallback);
+      document.removeEventListener(
+        "pointerup",
+        stopEditingPointerUpCallbackBinded
+      );
 
-      document.removeEventListener("pointermove", onDragCallback);
-      document.removeEventListener("pointerup", endDragCallback);
+      if (dragOn) {
+        // a drag has occurred
+
+        // restore the original transform property
+        shipDiv.style.transform = origShipDivTransform;
+      } else {
+        // rotate ship
+        this.#rotateShipAroundCell(cell);
+      }
     }
 
-    document.addEventListener("pointermove", onDragCallback);
-    document.addEventListener("pointerup", endDragCallback);
+    const stopEditingPointerUpCallbackBinded =
+      stopEditingPointerUpCallback.bind(this);
+
+    document.addEventListener("pointermove", onPointerMoveCallback);
+    document.addEventListener("pointerup", stopEditingPointerUpCallbackBinded);
   }
 }
 
