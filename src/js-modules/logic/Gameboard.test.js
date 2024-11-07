@@ -97,6 +97,15 @@ describe("Gameboard class", () => {
     [0, 4],
   ];
 
+  const shipMoveFromCell3_relative = [1, 4];
+  const shipMoveToCell3_relative = [2, 6];
+  const shipCellsCoords3_W_moved_relative = [
+    [4, 6],
+    [3, 6],
+    [2, 6],
+    [1, 6],
+  ];
+
   it("is defined", () => {
     expect(Gameboard).toBeDefined();
   });
@@ -464,6 +473,24 @@ describe("Gameboard class", () => {
 
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W_moved,
+        "W",
+      ]);
+    });
+
+    it("can move a deployed ship to a different position relative to a non-stern ship coordinate", () => {
+      // start from the previous position
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_W_moved,
+        "W",
+      ]);
+
+      // if a coordinate is specified in the startMoveShip method, it defines an offset wrt the stern cell
+      // then, the coordinates specifiend in the endMoveShip method are assumed to have the same offset from the new stern cell
+      gameboard.startMoveShip(shipName3, shipMoveFromCell3_relative);
+      gameboard.endMoveShip(shipName3, shipMoveToCell3_relative);
+
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_W_moved_relative,
         "W",
       ]);
     });
