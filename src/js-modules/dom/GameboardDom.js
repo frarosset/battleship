@@ -1,4 +1,5 @@
 import { initDiv } from "../../js-utilities/commonDomComponents";
+import { getNestedElementOfClass } from "../../js-utilities/commonDomUtilities.js";
 import CellDom from "./CellDom.js";
 import { pubSubTokens } from "../pubSubTokens.js";
 import PubSub from "pubsub-js";
@@ -86,16 +87,13 @@ export default class GameboardDom {
 
   #getAttackCoordsOnClickCallback(e) {
     // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate cell
-    const targetClassList = e.target.classList;
-    if (![...targetClassList].includes("cell")) {
-      const origDisplay = e.target.style.display;
-      e.target.style.display = "none";
-      document.elementFromPoint(e.clientX, e.clientY).click();
-      e.target.style.display = origDisplay;
+    const point = [e.clientX, e.clientY];
+    const cellDiv = getNestedElementOfClass(point, "cell");
+
+    if (cellDiv == null) {
       return;
     }
 
-    const cellDiv = e.target;
     const cell = cellDiv.obj.cell;
 
     if (!cell.hasBeenAttacked()) {
@@ -271,16 +269,13 @@ export default class GameboardDom {
 
   #rotateShipOnClickCallback(e) {
     // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate cell
-    const targetClassList = e.target.classList;
-    if (![...targetClassList].includes("cell")) {
-      const origDisplay = e.target.style.display;
-      e.target.style.display = "none";
-      document.elementFromPoint(e.clientX, e.clientY).click();
-      e.target.style.display = origDisplay;
+    const point = [e.clientX, e.clientY];
+    const cellDiv = getNestedElementOfClass(point, "cell");
+
+    if (cellDiv == null) {
       return;
     }
 
-    const cellDiv = e.target;
     const cell = cellDiv.obj.cell;
 
     if (!cell.hasShip()) {
@@ -305,16 +300,12 @@ export default class GameboardDom {
     e.preventDefault();
 
     // we have subscribed to one event listener for the gameboard: we need to retrieve the appropriate ship div
-    const targetClassList = e.target.classList;
-    if (![...targetClassList].includes("ship")) {
-      const origDisplay = e.target.style.display;
-      e.target.style.display = "none";
-      document.elementFromPoint(e.clientX, e.clientY).click();
-      e.target.style.display = origDisplay;
+    const point = [e.clientX, e.clientY];
+    const shipDiv = getNestedElementOfClass(point, "ship");
+
+    if (shipDiv == null) {
       return;
     }
-
-    const shipDiv = e.target;
 
     // Save the current transform property of the shipDiv: it will be modified while dragging
     const origShipDivTransform = shipDiv.style.transform;
