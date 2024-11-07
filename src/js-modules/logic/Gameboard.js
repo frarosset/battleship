@@ -249,7 +249,7 @@ export default class Gameboard {
     this.resetShip(name);
   }
 
-  endMoveShip(name, newSternCoords) {
+  endMoveShip(name, newSternCoords = null) {
     // NOTE: this assumes no other ship is deployed/edited in the original ship position between startMoveShip() and this this method call
 
     // get the saved ship stern position and direction from #shipOnMoveData and then reset #shipOnMoveData
@@ -257,9 +257,10 @@ export default class Gameboard {
     this.#shipOnMoveData = null;
 
     // if you can't place it in the new position... restore the old one
-    const nextSternCoords = this.canPlaceShip(name, newSternCoords, direction)
-      ? newSternCoords
-      : sternCoords;
+    const nextSternCoords =
+      newSternCoords && this.canPlaceShip(name, newSternCoords, direction)
+        ? newSternCoords
+        : sternCoords;
 
     // place the ship in the new position
     this.placeShip(name, nextSternCoords, direction);
