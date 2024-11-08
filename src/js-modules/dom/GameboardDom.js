@@ -6,6 +6,7 @@ import PubSub from "pubsub-js";
 import ShipDom from "./ShipDom.js";
 import HitMarkDom from "./HitMarkDom.js";
 import MissMarkDom from "./MissMarkDom.js";
+import { animationDuration, waitDomDelay } from "../delays.js";
 
 const blockName = "gameboard";
 const aimingClass = "aiming";
@@ -13,8 +14,6 @@ const aimingClass = "aiming";
 const animationInitialStateClass = "initial-state";
 const noTransitionClass = "no-transition";
 const onDragClass = "on-drag";
-const animationDuration = 200; // ms
-const waitDelay = 60;
 
 // set the animation duration css property
 document.documentElement.style.setProperty(
@@ -382,7 +381,9 @@ export default class GameboardDom {
         shipDiv.style.transform = origShipDivTransform;
 
         // wait for a few ms to ensure the previous operations were performed, and then remove the no transition class
-        await waitForAsync(waitDelay);
+        await ensureCssClassForAnimationAsync();
+        await waitForAsync(waitDomDelay);
+
         shipDiv.classList.remove(noTransitionClass);
         shipDiv.classList.remove(onDragClass);
       } else {

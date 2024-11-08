@@ -7,9 +7,7 @@ import {
   pubSubTokensUi,
   pubSubTopicUi,
 } from "../pubSubTokens.js";
-
-const aiMoveDelay = 500; //ms
-const genericDelay = 2000; //ms
+import { aiMoveDelay, endGameDelay } from "../delays.js";
 
 export default class GameController {
   #player1;
@@ -204,7 +202,7 @@ export default class GameController {
             versusAi: this.#versusAi,
             isWinnerAi: this.#isAIPlayer(),
           }),
-        genericDelay
+        endGameDelay
       );
       return;
     }

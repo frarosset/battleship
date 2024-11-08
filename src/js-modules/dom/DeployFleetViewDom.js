@@ -8,6 +8,7 @@ import PlayerDom from "./PlayerDom.js";
 import { pubSubTokens, pubSubTokensUi } from "../pubSubTokens.js";
 import PubSub from "pubsub-js";
 import { getEditInstructionsMessage } from "../messages.js";
+import { aiDeployFleetDelay } from "../delays.js";
 
 const blockName = "deploy-fleet";
 const cssClass = {
@@ -18,8 +19,6 @@ const cssClass = {
   editInstructionsP: "edit-instructions-p",
 };
 const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
-
-const deployFleetAiDelay = 1000; // ms
 
 export default class DeployFleetViewDom {
   #div;
@@ -34,7 +33,7 @@ export default class DeployFleetViewDom {
       // Notify the initialization of the fleet for the AI
       setTimeout(
         () => PubSub.publish(pubSubTokens.fleetDeployed),
-        deployFleetAiDelay
+        aiDeployFleetDelay
       );
     } else {
       // allow the user to deploy its fleet, showing an editable gameboard
