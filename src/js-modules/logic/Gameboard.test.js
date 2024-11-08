@@ -443,7 +443,7 @@ describe("Gameboard class", () => {
       ]);
     });
 
-    it("restore the original position when moving a deployed ship to an invalid position", () => {
+    it("restores the original position when moving a deployed ship to an invalid position", () => {
       // start from the previous position
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W_moved,
@@ -460,7 +460,7 @@ describe("Gameboard class", () => {
       ]);
     });
 
-    it("restore the original position when no new position is specified", () => {
+    it("restores the original position when no new position is specified", () => {
       // start from the previous position
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W_moved,
@@ -493,6 +493,22 @@ describe("Gameboard class", () => {
         shipCellsCoords3_W_moved_relative,
         "W",
       ]);
+    });
+
+    it("returns true if the deployed ship is actually moved to a different position, and false otherwise", () => {
+      // start from the previous position
+      expect(gameboard.getShipPosition(shipName3)).toEqual([
+        shipCellsCoords3_W_moved_relative,
+        "W",
+      ]);
+
+      gameboard.startMoveShip(shipName3);
+      const successMove = gameboard.endMoveShip(shipName3, [4, 8]);
+      expect(successMove).toBeTruthy();
+
+      gameboard.startMoveShip(shipName3);
+      const failMove = gameboard.endMoveShip(shipName3, [2, 2]);
+      expect(failMove).toBeFalsy();
     });
   });
 });
