@@ -44,6 +44,7 @@
   --h1-fontsize: 1.2rem;
   --player-h3-fontsize: 1rem;
   --msg-fontsize: 1rem;
+  --edit-instructions-fontsize: 0.8rem;
   --title-fontsize: 3.2rem;
   --subtitle-fontsize: 1.2rem;
   --button-fontsize: 1.5rem;
@@ -548,9 +549,18 @@ body:has(.deploy-fleet) {
 .deploy-fleet__msg-p {
   text-align: center;
   font-size: var(--msg-fontsize);
-  text-wrap: pretty;
+  text-wrap: balance;
   color: var(--col-txt-alt);
   text-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
+}
+
+.deploy-fleet__edit-instructions-p {
+  text-align: center;
+  font-size: var(--edit-instructions-fontsize);
+  font-family: var(--accent-font);
+  line-height: 1.2;
+  text-wrap: balance;
+  color: var(--col-grey);
 }
 
 /* Ships */
