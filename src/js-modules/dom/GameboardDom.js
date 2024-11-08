@@ -12,6 +12,7 @@ const aimingClass = "aiming";
 
 const animationInitialStateClass = "initial-state";
 const noTransitionClass = "no-transition";
+const onDragClass = "on-drag";
 const animationDuration = 200; // ms
 const waitDelay = 60;
 
@@ -325,6 +326,7 @@ export default class GameboardDom {
 
         // initialize the move of the ship
         this.#gameboard.startMoveShip(shipName, cell.coords);
+        shipDiv.classList.add(onDragClass);
       }
 
       // you are actually dragging
@@ -382,6 +384,7 @@ export default class GameboardDom {
         // wait for a few ms to ensure the previous operations were performed, and then remove the no transition class
         await waitForAsync(waitDelay);
         shipDiv.classList.remove(noTransitionClass);
+        shipDiv.classList.remove(onDragClass);
       } else {
         // rotate ship
         this.#gameboard.rotateShip(shipName, cell.coords);
