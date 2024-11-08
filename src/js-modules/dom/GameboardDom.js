@@ -26,6 +26,7 @@ export default class GameboardDom {
   #gameboard;
   #cells;
   #getAttackCoordsOnClickCallbackBinded;
+  #startEditingPointerDownCallbackBinded;
   #fleetDom;
   #deployedFleetShown;
   #deployedFleetAnimationOn;
@@ -38,6 +39,9 @@ export default class GameboardDom {
 
     this.#getAttackCoordsOnClickCallbackBinded =
       this.#getAttackCoordsOnClickCallback.bind(this);
+
+    this.#startEditingPointerDownCallbackBinded =
+      this.#startEditingPointerDownCallback.bind(this);
 
     this.#fleetDom = new Map();
     this.#initFleet();
@@ -246,7 +250,7 @@ export default class GameboardDom {
 
     this.#div.addEventListener(
       "pointerdown",
-      this.#startEditingPointerDownCallback.bind(this)
+      this.#startEditingPointerDownCallbackBinded
     );
   }
 
@@ -282,6 +286,11 @@ export default class GameboardDom {
     if (shipDiv == null) {
       return;
     }
+
+    this.#div.removeEventListener(
+      "pointerdown",
+      this.#startEditingPointerDownCallbackBinded
+    );
 
     // if there is a ship div, there is necessarily a cell div, too, and the corresponding cell has a ship
     const cellDiv = getNestedElementOfClass(point, "cell");
@@ -379,6 +388,11 @@ export default class GameboardDom {
 
         await this.updateDeployedShip(shipName);
       }
+
+      this.#div.addEventListener(
+        "pointerdown",
+        this.#startEditingPointerDownCallbackBinded
+      );
     }
 
     const onPointerMoveCallbackBinded = onPointerMoveCallback.bind(this);
