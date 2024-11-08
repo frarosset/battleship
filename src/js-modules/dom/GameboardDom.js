@@ -11,7 +11,9 @@ const blockName = "gameboard";
 const aimingClass = "aiming";
 
 const animationInitialStateClass = "initial-state";
+const noTransitionClass = "no-transition";
 const animationDuration = 200; // ms
+const waitDelay = 60;
 
 // set the animation duration css property
 document.documentElement.style.setProperty(
@@ -322,7 +324,7 @@ export default class GameboardDom {
       shipDiv.style.transform = `translate(${deltaX}px,${deltaY}px) ${origShipDivTransform}`;
     }
 
-    function stopEditingPointerUpCallback(e) {
+    async function stopEditingPointerUpCallback(e) {
       document.removeEventListener("pointermove", onPointerMoveCallbackBinded);
       document.removeEventListener(
         "pointerup",
@@ -337,7 +339,29 @@ export default class GameboardDom {
         const toCell = stopCellDiv ? stopCellDiv.obj.cell : cell;
 
         // finalize the move of the ship
-        this.#gameboard.endMoveShip(shipName, toCell.coords);
+        const hasMoved = this.#gameboard.endMoveShip(shipName, toCell.coords);
+
+        // compute the translation of the ship when placed on the toCell
+        // note that so far the ship position was free, now it is forced to stay in the grid cells
+
+        // also, to allow for a smooth transition, first translate the ship in the original position
+
+        const cellRect = cellDiv.getBoundingClientRect();
+        const toCellRect = hasMoved
+          ? stopCellDiv.getBoundingClientRect()
+          : cellRect;
+
+        const deltaX = toCellRect.x - cellRect.x;
+        const deltaY = toCellRect.y - cellRect.y;
+
+        shipDiv.style.transform = `translate(${deltaX}px,${deltaY}px) ${origShipDivTransform}`;
+
+        // wait for the translation animation to end
+        await waitForAsync(animationDuration);
+
+        // set the .no-transition class on this ship: we want the next few operations to occur instantaneously
+        shipDiv.classList.add(noTransitionClass);
+        await ensureCssClassForAnimationAsync();
 
         // so far, just transforms were used on the ship div: update now the actual position
         const shipObj = this.#fleetDom.get(shipName);
@@ -345,10 +369,15 @@ export default class GameboardDom {
 
         // restore the original transform property
         shipDiv.style.transform = origShipDivTransform;
+
+        // wait for a few ms to ensure the previous operations were performed, and then remove the no transition class
+        await waitForAsync(waitDelay);
+        shipDiv.classList.remove(noTransitionClass);
       } else {
         // rotate ship
         this.#gameboard.rotateShip(shipName, cell.coords);
-        this.updateDeployedShip(shipName);
+
+        await this.updateDeployedShip(shipName);
       }
     }
 
@@ -361,6 +390,15 @@ export default class GameboardDom {
   }
 }
 
+function waitForAsync(waitInMs) {
+  return new Promise((resolve) => setTimeout(resolve, waitInMs));
+}
+
+async function ensureCssClassForAnimationAsync() {
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+  await waitForAsync(0);
+}
+
 async function triggerAnimation(div, hide = false) {
   // this uses a trick to trigger the animation on the element
 
@@ -368,14 +406,10 @@ async function triggerAnimation(div, hide = false) {
     ? div.classList.remove(animationInitialStateClass)
     : div.classList.add(animationInitialStateClass);
 
-  await new Promise((resolve) => requestAnimationFrame(resolve));
-  await new Promise((resolve) =>
-    setTimeout(() => {
-      div.classList.toggle(animationInitialStateClass);
-      resolve();
-    }, 0)
-  );
+  await ensureCssClassForAnimationAsync();
+
+  div.classList.toggle(animationInitialStateClass);
 
   // wait for the animation to end before removing it
-  return new Promise((resolve) => setTimeout(resolve, animationDuration));
+  return waitForAsync(animationDuration);
 }
