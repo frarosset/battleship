@@ -19,20 +19,44 @@ const cssClass = {
 };
 const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
 
+const deployFleetAiDelay = 1000; // ms
+
 export default class DeployFleetViewDom {
   #div;
   #playerDom;
 
   constructor(player, isAi) {
     player.randomShipsPlacement();
-    this.#playerDom = new PlayerDom(player, true);
 
-    this.#div = this.#initDeployFleetViewDiv();
+    if (isAi) {
+      this.#div = this.#initAiDeployFleetViewDiv();
+
+      // Notify the initialization of the fleet for the AI
+      setTimeout(
+        () => PubSub.publish(pubSubTokens.fleetDeployed),
+        deployFleetAiDelay
+      );
+    } else {
+      // allow the user to deploy its fleet, showing an editable gameboard
+      this.#playerDom = new PlayerDom(player, true);
+
+      this.#div = this.#initDeployFleetViewDiv();
+    }
   }
 
   // getters
   get div() {
     return this.#div;
+  }
+
+  #initAiDeployFleetViewDiv() {
+    const div = initDiv(blockName);
+
+    const msgP = this.#initGameMsg();
+
+    div.append(msgP);
+
+    return div;
   }
 
   #initDeployFleetViewDiv() {

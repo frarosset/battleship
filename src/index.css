@@ -552,6 +552,7 @@ body:has(.deploy-fleet) {
   text-wrap: balance;
   color: var(--col-txt-alt);
   text-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
+  margin-top: auto;
 }
 
 .deploy-fleet__edit-instructions-p {
