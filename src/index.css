@@ -705,6 +705,12 @@ button:active {
   }
 }
 
+.ship.on-drag {
+  z-index: 100 !important; /*set it on top of everything*/
+  transition-timing-function: ease-out;
+  filter: drop-shadow(0 0 calc(0.5 * var(--shadow-len)) var(--col-black));
+}
+
 /* main footer */
 
 .main-footer {
