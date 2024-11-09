@@ -577,7 +577,13 @@ body:has(.deploy-fleet) {
   background-image: none !important;
 }
 
-.shadow-ship:not(.out-of-bound) .ship__mask {
+.shadow-ship:not(.out-of-bound):not(.fallback) .ship__mask {
+  display: block !important;
+}
+
+.gameboard:has(.ship.on-drag.forbidden-position)
+  .shadow-ship.fallback
+  .ship__mask {
   display: block !important;
 }
 
@@ -585,7 +591,9 @@ body:has(.deploy-fleet) {
   background-color: var(--col-black-alpha);
 }
 
-.gameboard:has(.ship.on-drag.forbidden-position) .shadow-ship .ship__mask {
+.gameboard:has(.ship.on-drag.forbidden-position)
+  .shadow-ship:not(.fallback)
+  .ship__mask {
   background-color: var(--col-red-alpha);
 }
 

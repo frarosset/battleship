@@ -16,6 +16,7 @@ const noTransitionClass = "no-transition";
 const onDragClass = "on-drag";
 const forbiddenShipPositionClass = "forbidden-position";
 const outOfBoundClass = "out-of-bound";
+const fallbackShadowShipClass = "fallback";
 
 // set the animation duration css property
 document.documentElement.style.setProperty(
@@ -350,7 +351,12 @@ export default class GameboardDom {
     const origCell = origCellDiv.obj.cell;
     const shipName = origCell.getShip().name;
 
-    // create a shadow ship div and append it to the dom
+    // create two shadow ship div and append them to the dom
+    // one is fixed to the original position (fallback), the other will be moved based on the pointer
+    // the former will be used to show the destination when the ship cannot be moved
+    const fallbackShadowShipDiv = shipDiv.obj.initShadowShipDiv();
+    fallbackShadowShipDiv.classList.add(fallbackShadowShipClass);
+
     const shadowShipDiv = shipDiv.obj.initShadowShipDiv();
 
     // initialize the "previous cell to move to" to this initial cell
@@ -387,7 +393,7 @@ export default class GameboardDom {
         shipDiv.classList.add(onDragClass);
 
         // append the shadow ship div to the dom
-        this.#div.append(shadowShipDiv);
+        this.#div.append(shadowShipDiv, fallbackShadowShipDiv);
       }
 
       // you are actually dragging
@@ -443,6 +449,11 @@ export default class GameboardDom {
         // finalize the move of the ship
         const hasMoved = this.#gameboard.endMoveShip(toCell.coords);
 
+        if (!hasMoved) {
+          // if not moved, hide the shadow ship div (show only the fallback one)
+          shadowShipDiv.style.visibility = "hidden";
+        }
+
         await this.updateMovedDeployedShip(
           shipName,
           origCellDiv,
@@ -451,6 +462,7 @@ export default class GameboardDom {
         );
 
         shadowShipDiv.remove();
+        fallbackShadowShipDiv.remove();
 
         shipDiv.classList.remove(onDragClass);
       } else {
