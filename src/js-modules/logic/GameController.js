@@ -100,6 +100,8 @@ export default class GameController {
     PubSub.publish(pubSubTokens.showDeployFleetView, {
       player: this.#player1,
       isAi: false,
+      isPlayer1: true,
+      versusAi: this.#versusAi,
     });
   }
 
@@ -112,6 +114,8 @@ export default class GameController {
     PubSub.publish(pubSubTokens.showDeployFleetView, {
       player: this.#player2,
       isAi: this.#versusAi,
+      isPlayer1: false,
+      versusAi: this.#versusAi,
     });
   }
 

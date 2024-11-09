@@ -7,7 +7,10 @@ import {
 import PlayerDom from "./PlayerDom.js";
 import { pubSubTokens, pubSubTokensUi } from "../pubSubTokens.js";
 import PubSub from "pubsub-js";
-import { getEditInstructionsMessage } from "../messages.js";
+import {
+  getEditInstructionsMessage,
+  getDeployFleetMessage,
+} from "../messages.js";
 import { aiDeployFleetDelay } from "../delays.js";
 
 const blockName = "deploy-fleet";
@@ -23,9 +26,16 @@ const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
 export default class DeployFleetViewDom {
   #div;
   #playerDom;
+  #playerData;
 
-  constructor(player, isAi) {
+  constructor(player, isAi, isPlayer1, versusAi) {
     player.randomShipsPlacement();
+
+    this.#playerData = {
+      playerName: player.name,
+      isPlayer1,
+      versusAi,
+    };
 
     if (isAi) {
       this.#div = this.#initAiDeployFleetViewDiv();
@@ -100,7 +110,11 @@ export default class DeployFleetViewDom {
 
   #initGameMsg() {
     // for now show a temporary msg, to setup the page...the actual message selection is todo
-    const msg = "A message to show game status (TODO)";
+    const msg = getDeployFleetMessage(
+      this.#playerData.playerName,
+      this.#playerData.isPlayer1,
+      this.#playerData.versusAi
+    );
     return initP(getCssClass("msgP"), null, msg);
   }
 
