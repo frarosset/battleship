@@ -272,8 +272,12 @@ export default class Gameboard {
   }
 
   canPlaceShipOnMove(name, testRelativeCoords) {
-    // test if the ship being moved could be placed in a given position, and false otherwise
+    // test if the ship being moved could be placed in a given position, returning true or false
     // the ship is not actually placed
+
+    if (!this.#shipOnMoveData) {
+      throw new Error("No ship is being moved");
+    }
 
     // get the saved ship stern direction and offset from #shipOnMoveData
     const { direction, offset } = this.#shipOnMoveData;
