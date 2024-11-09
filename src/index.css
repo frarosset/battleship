@@ -710,6 +710,11 @@ button:active {
   cursor: move;
 }
 
+.gameboard:has(.ship.on-drag.forbidden-position),
+body:has(.ship.on-drag.forbidden-position) {
+  cursor: not-allowed;
+}
+
 @media not all and (hover: none) {
   .deploy-fleet:not(:has(.ship.on-drag)) .ship:hover {
     cursor: pointer;

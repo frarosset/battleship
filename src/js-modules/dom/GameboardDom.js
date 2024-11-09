@@ -14,6 +14,7 @@ const aimingClass = "aiming";
 const animationInitialStateClass = "initial-state";
 const noTransitionClass = "no-transition";
 const onDragClass = "on-drag";
+const forbiddenShipPositionClass = "forbidden-position";
 
 // set the animation duration css property
 document.documentElement.style.setProperty(
@@ -340,6 +341,9 @@ export default class GameboardDom {
     const origCell = origCellDiv.obj.cell;
     const shipName = origCell.getShip().name;
 
+    // initialize the "previous cell to move to" to this initial cell
+    let prevCellDiv = origCellDiv;
+
     // Save the current transform property of the shipDiv: it will be modified while dragging
     const origShipDivTransform = shipDiv.style.transform;
 
@@ -375,6 +379,23 @@ export default class GameboardDom {
       // translate the ship to the current pointer coordinates updating the transform property of the shipDiv
       // remember to include the original transform value
       shipDiv.style.transform = `translate(${deltaX}px,${deltaY}px) ${origShipDivTransform}`;
+
+      // determine if the ship could be placed in this cell
+      // get this cell
+      const point = [e.clientX, e.clientY];
+      const thisCellDiv = getNestedElementOfClass(point, "cell");
+
+      if (thisCellDiv !== prevCellDiv) {
+        // determine if the ship could be placed here
+        const isForbidden = thisCellDiv
+          ? !this.#gameboard.canPlaceShipOnMove(thisCellDiv.obj.cell.coords)
+          : true;
+
+        shipDiv.classList.toggle(forbiddenShipPositionClass, isForbidden);
+
+        // update the previuos cell
+        prevCellDiv = thisCellDiv;
+      }
     }
 
     async function stopEditingPointerUpCallback(e) {
