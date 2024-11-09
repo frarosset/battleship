@@ -271,6 +271,23 @@ export default class Gameboard {
     this.resetShip(name);
   }
 
+  canPlaceShipOnMove(name, testRelativeCoords) {
+    // test if the ship being moved could be placed in a given position, and false otherwise
+    // the ship is not actually placed
+
+    // get the saved ship stern direction and offset from #shipOnMoveData
+    const { direction, offset } = this.#shipOnMoveData;
+
+    // get the new stern coords
+    const testSternCoords = this.#sternFromOffset(
+      testRelativeCoords,
+      offset,
+      direction
+    );
+
+    return this.canPlaceShip(name, testSternCoords, direction);
+  }
+
   endMoveShip(name, newRelativeCoords = null) {
     // NOTE: this assumes no other ship is deployed/edited in the original ship position between startMoveShip() and this this method call
 
