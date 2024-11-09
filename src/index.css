@@ -14,7 +14,7 @@
   --col-sea-blue: rgb(6, 70, 84);
   --col-lighter-sea-blue: rgb(51, 99, 109);
   --col-darker-sea-blue-alpha: rgb(1, 64, 79, 0.7);
-  --col-sunk-ship-overlay: rgb(255, 0, 150, 0.3);
+  --col-red-alpha: rgb(255, 0, 0, 0.5);
 
   /* Colors (background)*/
   --bg-col: var(--col-lighter-sea-blue);
@@ -22,6 +22,7 @@
   --cell-border-col: var(--col-darker-sea-blue-alpha);
   --cell-hit-col: var(--col-orange-light);
   --cell-miss-col: var(--col-white);
+  --col-sunk-ship-overlay: var(--col-red-alpha);
   --orange-gradient: linear-gradient(
     var(--col-orange-light),
     var(--col-orange),
@@ -570,6 +571,22 @@ body:has(.deploy-fleet) {
 }
 .ship.sunk .ship__mask {
   background-color: var(--col-sunk-ship-overlay);
+}
+
+.shadow-ship {
+  background-image: none !important;
+}
+
+.shadow-ship:not(.out-of-bound) .ship__mask {
+  display: block !important;
+}
+
+.shadow-ship .ship__mask {
+  background-color: var(--col-black-alpha);
+}
+
+.gameboard:has(.ship.on-drag.forbidden-position) .shadow-ship .ship__mask {
+  background-color: var(--col-red-alpha);
 }
 
 /* Texts */

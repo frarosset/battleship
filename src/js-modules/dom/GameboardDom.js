@@ -15,6 +15,7 @@ const animationInitialStateClass = "initial-state";
 const noTransitionClass = "no-transition";
 const onDragClass = "on-drag";
 const forbiddenShipPositionClass = "forbidden-position";
+const outOfBoundClass = "out-of-bound";
 
 // set the animation duration css property
 document.documentElement.style.setProperty(
@@ -200,14 +201,12 @@ export default class GameboardDom {
     const shipDiv = shipObj.div;
 
     // also, to allow for a smooth transition, first translate the ship in the original position
-
-    const fromCellRect = origCellDiv.getBoundingClientRect();
-    const toCellRect = toCellDiv.getBoundingClientRect();
-
-    const deltaX = toCellRect.x - fromCellRect.x;
-    const deltaY = toCellRect.y - fromCellRect.y;
-
-    shipDiv.style.transform = `translate(${deltaX}px,${deltaY}px) ${origShipDivTransform}`;
+    this.translateShipDiv(
+      shipDiv,
+      origCellDiv,
+      toCellDiv,
+      origShipDivTransform
+    );
 
     // wait for the translation animation to end
     await waitForAsync(animationDuration);
@@ -227,6 +226,16 @@ export default class GameboardDom {
     await waitForAsync(waitDomDelay);
 
     shipDiv.classList.remove(noTransitionClass);
+  }
+
+  translateShipDiv(shipDiv, fromCellDiv, toCellDiv, origShipDivTransform) {
+    const fromCellRect = fromCellDiv.getBoundingClientRect();
+    const toCellRect = toCellDiv.getBoundingClientRect();
+
+    const deltaX = toCellRect.x - fromCellRect.x;
+    const deltaY = toCellRect.y - fromCellRect.y;
+
+    shipDiv.style.transform = `translate(${deltaX}px,${deltaY}px) ${origShipDivTransform}`;
   }
 
   // the function is async, and awaits for all the ship show animations, if any
@@ -341,6 +350,9 @@ export default class GameboardDom {
     const origCell = origCellDiv.obj.cell;
     const shipName = origCell.getShip().name;
 
+    // create a shadow ship div and append it to the dom
+    const shadowShipDiv = shipDiv.obj.initShadowShipDiv();
+
     // initialize the "previous cell to move to" to this initial cell
     let prevCellDiv = origCellDiv;
 
@@ -373,6 +385,9 @@ export default class GameboardDom {
         // initialize the move of the ship
         this.#gameboard.startMoveShip(shipName, origCell.coords);
         shipDiv.classList.add(onDragClass);
+
+        // append the shadow ship div to the dom
+        this.#div.append(shadowShipDiv);
       }
 
       // you are actually dragging
@@ -392,6 +407,19 @@ export default class GameboardDom {
           : true;
 
         shipDiv.classList.toggle(forbiddenShipPositionClass, isForbidden);
+
+        // add an out-of-bound class to hide the shadowShipDiv when the pointer is out of the gameboard div
+        shadowShipDiv.classList.toggle(outOfBoundClass, !thisCellDiv);
+
+        // translate the shadowShipDiv to the current cell, if possible (the position is constrained to the grid)
+        if (thisCellDiv) {
+          this.translateShipDiv(
+            shadowShipDiv,
+            origCellDiv,
+            thisCellDiv,
+            origShipDivTransform
+          );
+        }
 
         // update the previuos cell
         prevCellDiv = thisCellDiv;
@@ -421,6 +449,8 @@ export default class GameboardDom {
           hasMoved ? stopCellDiv : origCellDiv,
           origShipDivTransform
         );
+
+        shadowShipDiv.remove();
 
         shipDiv.classList.remove(onDragClass);
       } else {
