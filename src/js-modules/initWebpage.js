@@ -7,7 +7,7 @@ import PubSub from "pubsub-js";
 import { pubSubTokens } from "./pubSubTokens.js";
 import { resetContent } from "../js-utilities/commonDomUtilities.js";
 import setCreditFooter from "../js-utilities/creditFooter.js";
-import initMainFooter from "./initMainFooter.js";
+import initMainFooter from "./dom/initMainFooter.js";
 
 let container;
 

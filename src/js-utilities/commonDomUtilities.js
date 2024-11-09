@@ -21,3 +21,32 @@ export function getNestedElementOfClass(point, requiredClass) {
 
   return null;
 }
+
+export function waitForAsync(waitInMs) {
+  return new Promise((resolve) => setTimeout(resolve, waitInMs));
+}
+
+export async function ensureCssClassForAnimationAsync() {
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+  await waitForAsync(0);
+}
+
+export async function triggerAnimation(
+  div,
+  animationInitialStateClass,
+  animationDuration,
+  hide = false
+) {
+  // this uses a trick to trigger the animation on the element
+
+  hide
+    ? div.classList.remove(animationInitialStateClass)
+    : div.classList.add(animationInitialStateClass);
+
+  await ensureCssClassForAnimationAsync();
+
+  div.classList.toggle(animationInitialStateClass);
+
+  // wait for the animation to end before removing it
+  return waitForAsync(animationDuration);
+}
