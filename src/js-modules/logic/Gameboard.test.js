@@ -531,5 +531,12 @@ describe("Gameboard class", () => {
       // restore ship position
       gameboard.endMoveShip(shipName3);
     });
+
+    it("throws an error if you call canPlaceShipOnMove() when no ship is being moved", () => {
+      // no ship is being moved here
+      expect(() => gameboard.canPlaceShipOnMove(shipName3, [4, 8])).toThrow(
+        "No ship is being moved"
+      );
+    });
   });
 });
