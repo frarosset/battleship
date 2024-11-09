@@ -538,5 +538,12 @@ describe("Gameboard class", () => {
         "No ship is being moved"
       );
     });
+
+    it("throws an error if you call endMoveShip() when no ship is being moved", () => {
+      // no ship is being moved here
+      expect(() => gameboard.endMoveShip(shipName3)).toThrow(
+        "No ship is being moved"
+      );
+    });
   });
 });
