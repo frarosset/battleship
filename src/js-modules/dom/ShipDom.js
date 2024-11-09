@@ -4,7 +4,8 @@ import { ships } from "../images.js";
 
 export default class ShipDom extends PlaceableObjectDom {
   static blockName = "ship";
-  static zIndex = 1;
+  static shadowBlockName = "shadow-ship";
+  static zIndex = 2;
   #maskDiv;
   #name;
 
@@ -29,6 +30,16 @@ export default class ShipDom extends PlaceableObjectDom {
   makeItSunk() {
     this.div.classList.add("sunk");
     this.#maskDiv.style.display = "block";
+  }
+
+  initShadowShipDiv() {
+    const shadowShipDiv = this.div.cloneNode(true);
+    shadowShipDiv.classList.remove(this.constructor.blockName);
+    shadowShipDiv.classList.add(this.constructor.shadowBlockName);
+
+    shadowShipDiv.style.zIndex = this.constructor.zIndex - 1;
+
+    return shadowShipDiv;
   }
 
   #applyStyle(name, direction) {

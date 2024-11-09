@@ -7,6 +7,7 @@ export default class PlaceableObjectDom {
 
   constructor(cellsCoords) {
     this.#div = this.#initObjectDiv(cellsCoords);
+    this.#div.obj = this;
   }
 
   get div() {
