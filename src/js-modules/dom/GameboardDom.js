@@ -392,7 +392,7 @@ export default class GameboardDom {
         const toCell = stopCellDiv ? stopCellDiv.obj.cell : origCell;
 
         // finalize the move of the ship
-        const hasMoved = this.#gameboard.endMoveShip(shipName, toCell.coords);
+        const hasMoved = this.#gameboard.endMoveShip(toCell.coords);
 
         await this.updateMovedDeployedShip(
           shipName,

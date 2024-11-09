@@ -435,7 +435,7 @@ describe("Gameboard class", () => {
 
       // it is assumed the new stern cell is specified
       gameboard.startMoveShip(shipName3);
-      gameboard.endMoveShip(shipName3, shipMoveToCell3);
+      gameboard.endMoveShip(shipMoveToCell3);
 
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W_moved,
@@ -452,7 +452,7 @@ describe("Gameboard class", () => {
 
       // it is assumed the new stern cell is specified
       gameboard.startMoveShip(shipName3);
-      gameboard.endMoveShip(shipName3, shipMoveToCell3_invalid);
+      gameboard.endMoveShip(shipMoveToCell3_invalid);
 
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W_moved,
@@ -469,7 +469,7 @@ describe("Gameboard class", () => {
 
       // it is assumed the new stern cell is specified
       gameboard.startMoveShip(shipName3);
-      gameboard.endMoveShip(shipName3);
+      gameboard.endMoveShip();
 
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W_moved,
@@ -487,7 +487,7 @@ describe("Gameboard class", () => {
       // if a coordinate is specified in the startMoveShip method, it defines an offset wrt the stern cell
       // then, the coordinates specifiend in the endMoveShip method are assumed to have the same offset from the new stern cell
       gameboard.startMoveShip(shipName3, shipMoveFromCell3_relative);
-      gameboard.endMoveShip(shipName3, shipMoveToCell3_relative);
+      gameboard.endMoveShip(shipMoveToCell3_relative);
 
       expect(gameboard.getShipPosition(shipName3)).toEqual([
         shipCellsCoords3_W_moved_relative,
@@ -503,11 +503,11 @@ describe("Gameboard class", () => {
       ]);
 
       gameboard.startMoveShip(shipName3);
-      const successMove = gameboard.endMoveShip(shipName3, [4, 8]);
+      const successMove = gameboard.endMoveShip([4, 8]);
       expect(successMove).toBeTruthy();
 
       gameboard.startMoveShip(shipName3);
-      const failMove = gameboard.endMoveShip(shipName3, [2, 2]);
+      const failMove = gameboard.endMoveShip([2, 2]);
       expect(failMove).toBeFalsy();
     });
 
@@ -516,34 +516,32 @@ describe("Gameboard class", () => {
       gameboard.startMoveShip(shipName3);
 
       // can be moved in the initial cell
-      const canBeMovedToOrig = gameboard.canPlaceShipOnMove(shipName3, [4, 8]);
+      const canBeMovedToOrig = gameboard.canPlaceShipOnMove([4, 8]);
       expect(canBeMovedToOrig).toBeTruthy();
       expect(gameboard.hasNotDeployedShip(shipName3)).toBeTruthy();
 
-      const canBeMoved = gameboard.canPlaceShipOnMove(shipName3, [4, 7]);
+      const canBeMoved = gameboard.canPlaceShipOnMove([4, 7]);
       expect(canBeMoved).toBeTruthy();
       expect(gameboard.hasNotDeployedShip(shipName3)).toBeTruthy();
 
-      const cannotBeMoved = gameboard.canPlaceShipOnMove(shipName3, [2, 2]);
+      const cannotBeMoved = gameboard.canPlaceShipOnMove([2, 2]);
       expect(cannotBeMoved).toBeFalsy();
       expect(gameboard.hasNotDeployedShip(shipName3)).toBeTruthy();
 
       // restore ship position
-      gameboard.endMoveShip(shipName3);
+      gameboard.endMoveShip();
     });
 
     it("throws an error if you call canPlaceShipOnMove() when no ship is being moved", () => {
       // no ship is being moved here
-      expect(() => gameboard.canPlaceShipOnMove(shipName3, [4, 8])).toThrow(
+      expect(() => gameboard.canPlaceShipOnMove([4, 8])).toThrow(
         "No ship is being moved"
       );
     });
 
     it("throws an error if you call endMoveShip() when no ship is being moved", () => {
       // no ship is being moved here
-      expect(() => gameboard.endMoveShip(shipName3)).toThrow(
-        "No ship is being moved"
-      );
+      expect(() => gameboard.endMoveShip()).toThrow("No ship is being moved");
     });
   });
 });
