@@ -81,9 +81,14 @@ export default class GameViewDom {
   }
 
   #initGameMsg() {
-    // for now show a temporary msg, to setup the page...the actual message selection is todo
-    const msg = "A message to show game status (TODO)";
-    return initP(getCssClass("msgP"), null, msg);
+    const msg = "...";
+    const p = initP(getCssClass("msgP"), null, msg);
+
+    PubSub.subscribe(pubSubTokensUi.setGameStatusMsg, (msg, gameStatusMsg) => {
+      p.textContent = gameStatusMsg;
+    });
+
+    return p;
   }
 
   #showCurrentPlayerDeployedFleetCallback() {

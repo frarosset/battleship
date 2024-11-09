@@ -7,6 +7,7 @@ import {
   pubSubTokensUi,
   pubSubTopicUi,
 } from "../pubSubTokens.js";
+import { getFirstPlayerMessage } from "../messages.js";
 import { aiMoveDelay, endGameDelay } from "../delays.js";
 
 export default class GameController {
@@ -145,6 +146,12 @@ export default class GameController {
 
     this.#initCurrentPlayer();
     this.#consoleLogMessage("startGame");
+    const statusMsg = getFirstPlayerMessage(
+      this.#player.name,
+      this.#versusAi,
+      this.#isAIPlayer()
+    );
+    PubSub.publish(pubSubTokensUi.setGameStatusMsg, statusMsg);
 
     // First, subscribe to pubSubTokens.playTurn token to continue playing until moves are allowed
     PubSub.subscribe(pubSubTokens.playTurn, this.#playTurn.bind(this));
