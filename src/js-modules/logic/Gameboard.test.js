@@ -510,5 +510,26 @@ describe("Gameboard class", () => {
       const failMove = gameboard.endMoveShip(shipName3, [2, 2]);
       expect(failMove).toBeFalsy();
     });
+
+    it("returns true if the ship being moved could be placed in a given position, and false otherwise", () => {
+      // its just a test: the ship is not actually placed
+      gameboard.startMoveShip(shipName3);
+
+      // can be moved in the initial cell
+      const canBeMovedToOrig = gameboard.canPlaceShipOnMove(shipName3, [4, 8]);
+      expect(canBeMovedToOrig).toBeTruthy();
+      expect(gameboard.hasNotDeployedShip(shipName3)).toBeTruthy();
+
+      const canBeMoved = gameboard.canPlaceShipOnMove(shipName3, [4, 7]);
+      expect(canBeMoved).toBeTruthy();
+      expect(gameboard.hasNotDeployedShip(shipName3)).toBeTruthy();
+
+      const cannotBeMoved = gameboard.canPlaceShipOnMove(shipName3, [2, 2]);
+      expect(cannotBeMoved).toBeFalsy();
+      expect(gameboard.hasNotDeployedShip(shipName3)).toBeTruthy();
+
+      // restore ship position
+      gameboard.endMoveShip(shipName3);
+    });
   });
 });
