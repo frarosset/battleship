@@ -26,4 +26,5 @@ export const pubSubTokensUi = {
     `ui: UPDATE DEPLOYED FLEET ON ${player.name} GAMEBOARD`,
   playersSwitch: "PLAYERS SWITCH",
   setGameStatusMsg: "SET THE GAME STATUS MESSAGE",
+  toggleShowMsg: "TOGGLE SHOW MESSAGES",
 };

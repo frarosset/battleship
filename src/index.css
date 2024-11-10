@@ -313,6 +313,7 @@ button {
   justify-content: center;
 }
 
+.game__btns,
 .deploy-fleet__btns {
   display: flex;
   gap: var(--players-gap);
@@ -554,6 +555,10 @@ body:has(.deploy-fleet) {
   color: var(--col-txt-alt);
   text-shadow: 0 var(--shadow-len-txt) var(--shadow-len-txt) var(--col-txt);
   margin-top: auto;
+}
+
+.game__msg-p.hidden {
+  visibility: hidden;
 }
 
 .deploy-fleet__edit-instructions-p {

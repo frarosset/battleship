@@ -13,6 +13,7 @@ const cssClass = {
   header: "header",
   playersDiv: "players-div",
   playerDiv: "player-div",
+  btns: "btns",
   msgP: "msg-p",
 };
 const getCssClass = (element) => `${blockName}__${cssClass[element]}`;
@@ -24,6 +25,9 @@ export default class GameViewDom {
   #isAIPlayer;
   #versusAi;
   #showCurrentPlayerDeployedFleetCallbackBinded;
+  #toggleShowMsgCallbackBinded;
+
+  #msgP;
 
   constructor(player1, player2, versusAi) {
     this.#players = [new PlayerDom(player1), new PlayerDom(player2)];
@@ -39,6 +43,8 @@ export default class GameViewDom {
 
     this.#showCurrentPlayerDeployedFleetCallbackBinded =
       this.#showCurrentPlayerDeployedFleetCallback.bind(this);
+    this.#toggleShowMsgCallbackBinded = this.#toggleShowMsgCallback.bind(this);
+
     this.#div = this.#initGameViewDiv(...this.#players);
     this.#div.obj = this;
   }
@@ -61,6 +67,7 @@ export default class GameViewDom {
     playersDiv.append(player1Div, player2Div);
 
     const msgP = this.#initGameMsg();
+    this.#msgP = msgP;
 
     div.append(header, playersDiv, msgP);
 
@@ -70,13 +77,18 @@ export default class GameViewDom {
   #initHeader() {
     const header = initHeader(getCssClass("header"));
     // const h1 = initH1(getCssClass("h1"), null, "BATTLESHIP");
+
+    const buttonsDiv = initDiv(getCssClass("btns"));
     const showFleetBtn = this.#initShowFleetButton();
+    const toggleShowMsgBtn = this.#initToggleShowMsgButton();
 
     if (this.#versusAi) {
-      showFleetBtn.style.visibility = "hidden";
+      showFleetBtn.style.display = "none";
     }
 
-    header.append(showFleetBtn);
+    buttonsDiv.append(showFleetBtn, toggleShowMsgBtn);
+    header.append(buttonsDiv);
+
     return header;
   }
 
@@ -99,12 +111,28 @@ export default class GameViewDom {
     }
   }
 
+  #toggleShowMsgCallback() {
+    PubSub.publish(pubSubTokensUi.toggleShowMsg);
+    this.#msgP.classList.toggle("hidden");
+  }
+
   #initShowFleetButton() {
     const btn = initButton(
       "btn",
       this.#showCurrentPlayerDeployedFleetCallbackBinded,
       null,
       "Toggle my fleet"
+    );
+
+    return btn;
+  }
+
+  #initToggleShowMsgButton() {
+    const btn = initButton(
+      "btn",
+      this.#toggleShowMsgCallbackBinded.bind(this),
+      null,
+      "Toggle messages"
     );
 
     return btn;

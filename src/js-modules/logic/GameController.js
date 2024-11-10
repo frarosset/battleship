@@ -22,12 +22,27 @@ export default class GameController {
 
   #versusAi;
 
-  constructor(player1Name, player2Name, versusAi = true, aiSKills = null) {
+  #actualMsgDelay;
+  #showMsg;
+
+  constructor(
+    player1Name,
+    player2Name,
+    versusAi = true,
+    aiSKills = null,
+    showMsg = true
+  ) {
     // create the players
     this.#player1 = this.#initPlayer(player1Name, false);
     this.#player2 = this.#initPlayer(player2Name, versusAi, aiSKills);
 
     this.#versusAi = versusAi;
+
+    // subscribe to Pubsub token to be able to disable the game state messages and speedup the game
+    this.#showMsg = showMsg;
+    const toggleShowMsg = () => (this.#showMsg = !this.#showMsg);
+    this.#actualMsgDelay = () => (this.#showMsg ? msgDelay : 0);
+    PubSub.subscribe(pubSubTokensUi.toggleShowMsg, toggleShowMsg.bind(this));
 
     this.#initGame();
   }
@@ -211,7 +226,7 @@ export default class GameController {
         PubSub.publish(pubSubTokensUi.setGameStatusMsg, statusMsg);
         this.#showAttackOutcome(coords, outcome);
       },
-      this.#isAIPlayer() ? Math.max(aiMoveDelay, msgDelay) : 0
+      this.#isAIPlayer() ? Math.max(aiMoveDelay, this.#actualMsgDelay()) : 0
     );
   }
 
@@ -246,7 +261,7 @@ export default class GameController {
       this.#switchCurrentPlayer();
 
       PubSub.publish(pubSubTokens.playTurn);
-    }, msgDelay);
+    }, this.#actualMsgDelay());
   }
 
   #getAttackCoords() {

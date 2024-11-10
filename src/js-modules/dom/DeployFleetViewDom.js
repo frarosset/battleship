@@ -94,10 +94,10 @@ export default class DeployFleetViewDom {
     const header = initHeader(getCssClass("header"));
 
     const buttonsDiv = initDiv(getCssClass("btns"));
-    const showFleetBtn = this.#initRandomizeFleetButton();
+    const randomizeFleetBtn = this.#initRandomizeFleetButton();
     const fleetReadyBtn = this.#initFleetReadyButton();
 
-    buttonsDiv.append(showFleetBtn, fleetReadyBtn);
+    buttonsDiv.append(randomizeFleetBtn, fleetReadyBtn);
     header.append(buttonsDiv);
 
     return header;
