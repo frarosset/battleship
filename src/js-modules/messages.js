@@ -22,11 +22,10 @@ const deployFleet = {
 };
 
 const firstMove = {
-  player_1p: "By fate’s roll, you start the battle. Fire the opening shot!",
-  playerAi_1p:
-    "By fate’s roll, your enemy begins. Prepare for the opening shot!",
+  player_1p: "By fate’s roll, you start the battle.",
+  playerAi_1p: "By fate’s roll, your enemy begins.",
   player_2p: (playerName) =>
-    `By fate’s roll, you start the battle, ${playerName}. Fire the opening shot!`,
+    `By fate’s roll, you start the battle, ${playerName}!`,
 };
 
 const gameEnd = {
@@ -35,6 +34,75 @@ const gameEnd = {
   win_2p: (winnerPlayerName, defeatedPlayerName) => [
     `Well done, ${winnerPlayerName}!`,
     `All ${defeatedPlayerName}'s ships are lost to the depths..`,
+  ],
+};
+
+const gameplayIdx = {
+  miss: 0,
+  hit: 0,
+  hitAndSunk: 0,
+  passingTurn: 0,
+};
+
+const gameplayMsg = {
+  miss: [
+    "Just a splash in the water...",
+    "You missed the shot...",
+    "No sign of ships here...",
+    "Nothing but water there...",
+    "Your aim was off...",
+  ],
+  hit: [
+    "You've just hit a ship!",
+    "You scored a nice shot!",
+    "You reached the enemy!",
+    "You found your mark!",
+    "You've hit the target!",
+  ],
+  hitAndSunk: [
+    "Your attack sinks a ship!",
+    "Your shot sinks a ship!",
+    "You brings down a ship!",
+    "A direct hit and a sunken ship!",
+    "You wrecks an enemy ship!",
+  ],
+  passingTurn: [
+    "It's your turn!",
+    "Aim your cannons!",
+    "Prepare to strike!",
+    "Take aim and fire!",
+    "Arm your cannons!",
+  ],
+};
+
+const gameplayMsgAi = {
+  miss: [
+    "but just gets a splash!",
+    "but misses the shot!",
+    "but finds no sign of you!",
+    "but hits nothing but water!",
+    "but misfires!",
+  ],
+  hit: [
+    "and hits one of your ships...",
+    "and scores a nice hit...",
+    "and reaches your ship...",
+    "and finds its mark...",
+    "and targets you perfectly...",
+  ],
+  hitAndSunk: [
+    "and makes your ship sink...",
+    "and wrecks your ship...",
+    "and sinks your vessel...",
+    "and makes you lose a ship...",
+    "and brings down your ship...",
+  ],
+  passingTurn: [
+    "The enemy's turn is up next...",
+    "The enemy is aiming the cannons...",
+    "The enemy is ready to strike...",
+    "The enemy takes aim to fire...",
+    "The enemy armes the cannons...",
   ],
 };
 
@@ -72,6 +140,22 @@ export function getFirstPlayerMessage(playerName, versusAi, isPlayerAi) {
   } else {
     return firstMove.player_2p(playerName);
   }
+}
+
+export function getGameplayStatusMessage(
+  playerName,
+  versusAi,
+  isPlayerAi,
+  type
+) {
+  // select the message object whether the current player is ai or not
+  const msgObj = isPlayerAi ? gameplayMsgAi : gameplayMsg;
+
+  // get the index of the message and update the next one
+  gameplayIdx[type] = (gameplayIdx[type] + 1) % msgObj[type].length;
+  const idx = gameplayIdx[type];
+
+  return `${versusAi ? "" : playerName + "! "}${msgObj[type][idx]}`;
 }
 
 export function getGameEndMessage(

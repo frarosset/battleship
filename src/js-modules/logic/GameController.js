@@ -7,8 +7,11 @@ import {
   pubSubTokensUi,
   pubSubTopicUi,
 } from "../pubSubTokens.js";
-import { getFirstPlayerMessage } from "../messages.js";
-import { aiMoveDelay, endGameDelay } from "../delays.js";
+import {
+  getFirstPlayerMessage,
+  getGameplayStatusMessage,
+} from "../messages.js";
+import { aiMoveDelay, endGameDelay, msgDelay } from "../delays.js";
 
 export default class GameController {
   #player1;
@@ -73,6 +76,14 @@ export default class GameController {
 
   #switchCurrentPlayer() {
     [this.#player, this.#opponent] = [this.#opponent, this.#player];
+
+    const statusMsg = getGameplayStatusMessage(
+      this.#player.name,
+      this.#versusAi,
+      this.#isAIPlayer(),
+      "passingTurn"
+    );
+    PubSub.publish(pubSubTokensUi.setGameStatusMsg, statusMsg);
 
     PubSub.publish(pubSubTokensUi.playersSwitch, {
       player: this.#player,
@@ -190,8 +201,17 @@ export default class GameController {
     const outcome = this.#attackTheOpponent(coords);
 
     setTimeout(
-      () => this.#showAttackOutcome(coords, outcome),
-      this.#isAIPlayer() ? aiMoveDelay : 0
+      () => {
+        const statusMsg = getGameplayStatusMessage(
+          this.#player.name,
+          this.#versusAi,
+          this.#isAIPlayer(),
+          outcome.isHit ? (outcome.isSunk ? "hitAndSunk" : "hit") : "miss"
+        );
+        PubSub.publish(pubSubTokensUi.setGameStatusMsg, statusMsg);
+        this.#showAttackOutcome(coords, outcome);
+      },
+      this.#isAIPlayer() ? Math.max(aiMoveDelay, msgDelay) : 0
     );
   }
 
@@ -222,9 +242,11 @@ export default class GameController {
     this.#applyPostAttackActions(coords, outcome);
 
     // Pass turn to opponent
-    this.#switchCurrentPlayer();
+    setTimeout(() => {
+      this.#switchCurrentPlayer();
 
-    PubSub.publish(pubSubTokens.playTurn);
+      PubSub.publish(pubSubTokens.playTurn);
+    }, msgDelay);
   }
 
   #getAttackCoords() {

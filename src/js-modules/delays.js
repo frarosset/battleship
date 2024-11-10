@@ -12,6 +12,7 @@ export const aiDeployFleetDelay = 2000; // ms
 // The artificial waiting in which the AI opponent makes an attack
 // Eg, you might want to use this to make it appear as if the ai is thinking of the next move to do
 export const aiMoveDelay = 500; //ms
+export const msgDelay = 1000;
 
 // The arificial waiting time between the last move and the showing of the end game view
 // Eg, you might want to show a message in the UI
